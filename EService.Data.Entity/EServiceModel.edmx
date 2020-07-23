@@ -1,0 +1,1150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище mainModel" Provider="System.Data.SQLite.EF6" ProviderManifestToken="Data Source=D:\Projects\E-Service\EService.Data.Entity\service_db.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="dept">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="description" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="devices">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidModel" Type="integer" Nullable="false" />
+          <Property Name="rowidDept" Type="integer" Nullable="false" />
+          <Property Name="rowidStatus" Type="integer" Nullable="false" />
+          <Property Name="serialNumber" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="inventoryNumber" Type="nvarchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityType Name="model">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidTypes" Type="integer" Nullable="false" />
+          <Property Name="fullName" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="shortName" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="parameters">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="unit" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="default" Type="nvarchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityType Name="parametersForModels">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidModel" Type="integer" Nullable="false" />
+          <Property Name="rowidParameters" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="parametersValues">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidParametersForModels" Type="integer" Nullable="false" />
+          <Property Name="rowidServiceLog" Type="integer" Nullable="false" />
+          <Property Name="value" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="repairer">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="surname" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="midname" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="service">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fullName" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="shortName" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="description" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="price" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="serviceCategory">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="range" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="serviceDone">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidServiceForModels" Type="integer" Nullable="false" />
+          <Property Name="rowidServiceLog" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="serviceForModels">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidModel" Type="integer" Nullable="false" />
+          <Property Name="rowidService" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="serviceLog">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidDevice" Type="integer" Nullable="false" />
+          <Property Name="rowidRepairer" Type="integer" Nullable="false" />
+          <Property Name="date" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="spares">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="description" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sparesForModels">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidModel" Type="integer" Nullable="false" />
+          <Property Name="rowidSpares" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sparesUsed">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rowidSparesForModels" Type="integer" Nullable="false" />
+          <Property Name="rowidServiceLog" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="statuses">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="types">
+          <Key>
+            <PropertyRef Name="rowid" />
+          </Key>
+          <Property Name="rowid" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fullName" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="shortName" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_devices_0_0">
+          <End Role="statuses" Type="Self.statuses" Multiplicity="1" />
+          <End Role="devices" Type="Self.devices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="statuses">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="devices">
+              <PropertyRef Name="rowidStatus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_devices_1_0">
+          <End Role="dept" Type="Self.dept" Multiplicity="1" />
+          <End Role="devices" Type="Self.devices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dept">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="devices">
+              <PropertyRef Name="rowidDept" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_devices_2_0">
+          <End Role="model" Type="Self.model" Multiplicity="1" />
+          <End Role="devices" Type="Self.devices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="devices">
+              <PropertyRef Name="rowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_model_0_0">
+          <End Role="types" Type="Self.types" Multiplicity="1" />
+          <End Role="model" Type="Self.model" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="types">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="model">
+              <PropertyRef Name="rowidTypes" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersForModels_0_0">
+          <End Role="parameters" Type="Self.parameters" Multiplicity="1" />
+          <End Role="parametersForModels" Type="Self.parametersForModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="parameters">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="parametersForModels">
+              <PropertyRef Name="rowidParameters" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersForModels_1_0">
+          <End Role="model" Type="Self.model" Multiplicity="1" />
+          <End Role="parametersForModels" Type="Self.parametersForModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="parametersForModels">
+              <PropertyRef Name="rowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersValues_0_0">
+          <End Role="parametersForModels" Type="Self.parametersForModels" Multiplicity="1" />
+          <End Role="parametersValues" Type="Self.parametersValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="parametersForModels">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="parametersValues">
+              <PropertyRef Name="rowidParametersForModels" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersValues_1_0">
+          <End Role="serviceLog" Type="Self.serviceLog" Multiplicity="1" />
+          <End Role="parametersValues" Type="Self.parametersValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceLog">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="parametersValues">
+              <PropertyRef Name="rowidServiceLog" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceDone_0_0">
+          <End Role="serviceLog" Type="Self.serviceLog" Multiplicity="1" />
+          <End Role="serviceDone" Type="Self.serviceDone" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceLog">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="serviceDone">
+              <PropertyRef Name="rowidServiceLog" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceDone_1_0">
+          <End Role="serviceForModels" Type="Self.serviceForModels" Multiplicity="1" />
+          <End Role="serviceDone" Type="Self.serviceDone" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceForModels">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="serviceDone">
+              <PropertyRef Name="rowidServiceForModels" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceForModels_0_0">
+          <End Role="service" Type="Self.service" Multiplicity="1" />
+          <End Role="serviceForModels" Type="Self.serviceForModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="service">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="serviceForModels">
+              <PropertyRef Name="rowidService" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceForModels_1_0">
+          <End Role="model" Type="Self.model" Multiplicity="1" />
+          <End Role="serviceForModels" Type="Self.serviceForModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="serviceForModels">
+              <PropertyRef Name="rowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceLog_0_0">
+          <End Role="repairer" Type="Self.repairer" Multiplicity="1" />
+          <End Role="serviceLog" Type="Self.serviceLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="repairer">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="serviceLog">
+              <PropertyRef Name="rowidRepairer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceLog_1_0">
+          <End Role="devices" Type="Self.devices" Multiplicity="1" />
+          <End Role="serviceLog" Type="Self.serviceLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="devices">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="serviceLog">
+              <PropertyRef Name="rowidDevice" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesForModels_0_0">
+          <End Role="spares" Type="Self.spares" Multiplicity="1" />
+          <End Role="sparesForModels" Type="Self.sparesForModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="spares">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="sparesForModels">
+              <PropertyRef Name="rowidSpares" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesForModels_1_0">
+          <End Role="model" Type="Self.model" Multiplicity="1" />
+          <End Role="sparesForModels" Type="Self.sparesForModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="sparesForModels">
+              <PropertyRef Name="rowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesUsed_0_0">
+          <End Role="serviceLog" Type="Self.serviceLog" Multiplicity="1" />
+          <End Role="sparesUsed" Type="Self.sparesUsed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceLog">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="sparesUsed">
+              <PropertyRef Name="rowidServiceLog" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesUsed_1_0">
+          <End Role="sparesForModels" Type="Self.sparesForModels" Multiplicity="1" />
+          <End Role="sparesUsed" Type="Self.sparesUsed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sparesForModels">
+              <PropertyRef Name="rowid" />
+            </Principal>
+            <Dependent Role="sparesUsed">
+              <PropertyRef Name="rowidSparesForModels" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище mainModelContainer">
+          <EntitySet Name="dept" EntityType="Self.dept" store:Type="Tables" />
+          <EntitySet Name="devices" EntityType="Self.devices" store:Type="Tables" />
+          <EntitySet Name="model" EntityType="Self.model" store:Type="Tables" />
+          <EntitySet Name="parameters" EntityType="Self.parameters" store:Type="Tables" />
+          <EntitySet Name="parametersForModels" EntityType="Self.parametersForModels" store:Type="Tables" />
+          <EntitySet Name="parametersValues" EntityType="Self.parametersValues" store:Type="Tables" />
+          <EntitySet Name="repairer" EntityType="Self.repairer" store:Type="Tables" />
+          <EntitySet Name="service" EntityType="Self.service" store:Type="Tables" />
+          <EntitySet Name="serviceCategory" EntityType="Self.serviceCategory" store:Type="Tables" />
+          <EntitySet Name="serviceDone" EntityType="Self.serviceDone" store:Type="Tables" />
+          <EntitySet Name="serviceForModels" EntityType="Self.serviceForModels" store:Type="Tables" />
+          <EntitySet Name="serviceLog" EntityType="Self.serviceLog" store:Type="Tables" />
+          <EntitySet Name="spares" EntityType="Self.spares" store:Type="Tables" />
+          <EntitySet Name="sparesForModels" EntityType="Self.sparesForModels" store:Type="Tables" />
+          <EntitySet Name="sparesUsed" EntityType="Self.sparesUsed" store:Type="Tables" />
+          <EntitySet Name="statuses" EntityType="Self.statuses" store:Type="Tables" />
+          <EntitySet Name="types" EntityType="Self.types" store:Type="Tables" />
+          <AssociationSet Name="FK_devices_0_0" Association="Self.FK_devices_0_0">
+            <End Role="statuses" EntitySet="statuses" />
+            <End Role="devices" EntitySet="devices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_devices_1_0" Association="Self.FK_devices_1_0">
+            <End Role="dept" EntitySet="dept" />
+            <End Role="devices" EntitySet="devices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_devices_2_0" Association="Self.FK_devices_2_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="devices" EntitySet="devices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_model_0_0" Association="Self.FK_model_0_0">
+            <End Role="types" EntitySet="types" />
+            <End Role="model" EntitySet="model" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersForModels_0_0" Association="Self.FK_parametersForModels_0_0">
+            <End Role="parameters" EntitySet="parameters" />
+            <End Role="parametersForModels" EntitySet="parametersForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersForModels_1_0" Association="Self.FK_parametersForModels_1_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="parametersForModels" EntitySet="parametersForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersValues_0_0" Association="Self.FK_parametersValues_0_0">
+            <End Role="parametersForModels" EntitySet="parametersForModels" />
+            <End Role="parametersValues" EntitySet="parametersValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersValues_1_0" Association="Self.FK_parametersValues_1_0">
+            <End Role="serviceLog" EntitySet="serviceLog" />
+            <End Role="parametersValues" EntitySet="parametersValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceDone_0_0" Association="Self.FK_serviceDone_0_0">
+            <End Role="serviceLog" EntitySet="serviceLog" />
+            <End Role="serviceDone" EntitySet="serviceDone" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceDone_1_0" Association="Self.FK_serviceDone_1_0">
+            <End Role="serviceForModels" EntitySet="serviceForModels" />
+            <End Role="serviceDone" EntitySet="serviceDone" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceForModels_0_0" Association="Self.FK_serviceForModels_0_0">
+            <End Role="service" EntitySet="service" />
+            <End Role="serviceForModels" EntitySet="serviceForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceForModels_1_0" Association="Self.FK_serviceForModels_1_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="serviceForModels" EntitySet="serviceForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceLog_0_0" Association="Self.FK_serviceLog_0_0">
+            <End Role="repairer" EntitySet="repairer" />
+            <End Role="serviceLog" EntitySet="serviceLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceLog_1_0" Association="Self.FK_serviceLog_1_0">
+            <End Role="devices" EntitySet="devices" />
+            <End Role="serviceLog" EntitySet="serviceLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesForModels_0_0" Association="Self.FK_sparesForModels_0_0">
+            <End Role="spares" EntitySet="spares" />
+            <End Role="sparesForModels" EntitySet="sparesForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesForModels_1_0" Association="Self.FK_sparesForModels_1_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="sparesForModels" EntitySet="sparesForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesUsed_0_0" Association="Self.FK_sparesUsed_0_0">
+            <End Role="serviceLog" EntitySet="serviceLog" />
+            <End Role="sparesUsed" EntitySet="sparesUsed" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesUsed_1_0" Association="Self.FK_sparesUsed_1_0">
+            <End Role="sparesForModels" EntitySet="sparesForModels" />
+            <End Role="sparesUsed" EntitySet="sparesUsed" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="mainModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Dept">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Devices" Relationship="Self.FK_devices_1_0" FromRole="dept" ToRole="devices" />
+        </EntityType>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidModel" Type="Int64" Nullable="false" />
+          <Property Name="RowidDept" Type="Int64" Nullable="false" />
+          <Property Name="RowidStatus" Type="Int64" Nullable="false" />
+          <Property Name="SerialNumber" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="InventoryNumber" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Dept" Relationship="Self.FK_devices_1_0" FromRole="devices" ToRole="dept" />
+          <NavigationProperty Name="Status" Relationship="Self.FK_devices_0_0" FromRole="devices" ToRole="statuses" />
+          <NavigationProperty Name="Model" Relationship="Self.FK_devices_2_0" FromRole="devices" ToRole="model" />
+          <NavigationProperty Name="ServiceLogs" Relationship="Self.FK_serviceLog_1_0" FromRole="devices" ToRole="serviceLog" />
+        </EntityType>
+        <EntityType Name="Model">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidTypes" Type="Int64" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShortName" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Devices" Relationship="Self.FK_devices_2_0" FromRole="model" ToRole="devices" />
+          <NavigationProperty Name="TypeModel" Relationship="Self.FK_model_0_0" FromRole="model" ToRole="types" />
+          <NavigationProperty Name="ParametersForModels" Relationship="Self.FK_parametersForModels_1_0" FromRole="model" ToRole="parametersForModels" />
+          <NavigationProperty Name="ServicesForModels" Relationship="Self.FK_serviceForModels_1_0" FromRole="model" ToRole="serviceForModels" />
+          <NavigationProperty Name="SparesForModels" Relationship="Self.FK_sparesForModels_1_0" FromRole="model" ToRole="sparesForModels" />
+        </EntityType>
+        <EntityType Name="Parameter">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Unit" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Default" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ParametersForModels" Relationship="Self.FK_parametersForModels_0_0" FromRole="parameters" ToRole="parametersForModels" />
+        </EntityType>
+        <EntityType Name="ParameterForModel">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidModel" Type="Int64" Nullable="false" />
+          <Property Name="RowidParameters" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Model" Relationship="Self.FK_parametersForModels_1_0" FromRole="parametersForModels" ToRole="model" />
+          <NavigationProperty Name="Parameter" Relationship="Self.FK_parametersForModels_0_0" FromRole="parametersForModels" ToRole="parameters" />
+          <NavigationProperty Name="ParameterValues" Relationship="Self.FK_parametersValues_0_0" FromRole="parametersForModels" ToRole="parametersValues" />
+        </EntityType>
+        <EntityType Name="ParameterValue">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidParameterForModel" Type="Int64" Nullable="false" />
+          <Property Name="RowidServiceLog" Type="Int64" Nullable="false" />
+          <Property Name="Value" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ParameterForModel" Relationship="Self.FK_parametersValues_0_0" FromRole="parametersValues" ToRole="parametersForModels" />
+          <NavigationProperty Name="ServiceLog" Relationship="Self.FK_parametersValues_1_0" FromRole="parametersValues" ToRole="serviceLog" />
+        </EntityType>
+        <EntityType Name="Repairer">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Surname" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Midname" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ServiceLogs" Relationship="Self.FK_serviceLog_0_0" FromRole="repairer" ToRole="serviceLog" />
+        </EntityType>
+        <EntityType Name="Service">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FullName" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShortName" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Price" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ServicesForModels" Relationship="Self.FK_serviceForModels_0_0" FromRole="service" ToRole="serviceForModels" />
+        </EntityType>
+        <EntityType Name="ServiceCategory">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Range" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ServiceDone">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidServiceForModel" Type="Int64" Nullable="false" />
+          <Property Name="RowidServiceLog" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ServiceLog" Relationship="Self.FK_serviceDone_0_0" FromRole="serviceDone" ToRole="serviceLog" />
+          <NavigationProperty Name="ServiceForModel" Relationship="Self.FK_serviceDone_1_0" FromRole="serviceDone" ToRole="serviceForModels" />
+        </EntityType>
+        <EntityType Name="ServiceForModel">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidModel" Type="Int64" Nullable="false" />
+          <Property Name="RowidService" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Model" Relationship="Self.FK_serviceForModels_1_0" FromRole="serviceForModels" ToRole="model" />
+          <NavigationProperty Name="Service" Relationship="Self.FK_serviceForModels_0_0" FromRole="serviceForModels" ToRole="service" />
+          <NavigationProperty Name="ServicesDone" Relationship="Self.FK_serviceDone_1_0" FromRole="serviceForModels" ToRole="serviceDone" />
+        </EntityType>
+        <EntityType Name="ServiceLog">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidDevice" Type="Int64" Nullable="false" />
+          <Property Name="RowidRepairer" Type="Int64" Nullable="false" />
+          <Property Name="Date" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Device" Relationship="Self.FK_serviceLog_1_0" FromRole="serviceLog" ToRole="devices" />
+          <NavigationProperty Name="ParametersValues" Relationship="Self.FK_parametersValues_1_0" FromRole="serviceLog" ToRole="parametersValues" />
+          <NavigationProperty Name="Repairer" Relationship="Self.FK_serviceLog_0_0" FromRole="serviceLog" ToRole="repairer" />
+          <NavigationProperty Name="ServicesDone" Relationship="Self.FK_serviceDone_0_0" FromRole="serviceLog" ToRole="serviceDone" />
+          <NavigationProperty Name="SparesUsed" Relationship="Self.FK_sparesUsed_0_0" FromRole="serviceLog" ToRole="sparesUsed" />
+        </EntityType>
+        <EntityType Name="Spare">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="SparesForModels" Relationship="Self.FK_sparesForModels_0_0" FromRole="spares" ToRole="sparesForModels" />
+        </EntityType>
+        <EntityType Name="SpareForModel">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidModel" Type="Int64" Nullable="false" />
+          <Property Name="RowidSpare" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Model" Relationship="Self.FK_sparesForModels_1_0" FromRole="sparesForModels" ToRole="model" />
+          <NavigationProperty Name="Spare" Relationship="Self.FK_sparesForModels_0_0" FromRole="sparesForModels" ToRole="spares" />
+          <NavigationProperty Name="SparesUsed" Relationship="Self.FK_sparesUsed_1_0" FromRole="sparesForModels" ToRole="sparesUsed" />
+        </EntityType>
+        <EntityType Name="SpareUsed">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RowidSpareForModel" Type="Int64" Nullable="false" />
+          <Property Name="RowidServiceLog" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ServiceLog" Relationship="Self.FK_sparesUsed_0_0" FromRole="sparesUsed" ToRole="serviceLog" />
+          <NavigationProperty Name="SpareForModel" Relationship="Self.FK_sparesUsed_1_0" FromRole="sparesUsed" ToRole="sparesForModels" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Devices" Relationship="Self.FK_devices_0_0" FromRole="statuses" ToRole="devices" />
+        </EntityType>
+        <EntityType Name="TypeModel">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FullName" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShortName" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Models" Relationship="Self.FK_model_0_0" FromRole="types" ToRole="model" />
+        </EntityType>
+        <Association Name="FK_devices_1_0">
+          <End Role="dept" Type="mainModel.Dept" Multiplicity="1" />
+          <End Role="devices" Type="mainModel.Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dept">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="devices">
+              <PropertyRef Name="RowidDept" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_devices_0_0">
+          <End Role="statuses" Type="mainModel.Status" Multiplicity="1" />
+          <End Role="devices" Type="mainModel.Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="statuses">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="devices">
+              <PropertyRef Name="RowidStatus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_devices_2_0">
+          <End Role="model" Type="mainModel.Model" Multiplicity="1" />
+          <End Role="devices" Type="mainModel.Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="devices">
+              <PropertyRef Name="RowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceLog_1_0">
+          <End Role="devices" Type="mainModel.Device" Multiplicity="1" />
+          <End Role="serviceLog" Type="mainModel.ServiceLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="devices">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="serviceLog">
+              <PropertyRef Name="RowidDevice" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_model_0_0">
+          <End Role="types" Type="mainModel.TypeModel" Multiplicity="1" />
+          <End Role="model" Type="mainModel.Model" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="types">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="model">
+              <PropertyRef Name="RowidTypes" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersForModels_1_0">
+          <End Role="model" Type="mainModel.Model" Multiplicity="1" />
+          <End Role="parametersForModels" Type="mainModel.ParameterForModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="parametersForModels">
+              <PropertyRef Name="RowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceForModels_1_0">
+          <End Role="model" Type="mainModel.Model" Multiplicity="1" />
+          <End Role="serviceForModels" Type="mainModel.ServiceForModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="serviceForModels">
+              <PropertyRef Name="RowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesForModels_1_0">
+          <End Role="model" Type="mainModel.Model" Multiplicity="1" />
+          <End Role="sparesForModels" Type="mainModel.SpareForModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="model">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="sparesForModels">
+              <PropertyRef Name="RowidModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersForModels_0_0">
+          <End Role="parameters" Type="mainModel.Parameter" Multiplicity="1" />
+          <End Role="parametersForModels" Type="mainModel.ParameterForModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="parameters">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="parametersForModels">
+              <PropertyRef Name="RowidParameters" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersValues_0_0">
+          <End Role="parametersForModels" Type="mainModel.ParameterForModel" Multiplicity="1" />
+          <End Role="parametersValues" Type="mainModel.ParameterValue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="parametersForModels">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="parametersValues">
+              <PropertyRef Name="RowidParameterForModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_parametersValues_1_0">
+          <End Role="serviceLog" Type="mainModel.ServiceLog" Multiplicity="1" />
+          <End Role="parametersValues" Type="mainModel.ParameterValue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceLog">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="parametersValues">
+              <PropertyRef Name="RowidServiceLog" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceLog_0_0">
+          <End Role="repairer" Type="mainModel.Repairer" Multiplicity="1" />
+          <End Role="serviceLog" Type="mainModel.ServiceLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="repairer">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="serviceLog">
+              <PropertyRef Name="RowidRepairer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceForModels_0_0">
+          <End Role="service" Type="mainModel.Service" Multiplicity="1" />
+          <End Role="serviceForModels" Type="mainModel.ServiceForModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="service">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="serviceForModels">
+              <PropertyRef Name="RowidService" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceDone_0_0">
+          <End Role="serviceLog" Type="mainModel.ServiceLog" Multiplicity="1" />
+          <End Role="serviceDone" Type="mainModel.ServiceDone" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceLog">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="serviceDone">
+              <PropertyRef Name="RowidServiceLog" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_serviceDone_1_0">
+          <End Role="serviceForModels" Type="mainModel.ServiceForModel" Multiplicity="1" />
+          <End Role="serviceDone" Type="mainModel.ServiceDone" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceForModels">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="serviceDone">
+              <PropertyRef Name="RowidServiceForModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesUsed_0_0">
+          <End Role="serviceLog" Type="mainModel.ServiceLog" Multiplicity="1" />
+          <End Role="sparesUsed" Type="mainModel.SpareUsed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="serviceLog">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="sparesUsed">
+              <PropertyRef Name="RowidServiceLog" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesForModels_0_0">
+          <End Role="spares" Type="mainModel.Spare" Multiplicity="1" />
+          <End Role="sparesForModels" Type="mainModel.SpareForModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="spares">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="sparesForModels">
+              <PropertyRef Name="RowidSpare" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sparesUsed_1_0">
+          <End Role="sparesForModels" Type="mainModel.SpareForModel" Multiplicity="1" />
+          <End Role="sparesUsed" Type="mainModel.SpareUsed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sparesForModels">
+              <PropertyRef Name="Rowid" />
+            </Principal>
+            <Dependent Role="sparesUsed">
+              <PropertyRef Name="RowidSpareForModel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="mainEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="dept" EntityType="mainModel.Dept" />
+          <EntitySet Name="devices" EntityType="mainModel.Device" />
+          <EntitySet Name="model" EntityType="mainModel.Model" />
+          <EntitySet Name="parameters" EntityType="mainModel.Parameter" />
+          <EntitySet Name="parametersForModels" EntityType="mainModel.ParameterForModel" />
+          <EntitySet Name="parametersValues" EntityType="mainModel.ParameterValue" />
+          <EntitySet Name="repairer" EntityType="mainModel.Repairer" />
+          <EntitySet Name="service" EntityType="mainModel.Service" />
+          <EntitySet Name="serviceCategory" EntityType="mainModel.ServiceCategory" />
+          <EntitySet Name="serviceDone" EntityType="mainModel.ServiceDone" />
+          <EntitySet Name="serviceForModels" EntityType="mainModel.ServiceForModel" />
+          <EntitySet Name="serviceLog" EntityType="mainModel.ServiceLog" />
+          <EntitySet Name="spares" EntityType="mainModel.Spare" />
+          <EntitySet Name="sparesForModels" EntityType="mainModel.SpareForModel" />
+          <EntitySet Name="sparesUsed" EntityType="mainModel.SpareUsed" />
+          <EntitySet Name="statuses" EntityType="mainModel.Status" />
+          <EntitySet Name="types" EntityType="mainModel.TypeModel" />
+          <AssociationSet Name="FK_devices_1_0" Association="Self.FK_devices_1_0">
+            <End Role="dept" EntitySet="dept" />
+            <End Role="devices" EntitySet="devices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_devices_0_0" Association="Self.FK_devices_0_0">
+            <End Role="statuses" EntitySet="statuses" />
+            <End Role="devices" EntitySet="devices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_devices_2_0" Association="Self.FK_devices_2_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="devices" EntitySet="devices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceLog_1_0" Association="Self.FK_serviceLog_1_0">
+            <End Role="devices" EntitySet="devices" />
+            <End Role="serviceLog" EntitySet="serviceLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_model_0_0" Association="Self.FK_model_0_0">
+            <End Role="types" EntitySet="types" />
+            <End Role="model" EntitySet="model" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersForModels_1_0" Association="Self.FK_parametersForModels_1_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="parametersForModels" EntitySet="parametersForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceForModels_1_0" Association="Self.FK_serviceForModels_1_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="serviceForModels" EntitySet="serviceForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesForModels_1_0" Association="Self.FK_sparesForModels_1_0">
+            <End Role="model" EntitySet="model" />
+            <End Role="sparesForModels" EntitySet="sparesForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersForModels_0_0" Association="Self.FK_parametersForModels_0_0">
+            <End Role="parameters" EntitySet="parameters" />
+            <End Role="parametersForModels" EntitySet="parametersForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersValues_0_0" Association="Self.FK_parametersValues_0_0">
+            <End Role="parametersForModels" EntitySet="parametersForModels" />
+            <End Role="parametersValues" EntitySet="parametersValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_parametersValues_1_0" Association="Self.FK_parametersValues_1_0">
+            <End Role="serviceLog" EntitySet="serviceLog" />
+            <End Role="parametersValues" EntitySet="parametersValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceLog_0_0" Association="Self.FK_serviceLog_0_0">
+            <End Role="repairer" EntitySet="repairer" />
+            <End Role="serviceLog" EntitySet="serviceLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceForModels_0_0" Association="Self.FK_serviceForModels_0_0">
+            <End Role="service" EntitySet="service" />
+            <End Role="serviceForModels" EntitySet="serviceForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceDone_0_0" Association="Self.FK_serviceDone_0_0">
+            <End Role="serviceLog" EntitySet="serviceLog" />
+            <End Role="serviceDone" EntitySet="serviceDone" />
+          </AssociationSet>
+          <AssociationSet Name="FK_serviceDone_1_0" Association="Self.FK_serviceDone_1_0">
+            <End Role="serviceForModels" EntitySet="serviceForModels" />
+            <End Role="serviceDone" EntitySet="serviceDone" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesUsed_0_0" Association="Self.FK_sparesUsed_0_0">
+            <End Role="serviceLog" EntitySet="serviceLog" />
+            <End Role="sparesUsed" EntitySet="sparesUsed" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesForModels_0_0" Association="Self.FK_sparesForModels_0_0">
+            <End Role="spares" EntitySet="spares" />
+            <End Role="sparesForModels" EntitySet="sparesForModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sparesUsed_1_0" Association="Self.FK_sparesUsed_1_0">
+            <End Role="sparesForModels" EntitySet="sparesForModels" />
+            <End Role="sparesUsed" EntitySet="sparesUsed" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище mainModelContainer" CdmEntityContainer="mainEntities">
+          <EntitySetMapping Name="dept">
+            <EntityTypeMapping TypeName="mainModel.Dept">
+              <MappingFragment StoreEntitySet="dept">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="Name" ColumnName="name" />
+                <ScalarProperty Name="Code" ColumnName="code" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="devices">
+            <EntityTypeMapping TypeName="mainModel.Device">
+              <MappingFragment StoreEntitySet="devices">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidModel" ColumnName="rowidModel" />
+                <ScalarProperty Name="RowidDept" ColumnName="rowidDept" />
+                <ScalarProperty Name="RowidStatus" ColumnName="rowidStatus" />
+                <ScalarProperty Name="SerialNumber" ColumnName="serialNumber" />
+                <ScalarProperty Name="InventoryNumber" ColumnName="inventoryNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="model">
+            <EntityTypeMapping TypeName="mainModel.Model">
+              <MappingFragment StoreEntitySet="model">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidTypes" ColumnName="rowidTypes" />
+                <ScalarProperty Name="FullName" ColumnName="fullName" />
+                <ScalarProperty Name="ShortName" ColumnName="shortName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="parameters">
+            <EntityTypeMapping TypeName="mainModel.Parameter">
+              <MappingFragment StoreEntitySet="parameters">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="Name" ColumnName="name" />
+                <ScalarProperty Name="Unit" ColumnName="unit" />
+                <ScalarProperty Name="Default" ColumnName="default" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="parametersForModels">
+            <EntityTypeMapping TypeName="mainModel.ParameterForModel">
+              <MappingFragment StoreEntitySet="parametersForModels">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidModel" ColumnName="rowidModel" />
+                <ScalarProperty Name="RowidParameters" ColumnName="rowidParameters" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="parametersValues">
+            <EntityTypeMapping TypeName="mainModel.ParameterValue">
+              <MappingFragment StoreEntitySet="parametersValues">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidParameterForModel" ColumnName="rowidParametersForModels" />
+                <ScalarProperty Name="RowidServiceLog" ColumnName="rowidServiceLog" />
+                <ScalarProperty Name="Value" ColumnName="value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="repairer">
+            <EntityTypeMapping TypeName="mainModel.Repairer">
+              <MappingFragment StoreEntitySet="repairer">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="Name" ColumnName="name" />
+                <ScalarProperty Name="Surname" ColumnName="surname" />
+                <ScalarProperty Name="Midname" ColumnName="midname" />
+                <ScalarProperty Name="Password" ColumnName="password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="service">
+            <EntityTypeMapping TypeName="mainModel.Service">
+              <MappingFragment StoreEntitySet="service">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="FullName" ColumnName="fullName" />
+                <ScalarProperty Name="ShortName" ColumnName="shortName" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+                <ScalarProperty Name="Price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="serviceCategory">
+            <EntityTypeMapping TypeName="mainModel.ServiceCategory">
+              <MappingFragment StoreEntitySet="serviceCategory">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="Name" ColumnName="name" />
+                <ScalarProperty Name="Range" ColumnName="range" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="serviceDone">
+            <EntityTypeMapping TypeName="mainModel.ServiceDone">
+              <MappingFragment StoreEntitySet="serviceDone">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidServiceForModel" ColumnName="rowidServiceForModels" />
+                <ScalarProperty Name="RowidServiceLog" ColumnName="rowidServiceLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="serviceForModels">
+            <EntityTypeMapping TypeName="mainModel.ServiceForModel">
+              <MappingFragment StoreEntitySet="serviceForModels">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidModel" ColumnName="rowidModel" />
+                <ScalarProperty Name="RowidService" ColumnName="rowidService" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="serviceLog">
+            <EntityTypeMapping TypeName="mainModel.ServiceLog">
+              <MappingFragment StoreEntitySet="serviceLog">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidDevice" ColumnName="rowidDevice" />
+                <ScalarProperty Name="RowidRepairer" ColumnName="rowidRepairer" />
+                <ScalarProperty Name="Date" ColumnName="date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="spares">
+            <EntityTypeMapping TypeName="mainModel.Spare">
+              <MappingFragment StoreEntitySet="spares">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="Name" ColumnName="name" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sparesForModels">
+            <EntityTypeMapping TypeName="mainModel.SpareForModel">
+              <MappingFragment StoreEntitySet="sparesForModels">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidModel" ColumnName="rowidModel" />
+                <ScalarProperty Name="RowidSpare" ColumnName="rowidSpares" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sparesUsed">
+            <EntityTypeMapping TypeName="mainModel.SpareUsed">
+              <MappingFragment StoreEntitySet="sparesUsed">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="RowidSpareForModel" ColumnName="rowidSparesForModels" />
+                <ScalarProperty Name="RowidServiceLog" ColumnName="rowidServiceLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="statuses">
+            <EntityTypeMapping TypeName="mainModel.Status">
+              <MappingFragment StoreEntitySet="statuses">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="Name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="types">
+            <EntityTypeMapping TypeName="mainModel.TypeModel">
+              <MappingFragment StoreEntitySet="types">
+                <ScalarProperty Name="Rowid" ColumnName="rowid" />
+                <ScalarProperty Name="FullName" ColumnName="fullName" />
+                <ScalarProperty Name="ShortName" ColumnName="shortName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

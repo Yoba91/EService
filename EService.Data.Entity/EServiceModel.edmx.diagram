@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9e7dc6a537c247ba99dd30a49f5a27cd" Name="Diagram1" ZoomLevel="71">
+        <EntityTypeShape EntityType="mainModel.Dept" Width="1.5" PointX="1.25" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.Device" Width="1.5" PointX="4.125" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.Model" Width="1.5" PointX="8.75" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.Parameter" Width="1.5" PointX="12.375" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.ParameterForModel" Width="1.5" PointX="12.375" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.ParameterValue" Width="1.5" PointX="12.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.Repairer" Width="1.5" PointX="7" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.Service" Width="1.5" PointX="4.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.ServiceCategory" Width="1.5" PointX="1.25" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.ServiceDone" Width="1.5" PointX="9" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.ServiceForModel" Width="1.5" PointX="6.875" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.ServiceLog" Width="1.5" PointX="10.5" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.Spare" Width="1.5" PointX="8" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.SpareForModel" Width="1.5" PointX="10.25" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.SpareUsed" Width="1.5" PointX="12.25" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.Status" Width="1.5" PointX="3" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="mainModel.TypeModel" Width="1.5" PointX="4.25" PointY="4.25" IsExpanded="true" />
+        <AssociationConnector Association="mainModel.FK_devices_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_devices_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_devices_2_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_serviceLog_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_model_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_parametersForModels_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_serviceForModels_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_sparesForModels_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_parametersForModels_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_parametersValues_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_parametersValues_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_serviceLog_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_serviceForModels_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_serviceDone_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_serviceDone_1_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_sparesUsed_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_sparesForModels_0_0" ManuallyRouted="false" />
+        <AssociationConnector Association="mainModel.FK_sparesUsed_1_0" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
