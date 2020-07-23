@@ -16,7 +16,6 @@ namespace EService.Data.Entity
 
     public partial class ServiceLog : INotifyPropertyChanged
     {
-        long index;
         long rowid;
         long rowidDevice;
         long rowidRepairer;
@@ -35,7 +34,6 @@ namespace EService.Data.Entity
             this.ServicesDone = new HashSet<ServiceDone>();
             this.SparesUsed = new HashSet<SpareUsed>();
         }
-        public long Index { get { return index; } set { index = value; OnPropertyChanged("Index"); } }
         public long Rowid { get { return rowid; } set { rowid = value; OnPropertyChanged("Rowid"); } }
         public long RowidDevice { get { return rowidDevice; } set { rowidDevice = value; OnPropertyChanged("RowidDevice"); } }
         public long RowidRepairer { get { return rowidRepairer; } set { rowidRepairer = value; OnPropertyChanged("RowidRepairer"); } }

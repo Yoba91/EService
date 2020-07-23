@@ -12,27 +12,50 @@
     </Window.DataContext>
     <Grid>
         <StackPanel>
-            <DataGrid x:Name="ServiceLogGrid" Width="Auto" Height="300" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White">                
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="№" Binding="{Binding Path=Index}"/>
-                    <DataGridTextColumn Header="I/N" Binding="{Binding Path=Device.InventoryNumber}" />
-                    <DataGridTextColumn Header="S/N" Binding="{Binding Path=Device.SerialNumber}" />
-                    <DataGridTextColumn Header="Модель" Binding="{Binding Path=Device.Model.ShortName}" />
-                    <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Device.Dept.Name}" />
-                    <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date}" />
-                    <DataGridTextColumn Header="Исполнитель" Binding="{Binding Path=Repairer.FullName}" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <StackPanel Orientation="Horizontal" Height="300">
+                <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="I/N" Binding="{Binding Path=Device.InventoryNumber}" />
+                        <DataGridTextColumn Header="S/N" Binding="{Binding Path=Device.SerialNumber}" />
+                        <DataGridTextColumn Header="Модель" Binding="{Binding Path=Device.Model.ShortName}" />
+                        <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Device.Dept.Name}" />
+                        <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date}" />
+                        <DataGridTextColumn Header="Исполнитель" Binding="{Binding Path=Repairer.FullName}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel>
+                    <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="100" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Path=ParameterForModel.Parameter.Name}" />
+                            <DataGridTextColumn Header="Значение" Binding="{Binding Path=Value}" />
+                            <DataGridTextColumn Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="100" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Работа" Binding="{Binding Path=ServiceForModel.Service.ShortName}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="100" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Запчасть" Binding="{Binding Path=SpareForModel.Spare.Name}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="5 5 15 5" VerticalAlignment="Center" Text="От"/>
-                        <DatePicker VerticalAlignment="Center" Margin="5 5 5 5"></DatePicker>
+                        <TextBlock Margin="2 2 8 2" VerticalAlignment="Center" Text="От"/>
+                        <DatePicker VerticalAlignment="Center" Margin="3,2,2,2" SelectedDateFormat="Short" SelectedDate="{Binding FirstDate}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="5 5 15 5" VerticalAlignment="Center" Text="До"/>
-                        <DatePicker VerticalAlignment="Center" Margin="5 5 5 5"></DatePicker>
+                        <TextBlock Margin="2 2 8 2" VerticalAlignment="Center" Text="До"/>
+                        <DatePicker VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding SecondDate}"/>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
