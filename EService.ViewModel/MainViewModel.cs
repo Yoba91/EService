@@ -14,12 +14,16 @@ namespace EService.ViewModel
     public class MainViewModel : INotifyPropertyChanged
     {
         private ServiceLog selectedServiceLog;
+
+        private Status selectedStatus;
         public DateTime FirstDate { get; set; }
         public DateTime SecondDate { get; set; }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
         public ObservableCollection<ServiceDone> ServicesDone { get; set; }
         public ObservableCollection<SpareUsed> SparesUsed { get; set; }
         public IList<ServiceLog> ServiceLogs { get; set; }
+        public IList<Status> Statuses { get; set; }
+        public IList<Repairer> Repairers { get; set; }
 
         public ServiceLog SelectedServiceLog { get { return selectedServiceLog; } set 
             { 
@@ -47,6 +51,8 @@ namespace EService.ViewModel
         {
             FirstDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             SecondDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            Repairers = new ObservableCollection<Repairer>();
+            Statuses = new ObservableCollection<Status>();
             ServiceLogs = new ObservableCollection<ServiceLog>();
             ParametersValues = new ObservableCollection<ParameterValue>();
             ServicesDone = new ObservableCollection<ServiceDone>();
@@ -57,6 +63,10 @@ namespace EService.ViewModel
                 SQLiteContext context = dbContext as SQLiteContext;
                 context.ServiceLog.Load();
                 ServiceLogs = context.ServiceLog.Local.ToBindingList();
+                context.Status.Load();
+                Statuses = context.Status.Local.ToBindingList();
+                context.Repairer.Load();
+                Repairers = context.Repairer.Local.ToBindingList();
             }
         }
 

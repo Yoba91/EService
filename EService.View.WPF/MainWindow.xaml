@@ -6,59 +6,139 @@
         xmlns:local="clr-namespace:EService.View.WPF"
         xmlns:viewModel="clr-namespace:EService.ViewModel;assembly=EService.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="800" MinHeight="600" MinWidth="800">
     <Window.DataContext>
         <viewModel:MainViewModel/>
     </Window.DataContext>
     <Grid>
-        <StackPanel>
-            <StackPanel Orientation="Horizontal" Height="300">
-                <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs}" HorizontalGridLinesBrush="DarkGray"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="I/N" Binding="{Binding Path=Device.InventoryNumber}" />
-                        <DataGridTextColumn Header="S/N" Binding="{Binding Path=Device.SerialNumber}" />
-                        <DataGridTextColumn Header="Модель" Binding="{Binding Path=Device.Model.ShortName}" />
-                        <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Device.Dept.Name}" />
-                        <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date}" />
-                        <DataGridTextColumn Header="Исполнитель" Binding="{Binding Path=Repairer.FullName}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-                <StackPanel>
-                    <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="100" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues}" HorizontalGridLinesBrush="DarkGray"
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=Device.InventoryNumber}" />
+                <DataGridTextColumn Width="0.5*" Header="S/N" Binding="{Binding Path=Device.SerialNumber}" />
+                <DataGridTextColumn Width="0.5*" Header="Тип" Binding="{Binding Path=Device.Model.TypeModel.ShortName}" />
+                <DataGridTextColumn Width="0.5*" Header="Модель" Binding="{Binding Path=Device.Model.ShortName}" />
+                <DataGridTextColumn Width="0.35*" Header="Отдел" Binding="{Binding Path=Device.Dept.Code}" />
+                <DataGridTextColumn Width="0.5*" Header="Статус" Binding="{Binding Path=Device.Status.Name}" />
+                <DataGridTextColumn Width="0.35*" Header="Дата" Binding="{Binding Path=Date}" />
+                <DataGridTextColumn Width="*" Header="Исполнитель" Binding="{Binding Path=Repairer.FullName}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+
+        <Grid Grid.Column="1" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <DataGrid Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Название" Binding="{Binding Path=ParameterForModel.Parameter.Name}" />
-                            <DataGridTextColumn Header="Значение" Binding="{Binding Path=Value}" />
-                            <DataGridTextColumn Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="100" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone}" HorizontalGridLinesBrush="DarkGray"
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Название" Binding="{Binding Path=ParameterForModel.Parameter.Name}" />
+                    <DataGridTextColumn Width="*" Header="Значение" Binding="{Binding Path=Value}" />
+                    <DataGridTextColumn Width="*" Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Grid.Row="1" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Работа" Binding="{Binding Path=ServiceForModel.Service.ShortName}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <DataGrid CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="100" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed}" HorizontalGridLinesBrush="DarkGray"
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Работа" Binding="{Binding Path=ServiceForModel.Service.ShortName}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Grid.Row="2" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Запчасть" Binding="{Binding Path=SpareForModel.Spare.Name}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </StackPanel>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Запчасть" Binding="{Binding Path=SpareForModel.Spare.Name}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+
+        <Grid x:Name="FilterGrid" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0" x:Name="Search" Margin="2 2 2 2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5">Найти</TextBox>
+                    <Button Grid.Column="1" Width="Auto" Height="25">Очистить</Button>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Width="Auto" Height="25">Добавить</Button>
+                    <Button Grid.Column="1" Width="Auto" Height="25">Изменить</Button>
+                    <Button Grid.Column="2" Width="Auto" Height="25">Удалить</Button>
+                </Grid>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="2 2 8 2" VerticalAlignment="Center" Text="От"/>
-                        <DatePicker VerticalAlignment="Center" Margin="3,2,2,2" SelectedDateFormat="Short" SelectedDate="{Binding FirstDate}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="2 2 8 2" VerticalAlignment="Center" Text="До"/>
-                        <DatePicker VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding SecondDate}"/>
-                    </StackPanel>
-                </StackPanel>
+            <DockPanel Margin="0 0 0 5" Grid.Row="1" Grid.Column="0" x:Name="Repairer" VerticalAlignment="Top">
+                <TextBlock DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 0 0 5">Исполнители</TextBlock>
+                <ListBox ItemsSource="{Binding Repairers}" Margin="5 0 5 0"  Height="{Binding ElementName=Status, Path=ActualHeight}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=FullName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1" x:Name="Date" Margin="2 2 2 2">
+                <Grid Margin="0 4 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.25*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="5 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Left" Text="От"/>
+                    <DatePicker Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2,2,2,2" SelectedDateFormat="Short" SelectedDate="{Binding FirstDate}"/>
+
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="5 6 5 5" VerticalAlignment="Center" HorizontalAlignment="Left" Text="До"/>
+                    <DatePicker Grid.Row="1" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding SecondDate}"/>
+
+                </Grid>
             </StackPanel>
-        </StackPanel>
+            <DockPanel Margin="0 0 0 5" Grid.Row="1" Grid.Column="1" x:Name="Status" VerticalAlignment="Top">
+                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0 0 0 5">Статусы</TextBlock>
+
+                <ListBox Height="{Binding ElementName=Repairer, Path=ActualHeight}" ItemsSource="{Binding Statuses}" Margin="0 0 5 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+            </DockPanel>
+        </Grid>
     </Grid>
 </Window>
