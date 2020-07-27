@@ -9,6 +9,6 @@ namespace EService.BL
 {
     public interface IFilterData
     {
-        Expression CreateFilter();
+        Expression CreateFilter(params string[] path);
     }
 }

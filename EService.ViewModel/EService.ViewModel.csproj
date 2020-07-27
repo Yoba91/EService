@@ -56,6 +56,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EService.BL\EService.BL.csproj">
+      <Project>{92d71771-a57c-4008-915a-ea36c613da62}</Project>
+      <Name>EService.BL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EService.Data.Entity\EService.Data.Entity.csproj">
       <Project>{06DB9788-0033-47D0-9632-92834B34A5DA}</Project>
       <Name>EService.Data.Entity</Name>

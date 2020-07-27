@@ -68,7 +68,10 @@
 
         <Grid x:Name="FilterGrid" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -77,13 +80,15 @@
                 <RowDefinition Height="70"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="0" x:Name="Search" Margin="2 2 2 2">
+
+            <!--    Поиск    -->
+            <StackPanel Grid.Row="0" Grid.Column="0" x:Name="Search" Margin="5 0 5 5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5">Найти</TextBox>
+                    <TextBox Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <Button Grid.Column="1" Width="Auto" Height="25">Очистить</Button>
                 </Grid>
                 <Grid>
@@ -97,16 +102,27 @@
                     <Button Grid.Column="2" Width="Auto" Height="25">Удалить</Button>
                 </Grid>
             </StackPanel>
-            <DockPanel Margin="0 0 0 5" Grid.Row="1" Grid.Column="0" x:Name="Repairer" VerticalAlignment="Top">
-                <TextBlock DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 0 0 5">Исполнители</TextBlock>
-                <ListBox ItemsSource="{Binding Repairers}" Margin="5 0 5 0"  Height="{Binding ElementName=Status, Path=ActualHeight}">
+            <!--    Поиск END   -->
+
+            <!--    Исполнители    -->
+            <Grid Grid.Row="1" Grid.Column="0" Height="Auto" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Исполнители</TextBlock>
+
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Repairers}" Margin="5 0 5 5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=FullName}"></TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </DockPanel>
+            </Grid>
+            <!--    Исполнители END   -->
+
+            <!--    Даты    -->
             <StackPanel Grid.Row="0" Grid.Column="1" x:Name="Date" Margin="2 2 2 2">
                 <Grid Margin="0 4 0 0">
                     <Grid.ColumnDefinitions>
@@ -127,18 +143,117 @@
 
                 </Grid>
             </StackPanel>
-            <DockPanel Margin="0 0 0 5" Grid.Row="1" Grid.Column="1" x:Name="Status" VerticalAlignment="Top">
-                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0 0 0 5">Статусы</TextBlock>
+            <!--    Даты END   -->
+            
+            <!--    Статусы    -->
+            <Grid Grid.Row="1" Grid.Column="1" Height="Auto" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Статусы</TextBlock>
 
-                <ListBox Height="{Binding ElementName=Repairer, Path=ActualHeight}" ItemsSource="{Binding Statuses}" Margin="0 0 5 0">
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Statuses}" Margin="5 0 5 5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Name}"></TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+            </Grid>
+            <!--    Статусы END   -->
+            
+            <!--    Отделы    -->
+            <Grid Grid.Column="2" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Отделы</TextBlock>
 
-            </DockPanel>
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Depts}" Margin="5 0 5 5">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Code}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <!--    Отделы END   -->
+
+            <!--    Типы    -->
+            <Grid Grid.Column="3" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Типы</TextBlock>
+
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding TypesModel}" Margin="5 0 5 5">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <!--    Типы END   -->
+
+            <!--    Модели    -->
+            <Grid Grid.Column="4" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели</TextBlock>
+
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" Margin="5 0 5 5">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <!--    Модели END   -->
+
+            <!--    Запчасти    -->
+            <Grid Grid.Column="5" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Запчасти</TextBlock>
+
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Spares}" Margin="5 0 5 5">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <!--    Запчасти END   -->
+
+            <!--    Работы    -->
+            <Grid Grid.Column="6" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Работы</TextBlock>
+
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Services}" Margin="5 0 5 5">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <!--    Работы END   -->
+
+
         </Grid>
     </Grid>
 </Window>
