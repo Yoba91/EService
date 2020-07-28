@@ -16,7 +16,11 @@ namespace EService.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private string search;
+        private string search = String.Empty;
+
+        private DateTime startDate;
+
+        private DateTime endDate;
 
         private ServiceLog selectedServiceLog;
 
@@ -24,8 +28,8 @@ namespace EService.ViewModel
 
         private IList<Status> selectedStatuses;
         public String Search { get { return search; } set { search = value; Filter(); OnPropertyChanged("Search"); } }
-        public DateTime FirstDate { get; set; }
-        public DateTime SecondDate { get; set; }
+        public DateTime FirstDate { get { return startDate; } set { startDate = value; Filter(); } }
+        public DateTime SecondDate { get { return endDate; } set { endDate = value; Filter(); } }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
         public ObservableCollection<ServiceDone> ServicesDone { get; set; }
         public ObservableCollection<SpareUsed> SparesUsed { get; set; }
@@ -40,27 +44,30 @@ namespace EService.ViewModel
 
         public IList<Status> SelectedStatuses { get { return selectedStatuses; } set 
             {
-
+                selectedStatuses = value; Filter(); OnPropertyChanged("SelectedStatuses");
             }
         }
 
         public ServiceLog SelectedServiceLog { get { return selectedServiceLog; } set 
             { 
                 selectedServiceLog = value;
-                ParametersValues.Clear();
-                ServicesDone.Clear();
-                SparesUsed.Clear();
-                foreach (var item in selectedServiceLog.ParametersValues)
+                if (selectedServiceLog != null)
                 {
-                    ParametersValues.Add(item);
-                }
-                foreach (var item in selectedServiceLog.ServicesDone)
-                {
-                    ServicesDone.Add(item);
-                }
-                foreach (var item in selectedServiceLog.SparesUsed)
-                {
-                    SparesUsed.Add(item);
+                    ParametersValues.Clear();
+                    ServicesDone.Clear();
+                    SparesUsed.Clear();
+                    foreach (var item in selectedServiceLog.ParametersValues)
+                    {
+                        ParametersValues.Add(item);
+                    }
+                    foreach (var item in selectedServiceLog.ServicesDone)
+                    {
+                        ServicesDone.Add(item);
+                    }
+                    foreach (var item in selectedServiceLog.SparesUsed)
+                    {
+                        SparesUsed.Add(item);
+                    }
                 }
                 OnPropertyChanged("SelectedServiceLog"); 
             } 
@@ -106,32 +113,44 @@ namespace EService.ViewModel
 
         public void Filter()
         {
-            FilterContains<ServiceLog> filter = new FilterContains<ServiceLog>();
-            IList <Expression> exp = new List<Expression>();
-            filter.Search = Search;
-            exp.Add(filter.CreateFilter("Device","InventoryNumber"));
-            exp.Add(filter.CreateFilter("Device", "SerialNumber"));
-            var result = filter.Or(exp);
-            var lambda = filter.GetLambda(result);
+            ParameterExpression parameter = Expression.Parameter(typeof(ServiceLog), "s");
+            FilterContains<ServiceLog> filterSearch = new FilterContains<ServiceLog>(parameter);
+            FilterDate<ServiceLog> filterDate = new FilterDate<ServiceLog>(parameter);
+            FilterData<ServiceLog> filter = new FilterData<ServiceLog>(parameter);
+            filterSearch.SearchString = Search;
+            filterDate.Start = FirstDate;
+            filterDate.End = SecondDate;
 
-            //var param = Expression.Parameter(typeof(ServiceLog), "s");
-            //var dev = Expression.PropertyOrField(param, "Device");
-            //var inv = Expression.PropertyOrField(dev, "InventoryNumber");
-            //PropertyInfo a = typeof(ServiceLog).GetProperty("Device");
-            //PropertyInfo b = a.PropertyType.GetProperty("InventoryNumber");
-            //MethodInfo c = b.PropertyType.GetMethod("Contains");
-            //var condition = Expression.Call(inv, inv.Type.GetMethod("Contains"), Expression.Constant(search));
-            //var l = Expression.Lambda<Func<ServiceLog, bool>>(condition, param);
+            IList<Expression> exp = new List<Expression>();            
+            exp.Add(filterSearch.CreateFilter("Device","InventoryNumber"));
+            exp.Add(filterSearch.CreateFilter("Device", "SerialNumber"));
+            var result = FilterContains<ServiceLog>.Or(exp);
+
+            exp = new List<Expression>();
+            exp.Add(filterDate.CreateFilter("DateTime"));
+            exp.Add(result);
+            result = FilterDate<ServiceLog>.And(exp);
+
+            if (SelectedStatuses != null && SelectedStatuses.Count > 0)
+            {
+                exp = new List<Expression>();
+                foreach (var item in SelectedStatuses)
+                {
+                    filter.RowId = item.Rowid;
+                    exp.Add(filter.CreateFilter("Device", "Status", "Rowid"));
+                }
+                exp.Add(result);
+                result = FilterData<ServiceLog>.Or(exp);
+            }
+
+            var lambda = FilterContains<ServiceLog>.GetLambda(result, parameter);
 
             DbContext dbContext = new SQLiteContext();
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;                
-                //context.ServiceLog.Where(s => s.Device.InventoryNumber.Contains(Search)).Load();
                 ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda.Compile()).ToList();
             }
-            
-            
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -139,5 +158,8 @@ namespace EService.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
+
+        public void OnFilterChanged()
+        { }
     }
 }

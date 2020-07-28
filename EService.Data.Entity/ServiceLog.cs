@@ -38,7 +38,7 @@ namespace EService.Data.Entity
         public long RowidDevice { get { return rowidDevice; } set { rowidDevice = value; OnPropertyChanged("RowidDevice"); } }
         public long RowidRepairer { get { return rowidRepairer; } set { rowidRepairer = value; OnPropertyChanged("RowidRepairer"); } }
         public string Date { get { return date.ToShortDateString(); } set { date = new DateTime(int.Parse(value.Split('.')[2]), int.Parse(value.Split('.')[1]), int.Parse(value.Split('.')[0])); OnPropertyChanged("Date"); } }
-
+        public DateTime DateTime { get { return date; } }
         public virtual Device Device { get { return device; } set { device = value; OnPropertyChanged("Device"); } }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ParameterValue> ParametersValues { get { return parametersValues; } set { parametersValues = value; OnPropertyChanged("ParametersValues"); } }
