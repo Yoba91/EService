@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:EService.View.WPF"
         xmlns:viewModel="clr-namespace:EService.ViewModel;assembly=EService.ViewModel"
         mc:Ignorable="d"
@@ -22,7 +23,7 @@
         </Grid.RowDefinitions>
 
 
-        <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs}" HorizontalGridLinesBrush="DarkGray"
+        <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs, Mode=OneWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=Device.InventoryNumber}" />
@@ -113,7 +114,12 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Исполнители</TextBlock>
 
-                <ListBox SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding Repairers}"  Margin="5 0 5 5">
+                <ListBox x:Name="Repairers" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Repairers}"  Margin="5 0 5 5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Repairers}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=FullName}"></TextBlock>
@@ -153,7 +159,12 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Статусы</TextBlock>
-                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Statuses, Mode=OneWay}" Margin="5 0 5 5">
+                <ListBox x:Name="Statuses" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Statuses}" Margin="5 0 5 5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Statuses}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Name}"></TextBlock>
@@ -171,7 +182,12 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Отделы</TextBlock>
 
-                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Depts}" Margin="5 0 5 5">
+                <ListBox x:Name="Depts" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Depts}" Margin="5 0 5 5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Depts}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Code}"></TextBlock>
@@ -189,7 +205,12 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Типы</TextBlock>
 
-                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding TypesModel}" Margin="5 0 5 5">
+                <ListBox x:Name="TypesModel" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding TypesModel}" Margin="5 0 5 5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=TypesModel}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
@@ -207,7 +228,12 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели</TextBlock>
 
-                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" Margin="5 0 5 5">
+                <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" Margin="5 0 5 5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Models}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
