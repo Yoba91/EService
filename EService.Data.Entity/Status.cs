@@ -14,7 +14,7 @@ namespace EService.Data.Entity
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public partial class Status : INotifyPropertyChanged
+    public partial class Status : INotifyPropertyChanged, IIdentifier
     {
         long rowid;
         string name;

@@ -114,7 +114,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Исполнители</TextBlock>
 
-                <ListBox x:Name="Repairers" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Repairers}"  Margin="5 0 5 5">
+                <ListBox x:Name="Repairers" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Repairers}" SelectedItem="{Binding SelectedRepairer}" Margin="5 0 5 5">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Repairers}"/>
@@ -159,7 +159,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Статусы</TextBlock>
-                <ListBox x:Name="Statuses" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Statuses}" Margin="5 0 5 5">
+                <ListBox x:Name="Statuses" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}"  Margin="5 0 5 5">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Statuses}"/>
@@ -182,7 +182,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Отделы</TextBlock>
 
-                <ListBox x:Name="Depts" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Depts}" Margin="5 0 5 5">
+                <ListBox x:Name="Depts" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Depts}" SelectedItem="{Binding SelectedDept}" Margin="5 0 5 5">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Depts}"/>
@@ -205,7 +205,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Типы</TextBlock>
 
-                <ListBox x:Name="TypesModel" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding TypesModel}" Margin="5 0 5 5">
+                <ListBox x:Name="TypesModel" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding TypesModel}" SelectedItem="{Binding SelectedTypeModel}"  Margin="5 0 5 5">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=TypesModel}"/>
@@ -228,7 +228,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели</TextBlock>
 
-                <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" Margin="5 0 5 5">
+                <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}"  Margin="5 0 5 5">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Models}"/>
@@ -251,7 +251,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Запчасти</TextBlock>
 
-                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Spares}" Margin="5 0 5 5">
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Spares}" SelectedItem="{Binding SelectedSpare}"  Margin="5 0 5 5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Name}"></TextBlock>
@@ -269,7 +269,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Работы</TextBlock>
 
-                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Services}" Margin="5 0 5 5">
+                <ListBox SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}"  Margin="5 0 5 5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=ShortName}"></TextBlock>

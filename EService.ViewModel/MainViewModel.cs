@@ -18,7 +18,19 @@ namespace EService.ViewModel
     {
         private string search = String.Empty;
 
-        private Type selectedType;
+        private FilterSearch filterSearch;
+        private FilterDate filterDate;
+        private FilterId filterStatus, filterRepairer, filterDept, filterTypeModel, filterModel;
+        private List<IFilter> filters;
+        ParameterExpression parameter;
+
+        private Status selectedStatus;
+        private Repairer selectedRepairer;
+        private Dept selectedDept;
+        private TypeModel selectedTypeModel;
+        private Model selectedModel;
+        private Spare selectedSpare;
+        private Service selectedService;
 
         private DateTime startDate;
 
@@ -35,9 +47,45 @@ namespace EService.ViewModel
         private IList<Model> selectedModels;
         private IList<Spare> selectedSpares;
         private IList<Service> selectedServices;
-        public String Search { get { return search; } set { search = value; Filter(); OnPropertyChanged("Search"); } }
-        public DateTime FirstDate { get { return startDate; } set { startDate = value; Filter(); } }
-        public DateTime SecondDate { get { return endDate; } set { endDate = value; Filter(); } }
+
+        public Status SelectedStatus { get { return selectedStatus; } set { selectedStatus = value; OnPropertyChanged("SelectedStatus"); } }
+        public Repairer SelectedRepairer { get { return selectedRepairer; } set { selectedRepairer = value; OnPropertyChanged("SelectedRepairer"); } }
+        public Dept SelectedDept { get { return selectedDept; } set { selectedDept = value; OnPropertyChanged("SelectedDept"); } }
+        public TypeModel SelectedTypeModel { get { return selectedTypeModel; } set { selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
+        public Model SelectedModel { get { return selectedModel; } set { selectedModel = value; OnPropertyChanged("SelectedModel"); } }
+        public Spare SelectedSpare { get { return selectedSpare; } set { selectedSpare = value; OnPropertyChanged("SelectedSpare"); } }
+        public Service SelectedService { get { return selectedService; } set { selectedService = value; OnPropertyChanged("SelectedService"); } }
+        public String Search { get { return search; } 
+            set 
+            { 
+                search = value;
+                filterSearch.SetWhat(search);
+                filterSearch.SetWhere("Device", "InventoryNumber");
+                filterSearch.AddWhere(filterSearch.Member);
+                filterSearch.SetWhere("Device", "SerialNumber");
+                filterSearch.AddWhere(filterSearch.Member);
+                filterSearch.CreateFilter();
+                OnPropertyChanged("Search"); 
+            } 
+        }
+        public DateTime FirstDate { get { return startDate; } 
+            set 
+            { 
+                startDate = value;
+                filterDate.SetWhat(String.Format("{0}.{1}.{2}", startDate.Day, startDate.Month, startDate.Year), String.Format("{0}.{1}.{2}", endDate.Day, endDate.Month, endDate.Year));
+                filterDate.SetWhere("DateTime");
+                filterDate.CreateFilter();
+            } 
+        }
+        public DateTime SecondDate { get { return endDate; } 
+            set 
+            { 
+                endDate = value;
+                filterDate.SetWhat(String.Format("{0}.{1}.{2}", startDate.Day, startDate.Month, startDate.Year), String.Format("{0}.{1}.{2}", endDate.Day, endDate.Month, endDate.Year));
+                filterDate.SetWhere("DateTime");
+                filterDate.CreateFilter();
+            } 
+        }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
         public ObservableCollection<ServiceDone> ServicesDone { get; set; }
         public ObservableCollection<SpareUsed> SparesUsed { get; set; }
@@ -50,55 +98,47 @@ namespace EService.ViewModel
         public IList<Service> Services { get; set; }
         public IList<Spare> Spares { get; set; }
 
-        private void SelectItem(System.Collections.IList value, System.Collections.IList outList, Type type)
-        {
-            var thisType = value[0].GetType();
-            if (thisType.BaseType == type)
-            {
-                outList.Clear();
-                foreach (var item in value)
-                {
-                    outList.Add(item);
-                }
-                selectedType = type;
-                Filter();
-            }
-        }
-
-        private void ClearItem(System.Collections.IList outList)
-        {           
-            if (outList?.Count > 0 && outList[0].GetType().BaseType == selectedType)
-            {
-                outList.Clear();
-                Filter();
-            }
-        }
-
         public System.Collections.IList SelectedItems
         {            
             set
-            {                
-                if(value?.Count > 0)
-                {
-                    SelectItem(value, SelectedStatuses, typeof(Status));
-                    SelectItem(value, SelectedRepairers, typeof(Repairer));
-                    SelectItem(value, SelectedDepts, typeof(Dept));
-                    SelectItem(value, SelectedTypesModel, typeof(TypeModel));
-                    SelectItem(value, SelectedModels, typeof(Model));
-                    SelectItem(value, SelectedSpares, typeof(Spare));
-                    SelectItem(value, SelectedServices, typeof(Service));
-                }
-                else
-                {
-                    ClearItem(SelectedStatuses);
-                    ClearItem(SelectedRepairers);
-                    ClearItem(SelectedDepts);
-                    ClearItem(SelectedTypesModel);
-                    ClearItem(SelectedModels);
-                    ClearItem(SelectedSpares);
-                    ClearItem(SelectedServices);
-                }
+            {
+                System.Collections.IList temp = null;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedStatuses, typeof(Status), SelectedStatus);
+                if (temp != null) SelectedStatuses = (ObservableCollection<Status>)temp;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedRepairers, typeof(Repairer), SelectedRepairer);
+                if (temp != null) SelectedRepairers = (ObservableCollection<Repairer>)temp;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedDepts, typeof(Dept), SelectedDept);
+                if (temp != null) SelectedDepts = (ObservableCollection<Dept>)temp;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedTypesModel, typeof(TypeModel), selectedTypeModel);
+                if (temp != null) SelectedTypesModel = (ObservableCollection<TypeModel>)temp;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedModels, typeof(Model), SelectedModel);
+                if (temp != null) SelectedModels = (ObservableCollection<Model>)temp;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedSpares, typeof(Spare), SelectedSpare);
+                if (temp != null) SelectedSpares = (ObservableCollection<Spare>)temp;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedServices, typeof(Service), SelectedService);
+                if (temp != null) SelectedServices = (ObservableCollection<Service>)temp;
+
+                OnFilterChanged();
             }
+        }
+
+        private void SetFilter<T>(ObservableCollection<T> list, IFilter filter, params string[] parameters) where T:IIdentifier
+        {
+            List<string> indeses = new List<string>();
+            foreach (var item in list)
+            {
+                indeses.Add(item.Rowid.ToString());
+            }
+            filter.SetWhat(indeses.ToArray());
+            filter.SetWhere(parameters);
+            filter.CreateFilter();
         }
 
         public ObservableCollection<Status> SelectedStatuses
@@ -106,7 +146,9 @@ namespace EService.ViewModel
             get { return (ObservableCollection<Status>)selectedStatuses; }
             set
             {
-                selectedStatuses = value; OnPropertyChanged("SelectedStatuses");
+                selectedStatuses = value;
+                SetFilter(SelectedStatuses, filterStatus, "Device", "Status", "Rowid");
+                OnPropertyChanged("SelectedStatuses");
             }
         }
 
@@ -115,7 +157,9 @@ namespace EService.ViewModel
             get { return (ObservableCollection<Repairer>)selectedRepairers; }
             set
             {
-                selectedRepairers = value; OnPropertyChanged("SelectedRepairers");
+                selectedRepairers = value;
+                SetFilter(SelectedRepairers, filterRepairer, "Repairer", "Rowid");
+                OnPropertyChanged("SelectedRepairers");
             }
         }
 
@@ -124,7 +168,9 @@ namespace EService.ViewModel
             get { return (ObservableCollection<Dept>)selectedDepts; }
             set
             {
-                selectedDepts = value; OnPropertyChanged("SelectedDepts");
+                selectedDepts = value;
+                SetFilter(SelectedDepts, filterDept, "Device", "Dept", "Rowid");
+                OnPropertyChanged("SelectedDepts");
             }
         }
 
@@ -133,7 +179,9 @@ namespace EService.ViewModel
             get { return (ObservableCollection<TypeModel>)selectedTypesModel; }
             set
             {
-                selectedTypesModel = value; OnPropertyChanged("SelectedTypesModel");
+                selectedTypesModel = value;
+                SetFilter(SelectedTypesModel, filterTypeModel, "Device", "Model", "TypeModel", "Rowid");
+                OnPropertyChanged("SelectedTypesModel");
             }
         }
 
@@ -142,7 +190,9 @@ namespace EService.ViewModel
             get { return (ObservableCollection<Model>)selectedModels; }
             set
             {
-                selectedModels = value; OnPropertyChanged("SelectedModels");
+                selectedModels = value;
+                SetFilter(SelectedModels, filterModel, "Device", "Model", "Rowid");
+                OnPropertyChanged("SelectedModels");
             }
         }
 
@@ -194,6 +244,27 @@ namespace EService.ViewModel
 
         public MainViewModel()
         {
+            parameter = Expression.Parameter(typeof(ServiceLog), "s");
+            filterDate = new FilterDate(parameter);
+            filterSearch = new FilterSearch(parameter);
+            filterStatus = new FilterId(parameter);
+            filterDept = new FilterId(parameter);
+            filterRepairer = new FilterId(parameter);
+            filterTypeModel = new FilterId(parameter);
+            filterModel = new FilterId(parameter);
+            filters = new List<IFilter>();
+
+            filters.Add(filterDate);
+            filters.Add(filterSearch);
+            filters.Add(filterStatus);
+            filters.Add(filterRepairer);
+            filters.Add(filterDept);
+            filters.Add(filterTypeModel);
+            filters.Add(filterModel);
+
+            filterDate.FilterCreated += OnFilterChanged;
+            filterSearch.FilterCreated += OnFilterChanged;
+
             FirstDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             SecondDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             Spares = new ObservableCollection<Spare>();
@@ -214,6 +285,9 @@ namespace EService.ViewModel
             SelectedModels = new ObservableCollection<Model>();
             SelectedSpares = new ObservableCollection<Spare>();
             SelectedServices = new ObservableCollection<Service>();
+
+            
+
             DbContext dbContext = new SQLiteContext();
             if (dbContext is SQLiteContext)
             {
@@ -237,112 +311,6 @@ namespace EService.ViewModel
             }
         }
 
-        public void Filter()
-        {
-            ParameterExpression parameter = Expression.Parameter(typeof(ServiceLog), "s");
-            FilterContains<ServiceLog> filterSearch = new FilterContains<ServiceLog>(parameter);
-            FilterDate<ServiceLog> filterDate = new FilterDate<ServiceLog>(parameter);
-            FilterData<ServiceLog> filter = new FilterData<ServiceLog>(parameter);
-            filterSearch.SearchString = Search;
-            filterDate.Start = FirstDate;
-            filterDate.End = SecondDate;
-
-            IList<Expression> exp = new List<Expression>();
-            Expression temp;
-            exp.Add(filterSearch.CreateFilter("Device", "InventoryNumber"));
-            exp.Add(filterSearch.CreateFilter("Device", "SerialNumber"));
-            var result = FilterContains<ServiceLog>.Or(exp);
-
-            exp = new List<Expression>();
-            exp.Add(filterDate.CreateFilter("DateTime"));
-            exp.Add(result);
-            result = FilterDate<ServiceLog>.And(exp);
-
-            if (SelectedStatuses != null && SelectedStatuses.Count > 0)
-            {
-                exp = new List<Expression>();
-                foreach (var item in SelectedStatuses)
-                {
-                    filter.RowId = item.Rowid;
-                    exp.Add(filter.CreateFilter("Device", "Status", "Rowid"));
-                }
-                temp = FilterData<ServiceLog>.Or(exp);
-                exp.Clear();
-                exp.Add(temp);
-                exp.Add(result);
-                result = FilterData<ServiceLog>.And(exp);
-            }
-
-            if (SelectedRepairers != null && SelectedRepairers.Count > 0)
-            {
-                exp = new List<Expression>();
-                foreach (var item in SelectedRepairers)
-                {
-                    filter.RowId = item.Rowid;
-                    exp.Add(filter.CreateFilter("Repairer", "Rowid"));
-                }
-                temp = FilterData<ServiceLog>.Or(exp);
-                exp.Clear();
-                exp.Add(temp);
-                exp.Add(result);
-                result = FilterData<ServiceLog>.And(exp);
-            }
-
-            if (SelectedDepts != null && SelectedDepts.Count > 0)
-            {
-                exp = new List<Expression>();
-                foreach (var item in SelectedDepts)
-                {
-                    filter.RowId = item.Rowid;
-                    exp.Add(filter.CreateFilter("Device", "Dept", "Rowid"));
-                }
-                temp = FilterData<ServiceLog>.Or(exp);
-                exp.Clear();
-                exp.Add(temp);
-                exp.Add(result);
-                result = FilterData<ServiceLog>.And(exp);
-            }
-
-            if (SelectedTypesModel != null && SelectedTypesModel.Count > 0)
-            {
-                exp = new List<Expression>();
-                foreach (var item in SelectedTypesModel)
-                {
-                    filter.RowId = item.Rowid;
-                    exp.Add(filter.CreateFilter("Device", "Model", "TypeModel", "Rowid"));
-                }
-                temp = FilterData<ServiceLog>.Or(exp);
-                exp.Clear();
-                exp.Add(temp);
-                exp.Add(result);
-                result = FilterData<ServiceLog>.And(exp);
-            }
-
-            if (SelectedModels != null && SelectedModels.Count > 0)
-            {
-                exp = new List<Expression>();
-                foreach (var item in SelectedModels)
-                {
-                    filter.RowId = item.Rowid;
-                    exp.Add(filter.CreateFilter("Device", "Model", "Rowid"));
-                }
-                temp = FilterData<ServiceLog>.Or(exp);
-                exp.Clear();
-                exp.Add(temp);
-                exp.Add(result);
-                result = FilterData<ServiceLog>.And(exp);
-            }            
-
-            var lambda = FilterContains<ServiceLog>.GetLambda(result, parameter);
-
-            DbContext dbContext = new SQLiteContext();
-            if (dbContext is SQLiteContext)
-            {
-                SQLiteContext context = dbContext as SQLiteContext;
-                ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda.Compile()).ToList();
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string property = "")
         {
@@ -350,6 +318,26 @@ namespace EService.ViewModel
         }
 
         public void OnFilterChanged()
-        { }
+        {
+            Expression result = null, temp;
+            foreach (var item in filters)
+            {
+                if (result == null)
+                    result = item.GetFilter();
+                else
+                {
+                    temp = item.GetFilter();
+                    if(temp!=null)
+                    result = Expression.And(result, temp);
+                }
+            }
+            var lambda = FilterContains<ServiceLog>.GetLambda(result, parameter);
+            DbContext dbContext = new SQLiteContext();
+            if (dbContext is SQLiteContext)
+            {
+                SQLiteContext context = dbContext as SQLiteContext;
+                ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda.Compile()).ToList();
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace EService.Data.Entity
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public partial class Repairer : INotifyPropertyChanged
+    public partial class Repairer : INotifyPropertyChanged, IIdentifier
     {
         long rowid;
         string name;

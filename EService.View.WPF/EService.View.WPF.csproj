@@ -121,6 +121,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EService.BL\EService.BL.csproj">
+      <Project>{92d71771-a57c-4008-915a-ea36c613da62}</Project>
+      <Name>EService.BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EService.Data.Entity\EService.Data.Entity.csproj">
+      <Project>{06db9788-0033-47d0-9632-92834b34a5da}</Project>
+      <Name>EService.Data.Entity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EService.ViewModel\EService.ViewModel.csproj">
       <Project>{512510fe-4b07-4d1c-8987-ee757d2df003}</Project>
       <Name>EService.ViewModel</Name>

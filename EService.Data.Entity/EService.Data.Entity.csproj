@@ -83,6 +83,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EServiceModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="IIdentifier.cs" />
     <Compile Include="Model.cs">
       <DependentUpon>EServiceModel.tt</DependentUpon>
     </Compile>

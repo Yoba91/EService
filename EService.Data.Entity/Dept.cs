@@ -14,7 +14,7 @@ namespace EService.Data.Entity
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public partial class Dept : INotifyPropertyChanged
+    public partial class Dept : INotifyPropertyChanged, IIdentifier
     {
         private long rowid;
         private string name;

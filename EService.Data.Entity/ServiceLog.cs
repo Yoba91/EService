@@ -14,7 +14,7 @@ namespace EService.Data.Entity
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public partial class ServiceLog : INotifyPropertyChanged
+    public partial class ServiceLog : INotifyPropertyChanged, IIdentifier
     {
         long rowid;
         long rowidDevice;

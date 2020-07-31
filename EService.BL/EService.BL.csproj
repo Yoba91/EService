@@ -42,8 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filter.cs" />
     <Compile Include="FilterData.cs" />
+    <Compile Include="FilterDate.cs" />
+    <Compile Include="FilterId.cs" />
+    <Compile Include="FilterSearch.cs" />
+    <Compile Include="IFilter.cs" />
     <Compile Include="IFilterData.cs" />
+    <Compile Include="ItemsBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

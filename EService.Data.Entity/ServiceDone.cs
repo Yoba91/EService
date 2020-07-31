@@ -14,7 +14,7 @@ namespace EService.Data.Entity
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public partial class ServiceDone : INotifyPropertyChanged
+    public partial class ServiceDone : INotifyPropertyChanged, IIdentifier
     {
         long rowid;
         long rowidServiceForModel;

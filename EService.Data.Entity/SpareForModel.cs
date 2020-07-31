@@ -14,7 +14,7 @@ namespace EService.Data.Entity
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public partial class SpareForModel : INotifyPropertyChanged
+    public partial class SpareForModel : INotifyPropertyChanged, IIdentifier
     {
         long rowid;
         long rowidModel;
