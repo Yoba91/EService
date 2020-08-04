@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +17,8 @@ namespace EService.BL
 
         private List<MemberExpression> members = null;
 
+        StringComparison strComp;
+
         private string searchString;
 
         private Expression filter;
@@ -27,6 +31,7 @@ namespace EService.BL
             searchString = String.Empty;
             members = new List<MemberExpression>();
             filter = null;
+            strComp = StringComparison.InvariantCultureIgnoreCase;
         }
 
         public override ParameterExpression Parameter { get { return parameter; } set { parameter = value; } }
@@ -36,18 +41,28 @@ namespace EService.BL
         public override void CreateFilter()
         {
             filter = null;
-            if(members.Count > 0)
+            if (members.Count > 0)
             {
                 foreach (var item in members)
                 {
-                    if(filter == null)
-                        filter = Expression.Call(item, item.Type.GetMethod("Contains"), Expression.Constant(searchString));
+                    if (filter == null)
+                    {
+                        filter = Expression.Call(item, "IndexOf", null, Expression.Constant(searchString, typeof(string)), Expression.Constant(strComp));
+                        filter = Expression.GreaterThanOrEqual(filter, Expression.Constant(0));
+                    }
                     else
-                        filter = Expression.Or(filter, Expression.Call(item, item.Type.GetMethod("Contains"), Expression.Constant(searchString)));
+                    {
+                        Expression tempfilter = Expression.Call(item, "IndexOf", null, Expression.Constant(searchString, typeof(string)), Expression.Constant(strComp));
+                        tempfilter = Expression.GreaterThanOrEqual(tempfilter, Expression.Constant(0));
+                        filter = Expression.Or(filter, tempfilter);
+                    }
                 }
             }
             else
-            filter = Expression.Call(member, member.Type.GetMethod("Contains"), Expression.Constant(searchString));
+            {
+                filter = Expression.Call(member, "IndexOf", null, Expression.Constant(searchString, typeof(string)), Expression.Constant(strComp));
+                filter = Expression.GreaterThanOrEqual(filter, Expression.Constant(0));
+            }
             members.Clear();
             FilterCreated?.Invoke();
         }

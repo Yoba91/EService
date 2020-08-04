@@ -16,37 +16,36 @@ namespace EService.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private string search = String.Empty;
+        private string search = String.Empty; // Значение поисковой строки
 
-        private FilterSearch filterSearch;
-        private FilterDate filterDate;
-        private FilterId filterStatus, filterRepairer, filterDept, filterTypeModel, filterModel;
-        private List<IFilter> filters;
-        ParameterExpression parameter;
+        private FilterSearch filterSearch; // Фильтра для поисковой строки
+        private FilterDate filterDate; // Фильтр для даты
+        private FilterId filterStatus, filterRepairer, filterDept, filterTypeModel, filterModel; // Фильтры для Статусов, Ремонтников, Отделов, Типов моделей, Моделей
+        private FilterIdAnd filterSparesUsed, filterServicesDone; // Фильтры для Использованных запчастей и выполненых работ
+        private List<IFilter> filters; // Список всех фильтров
+        ParameterExpression parameter, parameterSU, parameterSD; // Параметры для лямбда-выражений       
 
-        private Status selectedStatus;
-        private Repairer selectedRepairer;
-        private Dept selectedDept;
-        private TypeModel selectedTypeModel;
-        private Model selectedModel;
-        private Spare selectedSpare;
-        private Service selectedService;
+        private DateTime startDate; // Начальная дата
+        private DateTime endDate; // Конечная дата
 
-        private DateTime startDate;
+        private ServiceLog selectedServiceLog; // Выбранная запись журнала
+        private Status selectedStatus; // Выбранный статус
+        private Repairer selectedRepairer; // Выбранный ремонтник
+        private Dept selectedDept; // Выбранный отдел
+        private TypeModel selectedTypeModel; // Выбранный тип модели
+        private Model selectedModel; // Выбранная модель
+        private Spare selectedSpare; // Выбранная запчасть
+        private Service selectedService; // Выбранная работа
 
-        private DateTime endDate;
+        private IList<ServiceLog> serviceLogs; // Журнал ремонтов
 
-        private ServiceLog selectedServiceLog;
-
-        private IList<ServiceLog> serviceLogs;
-
-        private IList<Status> selectedStatuses;
-        private IList<Repairer> selectedRepairers;
-        private IList<Dept> selectedDepts;
-        private IList<TypeModel> selectedTypesModel;
-        private IList<Model> selectedModels;
-        private IList<Spare> selectedSpares;
-        private IList<Service> selectedServices;
+        private IList<Status> selectedStatuses; // Выбранные статусы
+        private IList<Repairer> selectedRepairers; // Выбранные ремонтники
+        private IList<Dept> selectedDepts; // Выбранные отделы
+        private IList<TypeModel> selectedTypesModel; // Выбранные типы моделей
+        private IList<Model> selectedModels; // Выбранные модели
+        private IList<Spare> selectedSpares; // Выбранные запчасти
+        private IList<Service> selectedServices; // Выбранные работы
 
         public Status SelectedStatus { get { return selectedStatus; } set { selectedStatus = value; OnPropertyChanged("SelectedStatus"); } }
         public Repairer SelectedRepairer { get { return selectedRepairer; } set { selectedRepairer = value; OnPropertyChanged("SelectedRepairer"); } }
@@ -55,36 +54,42 @@ namespace EService.ViewModel
         public Model SelectedModel { get { return selectedModel; } set { selectedModel = value; OnPropertyChanged("SelectedModel"); } }
         public Spare SelectedSpare { get { return selectedSpare; } set { selectedSpare = value; OnPropertyChanged("SelectedSpare"); } }
         public Service SelectedService { get { return selectedService; } set { selectedService = value; OnPropertyChanged("SelectedService"); } }
-        public String Search { get { return search; } 
-            set 
-            { 
+        public String Search
+        {
+            get { return search; }
+            set
+            {
                 search = value;
-                filterSearch.SetWhat(search);
-                filterSearch.SetWhere("Device", "InventoryNumber");
-                filterSearch.AddWhere(filterSearch.Member);
-                filterSearch.SetWhere("Device", "SerialNumber");
-                filterSearch.AddWhere(filterSearch.Member);
-                filterSearch.CreateFilter();
-                OnPropertyChanged("Search"); 
-            } 
+                filterSearch.SetWhat(search); // Задание поисковой строки
+                filterSearch.SetWhere("Device", "InventoryNumber"); // Задание пути для поиска
+                filterSearch.AddWhere(filterSearch.Member); // Добавление пути в список путей
+                filterSearch.SetWhere("Device", "SerialNumber"); // Задание второго пути поиска
+                filterSearch.AddWhere(filterSearch.Member); // Добавление второго пути в список путей
+                filterSearch.CreateFilter(); // Создание фильтра
+                OnPropertyChanged("Search");
+            }
         }
-        public DateTime FirstDate { get { return startDate; } 
-            set 
-            { 
+        public DateTime FirstDate
+        {
+            get { return startDate; }
+            set
+            {
                 startDate = value;
                 filterDate.SetWhat(String.Format("{0}.{1}.{2}", startDate.Day, startDate.Month, startDate.Year), String.Format("{0}.{1}.{2}", endDate.Day, endDate.Month, endDate.Year));
                 filterDate.SetWhere("DateTime");
                 filterDate.CreateFilter();
-            } 
+            }
         }
-        public DateTime SecondDate { get { return endDate; } 
-            set 
-            { 
+        public DateTime SecondDate
+        {
+            get { return endDate; }
+            set
+            {
                 endDate = value;
                 filterDate.SetWhat(String.Format("{0}.{1}.{2}", startDate.Day, startDate.Month, startDate.Year), String.Format("{0}.{1}.{2}", endDate.Day, endDate.Month, endDate.Year));
                 filterDate.SetWhere("DateTime");
                 filterDate.CreateFilter();
-            } 
+            }
         }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
         public ObservableCollection<ServiceDone> ServicesDone { get; set; }
@@ -99,7 +104,7 @@ namespace EService.ViewModel
         public IList<Spare> Spares { get; set; }
 
         public System.Collections.IList SelectedItems
-        {            
+        {
             set
             {
                 System.Collections.IList temp = null;
@@ -129,7 +134,7 @@ namespace EService.ViewModel
             }
         }
 
-        private void SetFilter<T>(ObservableCollection<T> list, IFilter filter, params string[] parameters) where T:IIdentifier
+        private void SetFilter<T>(ObservableCollection<T> list, IFilter filter, params string[] parameters) where T : IIdentifier
         {
             List<string> indeses = new List<string>();
             foreach (var item in list)
@@ -201,7 +206,9 @@ namespace EService.ViewModel
             get { return (ObservableCollection<Spare>)selectedSpares; }
             set
             {
-                selectedSpares = value; OnPropertyChanged("SelectedSpares");
+                selectedSpares = value;
+                SetFilter(SelectedSpares, filterSparesUsed, "SpareForModel", "Spare", "Rowid");
+                OnPropertyChanged("SelectedSpares");
             }
         }
 
@@ -210,7 +217,9 @@ namespace EService.ViewModel
             get { return (ObservableCollection<Service>)selectedServices; }
             set
             {
-                selectedServices = value; OnPropertyChanged("SelectedServices");
+                selectedServices = value;
+                SetFilter(SelectedServices, filterServicesDone, "ServiceForModel", "Service", "Rowid");
+                OnPropertyChanged("SelectedServices");
             }
         }
 
@@ -244,7 +253,13 @@ namespace EService.ViewModel
 
         public MainViewModel()
         {
+            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string path = (System.IO.Path.GetDirectoryName(executable));
+            AppDomain.CurrentDomain.SetData("DataDirectory", path);
+
             parameter = Expression.Parameter(typeof(ServiceLog), "s");
+            parameterSD = Expression.Parameter(typeof(ServiceDone), "sd");
+            parameterSU = Expression.Parameter(typeof(SpareUsed), "su");
             filterDate = new FilterDate(parameter);
             filterSearch = new FilterSearch(parameter);
             filterStatus = new FilterId(parameter);
@@ -252,6 +267,9 @@ namespace EService.ViewModel
             filterRepairer = new FilterId(parameter);
             filterTypeModel = new FilterId(parameter);
             filterModel = new FilterId(parameter);
+            filterSparesUsed = new FilterIdAnd(parameterSU);
+            filterServicesDone = new FilterIdAnd(parameterSD);
+
             filters = new List<IFilter>();
 
             filters.Add(filterDate);
@@ -286,14 +304,12 @@ namespace EService.ViewModel
             SelectedSpares = new ObservableCollection<Spare>();
             SelectedServices = new ObservableCollection<Service>();
 
-            
+
 
             DbContext dbContext = new SQLiteContext();
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
-                //context.ServiceLog.Load();
-                //ServiceLogs = context.ServiceLog.Local.ToBindingList();
                 context.Status.Load();
                 Statuses = context.Status.Local.ToBindingList();
                 context.Repairer.Load();
@@ -327,16 +343,18 @@ namespace EService.ViewModel
                 else
                 {
                     temp = item.GetFilter();
-                    if(temp!=null)
-                    result = Expression.And(result, temp);
+                    if (temp != null)
+                        result = Expression.And(result, temp);
                 }
             }
-            var lambda = FilterContains<ServiceLog>.GetLambda(result, parameter);
+            var lambda = Expression.Lambda<Func<ServiceLog, bool>>(result, parameter);
+            var lambdaSU = Expression.Lambda<Func<SpareUsed, bool>>(filterSparesUsed.GetFilter(), parameterSU);
+            var lambdaSD = Expression.Lambda<Func<ServiceDone, bool>>(filterServicesDone.GetFilter(), parameterSD);
             DbContext dbContext = new SQLiteContext();
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
-                ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda.Compile()).ToList();
+                ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda.Compile()).Where(s => s.SparesUsed.Where((Func<SpareUsed, bool>)lambdaSU.Compile()).Count() > 0).Where(s => s.ServicesDone.Where((Func<ServiceDone, bool>)lambdaSD.Compile()).Count() > 0).ToList();
             }
         }
     }

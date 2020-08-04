@@ -2,26 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EService.BL
 {
-    public class FilterId : Filter
+    public class FilterIdAnd : FilterId
     {
-        protected IList<long> numbers;
-
-        protected MemberExpression member = null;
-
-        protected Expression filter;
-
-        protected ParameterExpression parameter;
-
-        public FilterId(ParameterExpression parameter) : base(parameter)
+        public FilterIdAnd(ParameterExpression parameter) : base(parameter)
         {
             Parameter = parameter;
             numbers = new List<long>();
-            filter = null;
+            var constant = Expression.Constant(0);
+            filter = Expression.Equal(constant, constant);
         }
 
         public override ParameterExpression Parameter { get { return parameter; } set { parameter = value; } }
@@ -40,6 +34,11 @@ namespace EService.BL
                 { filter = Expression.Or(filter, condition); }
                 else
                 { filter = condition; }
+            }
+            if(filter==null)
+            {
+                constant = Expression.Constant(0);
+                filter = Expression.Equal(constant, constant);
             }
             FilterCreated?.Invoke();
         }
@@ -72,6 +71,5 @@ namespace EService.BL
                 { member = Expression.PropertyOrField(member, item); }
             }
         }
-
     }
 }
