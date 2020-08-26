@@ -15,8 +15,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Security.Principal;
 
-namespace EService.ViewModel
+    namespace VVM.ViewModels
 {
+    #region Commands
     public interface IDelegateCommand : ICommand
     {
         void RaiseCanExecuteChanged();
@@ -65,11 +66,11 @@ namespace EService.ViewModel
 
     public class OpenWindowCommand : DelegateCommand
     {
-        public OpenWindowCommand(Action<object> execute, MainViewModel main) : base(execute)
+        public OpenWindowCommand(Action<object> execute, ServiceLogVM main) : base(execute)
         {
         }
 
-        public OpenWindowCommand(Action<object> execute, Func<object, bool> canExecute, MainViewModel main) : base(execute, canExecute)
+        public OpenWindowCommand(Action<object> execute, Func<object, bool> canExecute, ServiceLogVM main) : base(execute, canExecute)
         {
         }
 
@@ -87,8 +88,12 @@ namespace EService.ViewModel
         }
     }
 
-    public class MainViewModel : INotifyPropertyChanged
+    #endregion
+
+    public class ServiceLogVM : INotifyPropertyChanged
     {
+
+
         //Поля модели представления
 
         private string search = String.Empty; //Поисковая строка
@@ -132,7 +137,7 @@ namespace EService.ViewModel
 
         private void ExecuteAddServiceLog(object parameter)
         {
-            
+
         }
 
         //Свойства модели
@@ -344,7 +349,7 @@ namespace EService.ViewModel
         }
 
         //Конструктор модели представления
-        public MainViewModel()
+        public ServiceLogVM()
         {
             string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string path = (System.IO.Path.GetDirectoryName(executable));
@@ -352,9 +357,9 @@ namespace EService.ViewModel
 
             this.AddServiceLogCommand = new DelegateCommand(ExecuteAddServiceLog);
 
-            parameter = Expression.Parameter(typeof(ServiceLog), "s");
-            parameterSD = Expression.Parameter(typeof(ServiceDone), "sd");
-            parameterSU = Expression.Parameter(typeof(SpareUsed), "su");
+            parameter = System.Linq.Expressions.Expression.Parameter(typeof(ServiceLog), "s");
+            parameterSD = System.Linq.Expressions.Expression.Parameter(typeof(ServiceDone), "sd");
+            parameterSU = System.Linq.Expressions.Expression.Parameter(typeof(SpareUsed), "su");
             filterDate = new FilterDate(parameter);
             filterSearch = new FilterSearch(parameter);
             filterStatus = new FilterId(parameter);
@@ -428,7 +433,7 @@ namespace EService.ViewModel
 
         public void OnFilterChanged()
         {
-            Expression result = null, temp;
+            System.Linq.Expressions.Expression result = null, temp;
             foreach (var item in filters)
             {
                 if (result == null)
@@ -437,12 +442,12 @@ namespace EService.ViewModel
                 {
                     temp = item.GetFilter();
                     if (temp != null)
-                        result = Expression.And(result, temp);
+                        result = System.Linq.Expressions.Expression.And(result, temp);
                 }
             }
-            var lambda = Expression.Lambda<Func<ServiceLog, bool>>(result, parameter);
-            var lambdaSU = Expression.Lambda<Func<SpareUsed, bool>>(filterSparesUsed.GetFilter(), parameterSU);
-            var lambdaSD = Expression.Lambda<Func<ServiceDone, bool>>(filterServicesDone.GetFilter(), parameterSD);
+            var lambda = System.Linq.Expressions.Expression.Lambda<Func<ServiceLog, bool>>(result, parameter);
+            var lambdaSU = System.Linq.Expressions.Expression.Lambda<Func<SpareUsed, bool>>(filterSparesUsed.GetFilter(), parameterSU);
+            var lambdaSD = System.Linq.Expressions.Expression.Lambda<Func<ServiceDone, bool>>(filterServicesDone.GetFilter(), parameterSD);
             DbContext dbContext = new SQLiteContext();
             if (dbContext is SQLiteContext)
             {
@@ -451,4 +456,9 @@ namespace EService.ViewModel
             }
         }
     }
+
+
+
+
+
 }

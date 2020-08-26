@@ -25,6 +25,10 @@ namespace EService.BL
 
         public MemberExpression Member { get { return member; } }
 
+        public String SearchString { get { return searchString; } }
+
+        public List<MemberExpression> Members { get { return members; } }
+
         public FilterSearch(ParameterExpression parameter) : base(parameter)
         {
             Parameter = parameter;
