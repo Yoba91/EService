@@ -17,82 +17,10 @@ using System.Security.Principal;
 
     namespace EService.VVM.ViewModels
 {
-    #region Commands
-    public interface IDelegateCommand : ICommand
-    {
-        void RaiseCanExecuteChanged();
-    }
-
-    public class DelegateCommand : IDelegateCommand
-    {
-        Action<object> execute;
-        Func<object, bool> canExecute;
-
-        public event EventHandler CanExecuteChanged;
-
-        public DelegateCommand(Action<object> execute, Func<object, bool> canExecute)
-        {
-            this.execute = execute;
-            this.canExecute = canExecute;
-        }
-
-        public DelegateCommand(Action<object> execute)
-        {
-            this.execute = execute;
-            this.canExecute = this.AlwaysCanExecute;
-        }
-
-        private bool AlwaysCanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public virtual bool CanExecute(object parameter)
-        {
-            return canExecute(parameter);
-        }
-
-        public virtual void Execute(object parameter)
-        {
-            execute(parameter);
-        }
-
-        public void RaiseCanExecuteChanged()
-        {
-            if (CanExecuteChanged != null)
-                CanExecuteChanged(this, EventArgs.Empty);
-        }
-    }
-
-    public class OpenWindowCommand : DelegateCommand
-    {
-        public OpenWindowCommand(Action<object> execute, ServiceLogVM main) : base(execute)
-        {
-        }
-
-        public OpenWindowCommand(Action<object> execute, Func<object, bool> canExecute, ServiceLogVM main) : base(execute, canExecute)
-        {
-        }
-
-        public override void Execute(object parameter)
-        {
-            base.Execute(parameter);
-        }
-
-        public override bool CanExecute(object parameter)
-        {
-            return base.CanExecute(parameter);
-        }
-    }
-
-    #endregion
-
     public class ServiceLogVM : INotifyPropertyChanged
     {
-
-
         //Поля модели представления
-
+        private DbContext dbContext;
         private string search = String.Empty; //Поисковая строка
 
         private FilterSearch filterSearch; //Фильтр поиска
@@ -143,7 +71,6 @@ using System.Security.Principal;
         public IDelegateCommand ClearServiceLogCommand { protected set; get; }
 
         //Обработчики для команд
-
         private void ExecuteAddServiceLog(object parameter)
         {
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
@@ -413,7 +340,9 @@ using System.Security.Principal;
             SelectedSpares = new ObservableCollection<Spare>();
             SelectedServices = new ObservableCollection<Service>();
 
-            DbContext dbContext = new SQLiteContext();
+            DbContext tempDBContext = new SQLiteContext();
+            SingletonDBContext sdbContext = SingletonDBContext.GetInstance(tempDBContext);
+            dbContext = sdbContext.DBContext;
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
@@ -432,6 +361,7 @@ using System.Security.Principal;
                 context.Spare.Load();
                 Spares = context.Spare.Local.ToBindingList();
             }
+            OnFilterChanged();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -439,7 +369,8 @@ using System.Security.Principal;
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-
+        
+        //Обработчик фильтров
         public void OnFilterChanged()
         {
             System.Linq.Expressions.Expression result = null, temp;
@@ -457,7 +388,6 @@ using System.Security.Principal;
             var lambda = System.Linq.Expressions.Expression.Lambda<Func<ServiceLog, bool>>(result, parameter);
             var lambdaSU = System.Linq.Expressions.Expression.Lambda<Func<SpareUsed, bool>>(filterSparesUsed.GetFilter(), parameterSU);
             var lambdaSD = System.Linq.Expressions.Expression.Lambda<Func<ServiceDone, bool>>(filterServicesDone.GetFilter(), parameterSD);
-            DbContext dbContext = new SQLiteContext();
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
@@ -466,8 +396,25 @@ using System.Security.Principal;
         }
     }
 
+    public class OpenWindowCommand : DelegateCommand
+    {
+        public OpenWindowCommand(Action<object> execute, ServiceLogVM main) : base(execute)
+        {
+        }
 
+        public OpenWindowCommand(Action<object> execute, Func<object, bool> canExecute, ServiceLogVM main) : base(execute, canExecute)
+        {
+        }
 
+        public override void Execute(object parameter)
+        {
+            base.Execute(parameter);
+        }
 
+        public override bool CanExecute(object parameter)
+        {
+            return base.CanExecute(parameter);
+        }
+    }
 
 }

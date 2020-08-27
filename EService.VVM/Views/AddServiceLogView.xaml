@@ -49,7 +49,7 @@
                     </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                            <TextBlock Text="{Binding Path=Spare.Name}"></TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -61,12 +61,12 @@
                     </i:Interaction.Triggers>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
+                            <TextBlock Text="{Binding Path=Service.ShortName}"></TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <DatePicker Name="Date" SelectedDateFormat="Short" SelectedDate="{Binding Date}" Grid.Row="2" Grid.Column="0" Margin="3 3 3 3"/>
-                <Button x:Name="Add" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Content="Добавить" Margin="3 3 3 3"/>
+                <Button x:Name="Add" Command="{Binding Path=AddServiceLog}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Content="Добавить" Margin="3 3 3 3"/>
             </Grid>
         </Grid>
     </Grid>

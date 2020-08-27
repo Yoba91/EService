@@ -115,6 +115,7 @@
     <Compile Include="ServiceLog.cs">
       <DependentUpon>EServiceModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SingletonDBContext.cs" />
     <Compile Include="Spare.cs">
       <DependentUpon>EServiceModel.tt</DependentUpon>
     </Compile>

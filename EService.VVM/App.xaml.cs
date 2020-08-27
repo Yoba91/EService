@@ -23,6 +23,7 @@ namespace EService.VVM
         {
             displayRootRegistry.RegisterWindowType<ServiceLogVM, ServiceLogView>();
             displayRootRegistry.RegisterWindowType<AddServiceLogVM, AddServiceLogView>();
+            displayRootRegistry.RegisterWindowType<DialogVM, DialogView>();
         }
 
         protected override async void OnStartup(StartupEventArgs e)

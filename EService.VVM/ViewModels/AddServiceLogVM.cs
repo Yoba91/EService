@@ -11,11 +11,13 @@ using EService.Data.Entity;
 using EService.BL;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
     public class AddServiceLogVM : INotifyPropertyChanged
     {
+        private DbContext dbContext;
         private string search;
         private FilterSearch filterSearch;
         ParameterExpression parameter;
@@ -27,23 +29,26 @@ namespace EService.VVM.ViewModels
 
         private Device selectedDevice;
         private ParameterValue selectedParameterValue;
-        private Spare selectedSpare;
-        private Service selectedService;
+        private SpareForModel selectedSpare;
+        private ServiceForModel selectedService;
 
-        private IList<Service> selectedServices;
-        private IList<Spare> selectedSpares;
+        private IList<ServiceForModel> selectedServices;
+        private IList<SpareForModel> selectedSpares;
 
-        public ObservableCollection<Service> SelectedServices
+        private IDelegateCommand addServiceLog;
+
+        public ObservableCollection<ServiceForModel> SelectedServices
         {
-            get { return (ObservableCollection<Service>)selectedServices; }
+            get { return (ObservableCollection<ServiceForModel>)selectedServices; }
             set
             {
                 selectedServices = value;
+                this.AddServiceLog.RaiseCanExecuteChanged();
             }
         }
-        public ObservableCollection<Spare> SelectedSpares
+        public ObservableCollection<SpareForModel> SelectedSpares
         {
-            get { return (ObservableCollection<Spare>)selectedSpares; }
+            get { return (ObservableCollection<SpareForModel>)selectedSpares; }
             set
             {
                 selectedSpares = value;
@@ -51,8 +56,8 @@ namespace EService.VVM.ViewModels
         }
         public IList<Device> Devices { get { return devices; } set { devices = value; OnPropertyChanged("Devices"); } }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
-        public ObservableCollection<Service> Services { get; set; }
-        public ObservableCollection<Spare> Spares { get; set; }
+        public ObservableCollection<ServiceForModel> Services { get; set; }
+        public ObservableCollection<SpareForModel> Spares { get; set; }
         public Device SelectedDevice
         {
             get { return selectedDevice; }
@@ -64,7 +69,6 @@ namespace EService.VVM.ViewModels
                     ParametersValues.Clear();
                     Services.Clear();
                     Spares.Clear();
-                    DbContext dbContext = new SQLiteContext();
                     if (dbContext is SQLiteContext)
                     {
                         SQLiteContext context = dbContext as SQLiteContext;
@@ -72,21 +76,21 @@ namespace EService.VVM.ViewModels
                         foreach (var item in parameters)
                         {
                             var pv = context.ServiceLog.Where(s => s.Device.Rowid == SelectedDevice.Rowid).ToList().LastOrDefault()?.ParametersValues.ToList().LastOrDefault();
-                            if(pv == null)
+                            if (pv == null)
                             {
                                 ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = item.Parameter.Default });
                             }
                             else
                             {
-                                ParametersValues.Add(pv);
+                                ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = pv.Value });
                             }
                         }
-                        var tempServices = context.ServiceForModel.Where(s => s.RowidModel == selectedDevice.RowidModel).Select(s => s.Service).ToList();
+                        var tempServices = context.ServiceForModel.Where(s => s.RowidModel == selectedDevice.RowidModel).ToList();
                         foreach (var item in tempServices)
                         {
                             Services.Add(item);
                         }
-                        var tempSpares = context.SpareForModel.Where(s => s.RowidModel == selectedDevice.RowidModel).Select(s => s.Spare).ToList();
+                        var tempSpares = context.SpareForModel.Where(s => s.RowidModel == selectedDevice.RowidModel).ToList();
                         foreach (var item in tempSpares)
                         {
                             Spares.Add(item);
@@ -102,22 +106,22 @@ namespace EService.VVM.ViewModels
             {
                 System.Collections.IList temp = null;
 
-                temp = ItemsBuilder.SelectItem(value, SelectedServices, typeof(Service), SelectedService);
-                if (temp != null) SelectedServices = (ObservableCollection<Service>)temp;
+                temp = ItemsBuilder.SelectItem(value, SelectedServices, typeof(ServiceForModel), SelectedService);
+                if (temp != null) SelectedServices = (ObservableCollection<ServiceForModel>)temp;
 
-                temp = ItemsBuilder.SelectItem(value, SelectedSpares, typeof(Spare), SelectedSpare);
-                if (temp != null) SelectedSpares = (ObservableCollection<Spare>)temp;
+                temp = ItemsBuilder.SelectItem(value, SelectedSpares, typeof(SpareForModel), SelectedSpare);
+                if (temp != null) SelectedSpares = (ObservableCollection<SpareForModel>)temp;
 
             }
         }
 
-        public ParameterValue SelectedParameterValue 
+        public ParameterValue SelectedParameterValue
         {
-            get { return selectedParameterValue; } 
-            set { selectedParameterValue = value; } 
+            get { return selectedParameterValue; }
+            set { selectedParameterValue = value; }
         }
-        public Spare SelectedSpare { get { return selectedSpare; } set { selectedSpare = value; } }
-        public Service SelectedService { get { return selectedService; } set { selectedService = value; } }
+        public SpareForModel SelectedSpare { get { return selectedSpare; } set { selectedSpare = value; } }
+        public ServiceForModel SelectedService { get { return selectedService; } set { selectedService = value; } }
         public String Search
         {
             get { return search; }
@@ -139,10 +143,68 @@ namespace EService.VVM.ViewModels
             set { date = value; }
         }
 
+        public IDelegateCommand AddServiceLog
+        {
+            get
+            {
+                if (addServiceLog == null)
+                {
+                    addServiceLog = new DelegateCommand(OpenDialog, CanExecuteAddServiceLog);
+                }
+                return addServiceLog;
+            }
+        }
+
+        private void ExecuteAddServiceLog(object parameter)
+        {
+            ServiceLog sl = new ServiceLog()
+            {
+                Date = Date.ToShortDateString(),
+                RowidDevice = SelectedDevice.Rowid,
+                RowidRepairer = 1,              //ЗАГЛУШКА TODO Авторизация 
+            };
+
+            sl.ParametersValues = new List<ParameterValue>();             
+            foreach (var item in ParametersValues)
+            {
+                sl.ParametersValues.Add(item);
+            }
+            foreach (var item in SelectedServices)
+            {
+                sl.ServicesDone.Add(new ServiceDone { RowidServiceForModel = item.Rowid });
+            }
+            foreach (var item in SelectedSpares)
+            {
+                sl.SparesUsed.Add(new SpareUsed { RowidSpareForModel = item.Rowid });
+            }
+            if (dbContext is SQLiteContext)
+            {
+                SQLiteContext context = dbContext as SQLiteContext;
+                context.ServiceLog.Add(sl);
+                context.SaveChanges();
+            }
+        }
+
+        private bool CanExecuteAddServiceLog(object parameter)
+        {
+            if (SelectedDevice != null)
+                if (SelectedServices?.Count > 0)
+                    return true;
+
+            return false;
+        }
+
+        private async void OpenDialog(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Новая запись в журнал","Вы действительно хотите добавить новую запись в журнал ремонтов?",ExecuteAddServiceLog);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+
         public AddServiceLogVM()
         {
             search = String.Empty;
-            parameter = Expression.Parameter(typeof(Device), "d");
+            parameter = System.Linq.Expressions.Expression.Parameter(typeof(Device), "d");
             filterSearch = new FilterSearch(parameter);
             filters = new List<IFilter>();
             filters.Add(filterSearch);
@@ -151,13 +213,14 @@ namespace EService.VVM.ViewModels
 
             Devices = new ObservableCollection<Device>();
             ParametersValues = new ObservableCollection<ParameterValue>();
-            Services = new ObservableCollection<Service>();
-            Spares = new ObservableCollection<Spare>();
+            Services = new ObservableCollection<ServiceForModel>();
+            Spares = new ObservableCollection<SpareForModel>();
 
-            selectedServices = new ObservableCollection<Service>();
-            selectedSpares = new ObservableCollection<Spare>();
+            selectedServices = new ObservableCollection<ServiceForModel>();
+            selectedSpares = new ObservableCollection<SpareForModel>();
 
-            DbContext dbContext = new SQLiteContext();
+            var sdbContext = SingletonDBContext.GetInstance(new SQLiteContext());
+            dbContext = sdbContext.DBContext;
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
@@ -175,7 +238,7 @@ namespace EService.VVM.ViewModels
 
         public void OnFilterChanged()
         {
-            Expression result = null, temp;
+            System.Linq.Expressions.Expression result = null, temp;
             foreach (var item in filters)
             {
                 if (result == null)
@@ -184,11 +247,10 @@ namespace EService.VVM.ViewModels
                 {
                     temp = item.GetFilter();
                     if (temp != null)
-                        result = Expression.And(result, temp);
+                        result = System.Linq.Expressions.Expression.And(result, temp);
                 }
             }
-            var lambda = Expression.Lambda<Func<Device, bool>>(result, parameter);
-            DbContext dbContext = new SQLiteContext();
+            var lambda = System.Linq.Expressions.Expression.Lambda<Func<Device, bool>>(result, parameter);
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;

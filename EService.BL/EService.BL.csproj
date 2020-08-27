@@ -51,5 +51,11 @@
     <Compile Include="ItemsBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EService.Data.Entity\EService.Data.Entity.csproj">
+      <Project>{06db9788-0033-47d0-9632-92834b34a5da}</Project>
+      <Name>EService.Data.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

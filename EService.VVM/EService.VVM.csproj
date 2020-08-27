@@ -83,10 +83,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
+    <Compile Include="ViewModels\DialogVM.cs" />
     <Compile Include="ViewModels\ServiceLogVM.cs" />
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DialogView.xaml.cs">
+      <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServiceLogView.xaml.cs">
       <DependentUpon>ServiceLogView.xaml</DependentUpon>
@@ -97,6 +102,10 @@
     </Compile>
     <Compile Include="DisplayRootRegistry.cs" />
     <Page Include="Views\AddServiceLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

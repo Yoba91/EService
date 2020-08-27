@@ -59,6 +59,7 @@ namespace EService.VVM
             if (openWindows.ContainsKey(vm))
                 throw new InvalidOperationException("UI for this VM is already displayed");
             var window = CreateWindowInstanceWithVM(vm);
+            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             window.Show();
             openWindows[vm] = window;
         }
