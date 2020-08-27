@@ -26,7 +26,7 @@ namespace EService.Data.Entity
         {
             this.SparesForModels = new HashSet<SpareForModel>();
         }
-    
+
         public long Rowid { get { return rowid; } set { rowid = value; OnPropertyChanged("Rowid"); } }
         public string Name { get { return name; } set { name = value; OnPropertyChanged("Name"); } }
         public string Description { get { return description; } set { description = value; OnPropertyChanged("Description"); } }

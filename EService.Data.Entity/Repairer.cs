@@ -21,7 +21,6 @@ namespace EService.Data.Entity
         string surname;
         string midname;
         string password;
-        string fullName;
         ICollection<ServiceLog> serviceLogs;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -29,7 +28,7 @@ namespace EService.Data.Entity
         {
             this.ServiceLogs = new HashSet<ServiceLog>();
         }
-    
+
         public long Rowid { get { return rowid; } set { rowid = value; OnPropertyChanged("Rowid"); } }
         public string Name { get { return name; } set { name = value; OnPropertyChanged("Name"); } }
         public string Surname { get { return surname; } set { surname = value; OnPropertyChanged("Surname"); } }

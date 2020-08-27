@@ -52,7 +52,9 @@ using System.Security.Principal;
         private IList<Spare> selectedSpares; //Список выбранных запчастей
         private IList<Service> selectedServices; //Список выбранных видов обслуживания
 
-        private IDelegateCommand openAddServiceLogWindow;
+        private IDelegateCommand openAddServiceLogWindow; //Команда открытия окна добавления записи в журнал
+        private IDelegateCommand openEditServiceLogWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand openDialogWindow; //Команда открытия диалогового окна
 
         //Команды для кнопок
         public IDelegateCommand AddServiceLogCommand 
@@ -66,9 +68,32 @@ using System.Security.Principal;
                 return openAddServiceLogWindow;
             } 
         }
-        public IDelegateCommand UpdateServiceLogCommand { protected set; get; }
-        public IDelegateCommand RemoveServiceLogCommand { protected set; get; }
-        public IDelegateCommand ClearServiceLogCommand { protected set; get; }
+        public IDelegateCommand EditServiceLogCommand 
+        {
+            get
+            {
+                if (openEditServiceLogWindow == null)
+                {
+                    openEditServiceLogWindow = new OpenWindowCommand(ExecuteEditServiceLog, CanExecuteEditServiceLog, this);
+                }
+                return openEditServiceLogWindow;
+            }
+        }
+        public IDelegateCommand RemoveServiceLogCommand 
+        {
+            get
+            {
+                if (openDialogWindow == null)
+                {
+                    openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEditServiceLog, this);
+                }
+                return openDialogWindow;
+            }
+        }
+        public IDelegateCommand ClearServiceLogCommand 
+        { 
+            get;
+        }
 
         //Обработчики для команд
         private void ExecuteAddServiceLog(object parameter)
@@ -76,6 +101,42 @@ using System.Security.Principal;
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
             var addServiceLogVM = new AddServiceLogVM();
             displayRootRegistry.ShowPresentation(addServiceLogVM);
+        }
+
+        private async void ExecuteEditServiceLog(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editServiceLogVM = new EditServiceLogVM(selectedServiceLog.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editServiceLogVM);
+        }
+        private void ExecuteRemoveServiceLog(object parameter)
+        {
+            if (dbContext is SQLiteContext)
+            {
+                SQLiteContext context = dbContext as SQLiteContext;
+                //context.Entry(selectedServiceLog).Collection(s => s.ParametersValues).Load();
+                //context.Entry(selectedServiceLog).Collection(s => s.ServicesDone).Load();
+                //context.Entry(selectedServiceLog).Collection(s => s.SparesUsed).Load();
+                context.Configuration.LazyLoadingEnabled = false;
+                context.ServiceLog.Remove(selectedServiceLog);
+                context.SaveChanges();
+                SelectedServiceLog = null;
+                OnFilterChanged();
+            }
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить запись ремонта {0} I/N - \"{1}\" | S/N - \"{2}\"?",selectedServiceLog.Device.Model.TypeModel.ShortName,selectedServiceLog.Device.InventoryNumber,selectedServiceLog.Device.SerialNumber);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление записи", message, ExecuteRemoveServiceLog);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+
+        private bool CanExecuteEditServiceLog(object parameter)
+        {
+            if (selectedServiceLog != null)
+                return true;
+            return false;
         }
 
         //Свойства модели
@@ -282,6 +343,8 @@ using System.Security.Principal;
                         SparesUsed.Add(item);
                     }
                 }
+                openEditServiceLogWindow?.RaiseCanExecuteChanged();
+                openDialogWindow?.RaiseCanExecuteChanged();
                 OnPropertyChanged("SelectedServiceLog");
             }
         }
@@ -393,6 +456,7 @@ using System.Security.Principal;
                 SQLiteContext context = dbContext as SQLiteContext;
                 ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda.Compile()).Where(s => s.SparesUsed.Where((Func<SpareUsed, bool>)lambdaSU.Compile()).Count() > 0).Where(s => s.ServicesDone.Where((Func<ServiceDone, bool>)lambdaSD.Compile()).Count() > 0).ToList();
             }
+            SelectedServiceLog = null;
         }
     }
 

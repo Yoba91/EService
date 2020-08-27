@@ -26,7 +26,7 @@ namespace EService.Data.Entity
         {
             this.Models = new HashSet<Model>();
         }
-    
+
         public long Rowid { get { return rowid; } set { rowid = value; OnPropertyChanged("Rowid"); } }
         public string FullName { get { return fullName; } set { fullName = value; OnPropertyChanged("FullName"); } }
         public string ShortName { get { return shortName; } set { shortName = value; OnPropertyChanged("ShortName"); } }

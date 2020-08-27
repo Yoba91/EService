@@ -86,12 +86,16 @@
     <Compile Include="Commands.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
     <Compile Include="ViewModels\DialogVM.cs" />
+    <Compile Include="ViewModels\EditServiceLogVM.cs" />
     <Compile Include="ViewModels\ServiceLogVM.cs" />
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditServiceLogView.xaml.cs">
+      <DependentUpon>EditServiceLogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServiceLogView.xaml.cs">
       <DependentUpon>ServiceLogView.xaml</DependentUpon>
@@ -106,6 +110,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditServiceLogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

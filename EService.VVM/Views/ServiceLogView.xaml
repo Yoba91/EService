@@ -95,8 +95,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="0" Width="Auto" Height="25" Command="{Binding AddServiceLogCommand}">Добавить</Button>
-                    <Button Grid.Column="1" Width="Auto" Height="25">Изменить</Button>
-                    <Button Grid.Column="2" Width="Auto" Height="25">Удалить</Button>
+                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding EditServiceLogCommand}">Изменить</Button>
+                    <Button Grid.Column="2" Width="Auto" Height="25" Command="{Binding RemoveServiceLogCommand}">Удалить</Button>
                 </Grid>
             </StackPanel>
             <!--    Поиск END   -->
