@@ -24,7 +24,34 @@
                 <DataGridTextColumn Width="0.35*" Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-        <ListBox x:Name="Spare" Grid.Row="0" Grid.Column="1" Margin="3 3 3 3" SelectionMode="Multiple" ItemsSource="{Binding Spares}" SelectedItem="{Binding SelectedSpare}" >
+        <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+            <ListBox x:Name="OldSpare" Grid.Row="0" Grid.Column="0" Margin="3 3 3 3" ItemsSource="{Binding OldSpares, Mode=OneWay}" IsEnabled="False">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Spare.Name}"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox x:Name="OldService" Grid.Row="0" Grid.Column="1" Margin="3 3 3 3" ItemsSource="{Binding OldServices, Mode=OneWay}" IsEnabled="False">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Service.ShortName}"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <CheckBox x:Name="newSpare" Content="Изменить" Grid.Row="1" Grid.Column="0" Margin="3 3 3 3" IsChecked="{Binding Path=NewSpare}"/>
+            <CheckBox x:Name="newService" Content="Изменить" Grid.Row="1" Grid.Column="1" Margin="3 3 3 3" IsChecked="{Binding Path=NewService}"/>
+            <ListBox x:Name="Spare" Grid.Row="2" Grid.Column="0" Margin="3 3 3 3" SelectionMode="Multiple" ItemsSource="{Binding Spares, Mode=TwoWay}" SelectedItem="{Binding SelectedSpare}" IsEnabled="{Binding ElementName=newSpare, Path=IsChecked}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Spare}"/>
@@ -36,7 +63,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox x:Name="Service" Grid.Row="0" Grid.Column="2" Margin="3 3 3 3" SelectionMode="Multiple" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}">
+            <ListBox x:Name="Service" Grid.Row="2" Grid.Column="1" Margin="3 3 3 3" SelectionMode="Multiple" ItemsSource="{Binding Services, Mode=TwoWay}" SelectedItem="{Binding SelectedService}" IsEnabled="{Binding ElementName=newService, Path=IsChecked}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Service}"/>
@@ -48,7 +75,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        </Grid>
         <DatePicker Name="Date" SelectedDateFormat="Short" SelectedDate="{Binding Date}" Grid.Row="1" Grid.Column="0" Margin="3 3 3 3"/>
-        <Button x:Name="Add" Command="" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Content="Добавить" Margin="3 3 3 3"/>
+        <Button x:Name="Edit" Command="{Binding EditServiceLog}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Content="Изменить" Margin="3 3 3 3"/>
     </Grid>
 </Window>

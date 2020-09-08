@@ -15,7 +15,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Security.Principal;
 
-    namespace EService.VVM.ViewModels
+namespace EService.VVM.ViewModels
 {
     public class ServiceLogVM : INotifyPropertyChanged
     {
@@ -32,6 +32,10 @@ using System.Security.Principal;
 
         private DateTime startDate; //Начальная дата
         private DateTime endDate; //Конечная дата
+        private DateTime reservedStartDate; //Зарезервированная начальная дата
+        private DateTime reservedEndDate; //Зарезервированная конечная дата
+        private bool allTime; //Триггер для поиска за всё время
+        private bool reverseAllTime; //Блокировщик выбора даты
 
         private ServiceLog selectedServiceLog; //Выбранная запись сервисного журнала
         private Status selectedStatus; //Выбранный статус
@@ -54,21 +58,22 @@ using System.Security.Principal;
 
         private IDelegateCommand openAddServiceLogWindow; //Команда открытия окна добавления записи в журнал
         private IDelegateCommand openEditServiceLogWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand refreshServiceLogWindow; //Команда обновления данных в окне
         private IDelegateCommand openDialogWindow; //Команда открытия диалогового окна
 
         //Команды для кнопок
-        public IDelegateCommand AddServiceLogCommand 
+        public IDelegateCommand AddServiceLogCommand
         {
             get
             {
-                if(openAddServiceLogWindow == null)
+                if (openAddServiceLogWindow == null)
                 {
                     openAddServiceLogWindow = new OpenWindowCommand(ExecuteAddServiceLog, this);
                 }
                 return openAddServiceLogWindow;
-            } 
+            }
         }
-        public IDelegateCommand EditServiceLogCommand 
+        public IDelegateCommand EditServiceLogCommand
         {
             get
             {
@@ -79,7 +84,7 @@ using System.Security.Principal;
                 return openEditServiceLogWindow;
             }
         }
-        public IDelegateCommand RemoveServiceLogCommand 
+        public IDelegateCommand RemoveServiceLogCommand
         {
             get
             {
@@ -90,9 +95,16 @@ using System.Security.Principal;
                 return openDialogWindow;
             }
         }
-        public IDelegateCommand ClearServiceLogCommand 
-        { 
-            get;
+        public IDelegateCommand ClearServiceLogCommand
+        {
+            get
+            {
+                if (refreshServiceLogWindow == null)
+                {
+                    refreshServiceLogWindow = new DelegateCommand(ExecuteRefreshServiceLog);
+                }
+                return refreshServiceLogWindow;
+            }
         }
 
         //Обработчики для команд
@@ -114,9 +126,6 @@ using System.Security.Principal;
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
-                //context.Entry(selectedServiceLog).Collection(s => s.ParametersValues).Load();
-                //context.Entry(selectedServiceLog).Collection(s => s.ServicesDone).Load();
-                //context.Entry(selectedServiceLog).Collection(s => s.SparesUsed).Load();
                 context.Configuration.LazyLoadingEnabled = false;
                 context.ServiceLog.Remove(selectedServiceLog);
                 context.SaveChanges();
@@ -124,14 +133,17 @@ using System.Security.Principal;
                 OnFilterChanged();
             }
         }
+        private void ExecuteRefreshServiceLog(object parameter)
+        {
+            OnFilterChanged();
+        }
         private async void OpenDialog(object parameter)
         {
-            var message = String.Format("Вы действительно хотите удалить запись ремонта {0} I/N - \"{1}\" | S/N - \"{2}\"?",selectedServiceLog.Device.Model.TypeModel.ShortName,selectedServiceLog.Device.InventoryNumber,selectedServiceLog.Device.SerialNumber);
+            var message = String.Format("Вы действительно хотите удалить запись ремонта {0} I/N - \"{1}\" | S/N - \"{2}\"?", selectedServiceLog.Device.Model.TypeModel.ShortName, selectedServiceLog.Device.InventoryNumber, selectedServiceLog.Device.SerialNumber);
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
             var openDialog = new DialogVM("Удаление записи", message, ExecuteRemoveServiceLog);
             await displayRootRegistry.ShowModalPresentation(openDialog);
         }
-
         private bool CanExecuteEditServiceLog(object parameter)
         {
             if (selectedServiceLog != null)
@@ -182,6 +194,35 @@ using System.Security.Principal;
                 filterDate.SetWhat(String.Format("{0}.{1}.{2}", startDate.Day, startDate.Month, startDate.Year), String.Format("{0}.{1}.{2}", endDate.Day, endDate.Month, endDate.Year));
                 filterDate.SetWhere("DateTime");
                 filterDate.CreateFilter();
+            }
+        }
+        public bool ReverseAllTime
+        {
+            get { return reverseAllTime; }
+            set { reverseAllTime = value; }
+        }
+        public bool AllTime
+        {
+            get
+            {
+                return allTime;
+            }
+            set
+            {
+                allTime = value;
+                ReverseAllTime = !value;
+                if (allTime)
+                {
+                    reservedStartDate = startDate.Date;
+                    reservedEndDate = endDate.Date;
+                    startDate = DateTime.MinValue;
+                    SecondDate = DateTime.Now;
+                }
+                else
+                {
+                    startDate = reservedStartDate.Date;
+                    SecondDate = reservedEndDate.Date;
+                }
             }
         }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
@@ -382,6 +423,9 @@ using System.Security.Principal;
             filterDate.FilterCreated += OnFilterChanged;
             filterSearch.FilterCreated += OnFilterChanged;
 
+            reservedStartDate = startDate.Date;
+            reservedEndDate = endDate.Date;
+            AllTime = false;
             FirstDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             SecondDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             Spares = new ObservableCollection<Spare>();
@@ -432,11 +476,12 @@ using System.Security.Principal;
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        
+
         //Обработчик фильтров
         public void OnFilterChanged()
         {
             System.Linq.Expressions.Expression result = null, temp;
+            Delegate lambda = null, lambdaSU = null, lambdaSD = null;
             foreach (var item in filters)
             {
                 if (result == null)
@@ -448,13 +493,22 @@ using System.Security.Principal;
                         result = System.Linq.Expressions.Expression.And(result, temp);
                 }
             }
-            var lambda = System.Linq.Expressions.Expression.Lambda<Func<ServiceLog, bool>>(result, parameter);
-            var lambdaSU = System.Linq.Expressions.Expression.Lambda<Func<SpareUsed, bool>>(filterSparesUsed.GetFilter(), parameterSU);
-            var lambdaSD = System.Linq.Expressions.Expression.Lambda<Func<ServiceDone, bool>>(filterServicesDone.GetFilter(), parameterSD);
+            if (result != null)
+            {
+                lambda = System.Linq.Expressions.Expression.Lambda<Func<ServiceLog, bool>>(result, parameter).Compile();
+            }      
+            if(filterSparesUsed.GetFilter() != null)
+                lambdaSU = System.Linq.Expressions.Expression.Lambda<Func<SpareUsed, bool>>(filterSparesUsed.GetFilter(), parameterSU).Compile();
+            if (filterServicesDone.GetFilter() != null)
+                lambdaSD = System.Linq.Expressions.Expression.Lambda<Func<ServiceDone, bool>>(filterServicesDone.GetFilter(), parameterSD).Compile();
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
-                ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda.Compile()).Where(s => s.SparesUsed.Where((Func<SpareUsed, bool>)lambdaSU.Compile()).Count() > 0).Where(s => s.ServicesDone.Where((Func<ServiceDone, bool>)lambdaSD.Compile()).Count() > 0).ToList();
+                ServiceLogs = context.ServiceLog.Where((Func<ServiceLog, bool>)lambda).ToList().OrderBy(s => s.DateTime).ToList();
+                if (lambdaSU != null)
+                    ServiceLogs = ServiceLogs.Where(s => s.SparesUsed.Where((Func<SpareUsed, bool>)lambdaSU).Count() > 0).ToList();
+                if (lambdaSD != null)
+                    ServiceLogs = ServiceLogs.Where(s => s.ServicesDone.Where((Func<ServiceDone, bool>)lambdaSD).Count() > 0).ToList();
             }
             SelectedServiceLog = null;
         }

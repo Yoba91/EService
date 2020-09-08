@@ -14,8 +14,6 @@ namespace EService.BL
         {
             Parameter = parameter;
             numbers = new List<long>();
-            var constant = Expression.Constant(0);
-            filter = Expression.Equal(constant, constant);
         }
 
         public override ParameterExpression Parameter { get { return parameter; } set { parameter = value; } }
@@ -34,11 +32,6 @@ namespace EService.BL
                 { filter = Expression.Or(filter, condition); }
                 else
                 { filter = condition; }
-            }
-            if(filter==null)
-            {
-                constant = Expression.Constant(0);
-                filter = Expression.Equal(constant, constant);
             }
             FilterCreated?.Invoke();
         }

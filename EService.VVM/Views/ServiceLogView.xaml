@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
 
 
-        <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs, Mode=OneWay}" HorizontalGridLinesBrush="DarkGray"
+        <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=Device.InventoryNumber}" />
@@ -40,21 +40,21 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <DataGrid Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White">
+            <DataGrid Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Название" Binding="{Binding Path=ParameterForModel.Parameter.Name}" />
                     <DataGridTextColumn Width="*" Header="Значение" Binding="{Binding Path=Value}" />
                     <DataGridTextColumn Width="*" Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Grid.Row="1" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone}" HorizontalGridLinesBrush="DarkGray"
+            <DataGrid Grid.Row="1" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Работа" Binding="{Binding Path=ServiceForModel.Service.ShortName}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Grid.Row="2" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed}" HorizontalGridLinesBrush="DarkGray"
+            <DataGrid Grid.Row="2" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Запчасть" Binding="{Binding Path=SpareForModel.Spare.Name}" />
@@ -86,7 +86,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                    <Button Grid.Column="1" Width="Auto" Height="25">Очистить</Button>
+                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshServiceLogCommand}">Обновить</Button>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -132,16 +132,18 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="22"/>
+                        <RowDefinition Height="22"/>
+                        <RowDefinition Height="23"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="5 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Left" Text="От"/>
-                    <DatePicker Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2,2,2,2" SelectedDateFormat="Short" SelectedDate="{Binding FirstDate}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="2 2 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Text="От"/>
+                    <DatePicker Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2,2,2,2" SelectedDateFormat="Short" SelectedDate="{Binding FirstDate, Mode=TwoWay}" IsEnabled="{Binding Path=ReverseAllTime, Mode=TwoWay}"/>
 
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="2 3 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Text="До"/>
+                    <DatePicker Grid.Row="1" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding SecondDate, Mode=TwoWay}" IsEnabled="{Binding Path=ReverseAllTime, Mode=TwoWay}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="5 6 5 5" VerticalAlignment="Center" HorizontalAlignment="Left" Text="До"/>
-                    <DatePicker Grid.Row="1" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding SecondDate}"/>
+                    <CheckBox x:Name="AllTime" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="2 3 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Content="За всё время" IsChecked="{Binding Path=AllTime}"/>
 
                 </Grid>
             </StackPanel>
