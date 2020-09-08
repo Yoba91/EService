@@ -95,7 +95,7 @@ namespace EService.VVM.ViewModels
                 return openDialogWindow;
             }
         }
-        public IDelegateCommand ClearServiceLogCommand
+        public IDelegateCommand RefreshServiceLogCommand
         {
             get
             {
@@ -511,6 +511,9 @@ namespace EService.VVM.ViewModels
                     ServiceLogs = ServiceLogs.Where(s => s.ServicesDone.Where((Func<ServiceDone, bool>)lambdaSD).Count() > 0).ToList();
             }
             SelectedServiceLog = null;
+            ParametersValues?.Clear();
+            ServicesDone?.Clear();
+            SparesUsed?.Clear();
         }
     }
 

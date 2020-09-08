@@ -99,14 +99,17 @@ namespace EService.VVM.ViewModels
             {
                 context.ParameterValue.Remove(item);
             }
-            context.SaveChanges();
             foreach (var item in ParametersValues)
             {
                 context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().ParametersValues.Add(item);
             }
             if (NewService)
             {
-                context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().ServicesDone.Clear();
+                var sd = context.ServiceDone.Where(s => s.RowidServiceLog == serviceLog.Rowid).ToList();
+                foreach (var item in sd)
+                {
+                    context.ServiceDone.Remove(item);
+                }
                 foreach (var item in selectedServices)
                 {
                     var serviceDone = new ServiceDone
@@ -116,20 +119,14 @@ namespace EService.VVM.ViewModels
                     };
                     context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().ServicesDone.Add(serviceDone);
                 }
-                //context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().ServicesDone.Clear();
-                //foreach (var item in selectedServices)
-                //{
-                //    var serviceDone = new ServiceDone
-                //    {
-                //        RowidServiceForModel = item.Rowid,
-                //        RowidServiceLog = serviceLog.Rowid
-                //    };
-                //    context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().ServicesDone.Add(serviceDone);
-                //}
             }
             if (NewSpare)
             {
-                context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().SparesUsed.Clear();
+                var su = context.SpareUsed.Where(s => s.RowidServiceLog == serviceLog.Rowid).ToList();
+                foreach (var item in su)
+                {
+                    context.SpareUsed.Remove(item);
+                }
                 foreach (var item in selectedSpares)
                 {
                     var spareUsed = new SpareUsed
@@ -139,16 +136,6 @@ namespace EService.VVM.ViewModels
                     };
                     context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().SparesUsed.Add(spareUsed);
                 }
-                //context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().SparesUsed.Clear();
-                //foreach (var item in selectedSpares)
-                //{
-                //    var spareUsed = new SpareUsed
-                //    {
-                //        RowidSpareForModel = item.Rowid,
-                //        RowidServiceLog = serviceLog.Rowid
-                //    };
-                //    context.ServiceLog.Where(s => s.Rowid == serviceLog.Rowid).SingleOrDefault().SparesUsed.Add(spareUsed);
-                //}
             }
             context.SaveChanges();
         }

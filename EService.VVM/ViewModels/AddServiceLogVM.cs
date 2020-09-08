@@ -75,7 +75,8 @@ namespace EService.VVM.ViewModels
                         var parameters = context.ParameterForModel.Where(pfm => pfm.RowidModel == selectedDevice.RowidModel).ToList();
                         foreach (var item in parameters)
                         {
-                            var pv = context.ServiceLog.Where(s => s.Device.Rowid == SelectedDevice.Rowid).ToList().LastOrDefault()?.ParametersValues.ToList().LastOrDefault();
+                            var sl = context.ServiceLog.Where(s => s.Device.Rowid == SelectedDevice.Rowid).ToList().LastOrDefault();
+                            var pv = context.ParameterValue.Where(p => p.RowidServiceLog == sl.Rowid).ToList().LastOrDefault();
                             if (pv == null)
                             {
                                 ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = item.Parameter.Default });
