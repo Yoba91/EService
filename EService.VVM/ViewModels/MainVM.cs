@@ -22,7 +22,7 @@ namespace EService.VVM.ViewModels
         public static readonly string ServiceVMAlias = "ServiceVM";
         public static readonly string DeptVMAlias = "DeptVM";
         public static readonly string StatusVMAlias = "StatusVM";
-        public static readonly string NotFoundPageViewModelAlias = "ServiceLogVM";
+        public static readonly string NotFoundPageVMAlias = "Page404VM";
         #endregion
 
         #region Поля
@@ -200,14 +200,14 @@ namespace EService.VVM.ViewModels
             _resolver = resolver;
 
             _serviceLogVM = _resolver.GetViewModelInstance(ServiceLogVMAlias);
-            //_typeModelVM = _resolver.GetViewModelInstance(TypeModelVMAlias);
-            //_modelVM = _resolver.GetViewModelInstance(ModelVMAlias);
-            //_deviceVM = _resolver.GetViewModelInstance(DeviceVMAlias);
-            //_parameterVM = _resolver.GetViewModelInstance(ParameterVMAlias);
-            //_spareVM = _resolver.GetViewModelInstance(SpareVMAlias);
-            //_serviceVM = _resolver.GetViewModelInstance(ServiceVMAlias);
-            //_deptVM = _resolver.GetViewModelInstance(DeptVMAlias);
-            //_statusVM = _resolver.GetViewModelInstance(StatusVMAlias);
+            _typeModelVM = _resolver.GetViewModelInstance(TypeModelVMAlias);
+            _modelVM = _resolver.GetViewModelInstance(ModelVMAlias);
+            _deviceVM = _resolver.GetViewModelInstance(DeviceVMAlias);
+            _parameterVM = _resolver.GetViewModelInstance(ParameterVMAlias);
+            _spareVM = _resolver.GetViewModelInstance(SpareVMAlias);
+            _serviceVM = _resolver.GetViewModelInstance(ServiceVMAlias);
+            _deptVM = _resolver.GetViewModelInstance(DeptVMAlias);
+            _statusVM = _resolver.GetViewModelInstance(StatusVMAlias);
 
             InitializeCommands();
         }

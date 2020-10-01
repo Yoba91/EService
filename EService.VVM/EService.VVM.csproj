@@ -90,10 +90,19 @@
     <Compile Include="Navigation\PagesResolver.cs" />
     <Compile Include="Navigation\RelayCommand.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
+    <Compile Include="ViewModels\DeptVM.cs" />
+    <Compile Include="ViewModels\DeviceVM.cs" />
     <Compile Include="ViewModels\DialogVM.cs" />
     <Compile Include="ViewModels\EditServiceLogVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
+    <Compile Include="ViewModels\ModelVM.cs" />
+    <Compile Include="ViewModels\Page404VM.cs" />
+    <Compile Include="ViewModels\ParameterVM.cs" />
     <Compile Include="ViewModels\ServiceLogVM.cs" />
+    <Compile Include="ViewModels\ServiceVM.cs" />
+    <Compile Include="ViewModels\SpareVM.cs" />
+    <Compile Include="ViewModels\StatusVM.cs" />
+    <Compile Include="ViewModels\TypeModelVM.cs" />
     <Compile Include="ViewModels\ViewModelsResolver.cs" />
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
@@ -107,8 +116,35 @@
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Pages\DeptPage.xaml.cs">
+      <DependentUpon>DeptPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\DevicePage.xaml.cs">
+      <DependentUpon>DevicePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ModelPage.xaml.cs">
+      <DependentUpon>ModelPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\Page404.xaml.cs">
+      <DependentUpon>Page404.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ParameterPage.xaml.cs">
+      <DependentUpon>ParameterPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Pages\ServiceLogPage.xaml.cs">
       <DependentUpon>ServiceLogPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ServicePage.xaml.cs">
+      <DependentUpon>ServicePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\SparePage.xaml.cs">
+      <DependentUpon>SparePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\StatusPage.xaml.cs">
+      <DependentUpon>StatusPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\TypeModelPage.xaml.cs">
+      <DependentUpon>TypeModelPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServiceLogView.xaml.cs">
       <DependentUpon>ServiceLogView.xaml</DependentUpon>
@@ -134,7 +170,43 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Pages\DeptPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\DevicePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\ModelPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\Page404.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\ParameterPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Pages\ServiceLogPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\ServicePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\SparePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\StatusPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\TypeModelPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

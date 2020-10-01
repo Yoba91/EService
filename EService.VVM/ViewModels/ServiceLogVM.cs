@@ -199,7 +199,7 @@ namespace EService.VVM.ViewModels
         public bool ReverseAllTime
         {
             get { return reverseAllTime; }
-            set { reverseAllTime = value; }
+            set { reverseAllTime = value; OnPropertyChanged("ReverseAllTime"); }
         }
         public bool AllTime
         {
@@ -210,7 +210,7 @@ namespace EService.VVM.ViewModels
             set
             {
                 allTime = value;
-                ReverseAllTime = !value;
+                ReverseAllTime = !allTime;
                 if (allTime)
                 {
                     reservedStartDate = startDate.Date;
@@ -223,6 +223,7 @@ namespace EService.VVM.ViewModels
                     startDate = reservedStartDate.Date;
                     SecondDate = reservedEndDate.Date;
                 }
+                OnPropertyChanged("AllTime");
             }
         }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
@@ -370,19 +371,26 @@ namespace EService.VVM.ViewModels
                 {
                     ParametersValues.Clear();
                     ServicesDone.Clear();
-                    SparesUsed.Clear();
-                    foreach (var item in selectedServiceLog.ParametersValues)
+                    SparesUsed.Clear();                    
+                    if (dbContext is SQLiteContext)
                     {
-                        ParametersValues.Add(item);
-                    }
-                    foreach (var item in selectedServiceLog.ServicesDone)
-                    {
-                        ServicesDone.Add(item);
-                    }
-                    foreach (var item in selectedServiceLog.SparesUsed)
-                    {
-                        SparesUsed.Add(item);
-                    }
+                        SQLiteContext context = dbContext as SQLiteContext;
+                        var parametersValues = context.ParameterValue.Where(pv => pv.RowidServiceLog == selectedServiceLog.Rowid).ToList();
+                        var servicesDone = context.ServiceDone.Where(sd => sd.RowidServiceLog == selectedServiceLog.Rowid).ToList();
+                        var sparesUsed = context.SpareUsed.Where(su => su.RowidServiceLog == selectedServiceLog.Rowid).ToList();
+                        foreach (var item in parametersValues)
+                        {
+                            ParametersValues.Add(item);
+                        }
+                        foreach (var item in servicesDone)
+                        {
+                            ServicesDone.Add(item);
+                        }
+                        foreach (var item in sparesUsed)
+                        {
+                            SparesUsed.Add(item);
+                        }
+                    }                    
                 }
                 openEditServiceLogWindow?.RaiseCanExecuteChanged();
                 openDialogWindow?.RaiseCanExecuteChanged();

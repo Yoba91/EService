@@ -17,9 +17,15 @@
 
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                <Button Content="Журнал" Command="{Binding GoToServiceLogCommand}" CommandParameter="{Binding ServiceLogVM}"/>
-                <!--<Button Content="Page 2" Command="{Binding GoToPage2Command}" CommandParameter="{Binding Page2ViewModel}"/>
-                <Button Content="Page 3" Command="{Binding GoToPage3Command}" CommandParameter="{Binding Page3ViewModel}"/>-->
+                <Button Content="Журнал ремонтов" Command="{Binding GoToServiceLogCommand}" CommandParameter="{Binding ServiceLogVM}"/>
+                <Button Content="Типы" Command="{Binding GoToTypeModelCommand}" CommandParameter="{Binding TypeModelVM}"/>
+                <Button Content="Модели" Command="{Binding GoToModelCommand}" CommandParameter="{Binding ModelVM}"/>
+                <Button Content="Устройства" Command="{Binding GoToDeviceCommand}" CommandParameter="{Binding DeviceVM}"/>
+                <Button Content="Параметры" Command="{Binding GoToParameterCommand}" CommandParameter="{Binding ParameterVM}"/>
+                <Button Content="Запчасти" Command="{Binding GoToSpareCommand}" CommandParameter="{Binding SpareVM}"/>
+                <Button Content="Ремонты" Command="{Binding GoToServiceCommand}" CommandParameter="{Binding ServiceVM}"/>
+                <Button Content="Отделы" Command="{Binding GoToDeptCommand}" CommandParameter="{Binding DeptVM}"/>
+                <Button Content="Статусы" Command="{Binding GoToStatusCommand}" CommandParameter="{Binding StatusVM}"/>
             </StackPanel>
         </ScrollViewer>
         <Frame x:Name="MainFrame" Grid.Row="1" Grid.Column="0" Margin="0 0 0 0" NavigationUIVisibility="Hidden"/>
