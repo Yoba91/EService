@@ -17,11 +17,13 @@ namespace EService.VVM
     {
 
         public DisplayRootRegistry displayRootRegistry = new DisplayRootRegistry();
-        ServiceLogVM mainWindowViewModel;
+        //ServiceLogVM mainWindowViewModel;
+        MainVM mainWindowViewModel;
 
         public App()
         {
-            displayRootRegistry.RegisterWindowType<ServiceLogVM, ServiceLogView>();
+            //displayRootRegistry.RegisterWindowType<ServiceLogVM, ServiceLogView>();
+            displayRootRegistry.RegisterWindowType<MainVM, MainWindow>();
             displayRootRegistry.RegisterWindowType<AddServiceLogVM, AddServiceLogView>();
             displayRootRegistry.RegisterWindowType<EditServiceLogVM, EditServiceLogView>();
             displayRootRegistry.RegisterWindowType<DialogVM, DialogView>();
@@ -31,7 +33,8 @@ namespace EService.VVM
         {
             base.OnStartup(e);
 
-            mainWindowViewModel = new ServiceLogVM();
+            //mainWindowViewModel = new ServiceLogVM();
+            mainWindowViewModel = new MainVM(new ViewModelsResolver());
 
             await displayRootRegistry.ShowModalPresentation(mainWindowViewModel);
 

@@ -84,10 +84,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands.cs" />
+    <Compile Include="Navigation\IPageResolver.cs" />
+    <Compile Include="Navigation\IViewModelsResolver.cs" />
+    <Compile Include="Navigation\Navigation.cs" />
+    <Compile Include="Navigation\PagesResolver.cs" />
+    <Compile Include="Navigation\RelayCommand.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
     <Compile Include="ViewModels\DialogVM.cs" />
     <Compile Include="ViewModels\EditServiceLogVM.cs" />
+    <Compile Include="ViewModels\MainVM.cs" />
     <Compile Include="ViewModels\ServiceLogVM.cs" />
+    <Compile Include="ViewModels\ViewModelsResolver.cs" />
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
     </Compile>
@@ -96,6 +103,12 @@
     </Compile>
     <Compile Include="Views\EditServiceLogView.xaml.cs">
       <DependentUpon>EditServiceLogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ServiceLogPage.xaml.cs">
+      <DependentUpon>ServiceLogPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServiceLogView.xaml.cs">
       <DependentUpon>ServiceLogView.xaml</DependentUpon>
@@ -114,6 +127,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditServiceLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\ServiceLogPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -160,6 +181,7 @@
       <Name>EService.Data.Entity</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
