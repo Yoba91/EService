@@ -197,6 +197,10 @@ namespace EService.VVM.ViewModels
         #region Конструктор
         public MainVM(IViewModelsResolver resolver)
         {
+            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string path = (System.IO.Path.GetDirectoryName(executable));
+            AppDomain.CurrentDomain.SetData("DataDirectory", path);
+
             _resolver = resolver;
 
             _serviceLogVM = _resolver.GetViewModelInstance(ServiceLogVMAlias);

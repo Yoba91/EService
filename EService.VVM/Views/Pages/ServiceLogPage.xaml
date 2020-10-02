@@ -17,6 +17,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!--    Основная таблица    -->
 
         <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}">
@@ -32,7 +33,9 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <!--    Основная таблица END    -->
 
+        <!--    Таблицы Запчасти, Работы, Параметры    -->
 
         <Grid Grid.Column="1" Grid.Row="0">
             <Grid.RowDefinitions>
@@ -62,6 +65,7 @@
             </DataGrid>
         </Grid>
 
+        <!--    Таблицы Запчасти, Работы, Параметры END    -->
 
         <Grid x:Name="FilterGrid" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>

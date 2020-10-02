@@ -157,8 +157,7 @@ namespace EService.VVM.ViewModels
             NewService = false;
             selectedServices = new ObservableCollection<ServiceForModel>();
             selectedSpares = new ObservableCollection<SpareForModel>();
-            var sdbContext = SingletonDBContext.GetInstance(new SQLiteContext());
-            dbContext = sdbContext.DBContext;
+            dbContext = SingletonDBContext.GetInstance(new SQLiteContext()).DBContext;
             if (dbContext is SQLiteContext)
             {
                 SQLiteContext context = dbContext as SQLiteContext;
