@@ -92,7 +92,6 @@ namespace EService.VVM.ViewModels
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
-                context.Status.Load();
                 context.Dept.Load();
                 Depts = context.Dept.Local.ToBindingList();
                 context.TypeModel.Load();
