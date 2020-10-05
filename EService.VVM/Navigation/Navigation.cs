@@ -60,11 +60,13 @@ namespace EService.VVM.Navigation
             }
 
             Instance._navService.Navigate(page, context);
+            Navigation._instance.ClearHistory();
         }
 
         public static void Navigate(Page page)
         {
             Navigate(page, null);
+            Navigation._instance.ClearHistory();
         }
 
         public static void Navigate(string uri, object context)
@@ -77,11 +79,13 @@ namespace EService.VVM.Navigation
             var page = Instance._resolver.GetPageInstance(uri);
 
             Navigate(page, context);
+            Navigation._instance.ClearHistory();
         }
 
         public static void Navigate(string uri)
         {
             Navigate(uri, null);
+            Navigation._instance.ClearHistory();
         }
 
         #endregion
@@ -99,6 +103,14 @@ namespace EService.VVM.Navigation
             }
 
             page.DataContext = e.ExtraData;
+        }
+
+        private void ClearHistory()
+        {
+            while (Navigation._instance._navService.CanGoBack)
+            {
+                Navigation._instance._navService.RemoveBackEntry();
+            }            
         }
 
         #endregion

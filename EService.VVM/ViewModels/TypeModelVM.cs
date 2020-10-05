@@ -99,10 +99,6 @@ namespace EService.VVM.ViewModels
                 TypesModelListCreator(typesModelList, null, null);
                 context.Model.Load();
                 Models = context.Model.Local.ToBindingList();
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Devices.Where(d => d.Dept.Rowid == 1).Count() > 0).Count() > 0).Count();
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Rowid == 1).Count() > 0).ToList();
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Devices.Where(d => d.Dept.Rowid == 1).Count() > 0).Count() > 0).ToList();
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Rowid == 1).Count() > 0).Count();
             }
 
         }

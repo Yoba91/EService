@@ -76,14 +76,21 @@ namespace EService.VVM.ViewModels
                         foreach (var item in parameters)
                         {
                             var sl = context.ServiceLog.Where(s => s.Device.Rowid == SelectedDevice.Rowid).ToList().LastOrDefault();
-                            var pv = context.ParameterValue.Where(p => p.RowidServiceLog == sl.Rowid).ToList().LastOrDefault();
-                            if (pv == null)
+                            if(sl != null)
                             {
-                                ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = item.Parameter.Default });
+                                var pv = context.ParameterValue.Where(p => p.RowidServiceLog == sl.Rowid).ToList().LastOrDefault();
+                                if (pv != null)
+                                {
+                                    ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = pv.Value });                                    
+                                }
+                                else
+                                {
+                                    ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = item.Parameter.Default });
+                                }
                             }
                             else
                             {
-                                ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = pv.Value });
+                                ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = item.Parameter.Default });
                             }
                         }
                         var tempServices = context.ServiceForModel.Where(s => s.RowidModel == selectedDevice.RowidModel).ToList();

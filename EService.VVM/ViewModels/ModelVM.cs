@@ -22,7 +22,7 @@ namespace EService.VVM.ViewModels
         private FilterSearch _filterSearch; //Фильтр поиска
         private FilterId _filterDept, _filterTypeModel; //Фильтры по ID
         private List<IFilter> _filters; //Список всех фильтров
-        private ParameterExpression _parameter, _parameterTypeModel, _parameterDept; //Параметр для формирования лямбды фильтрации     
+        private ParameterExpression _parameter, _parameterDept; //Параметр для формирования лямбды фильтрации     
 
         private Dept _selectedDept; //Выбранный отдел
         private TypeModel _selectedTypeModel; //Выбранный тип модели
@@ -38,8 +38,8 @@ namespace EService.VVM.ViewModels
         #endregion
 
         #region Свойства
-        public Dept SelectedDept { get { return _selectedDept; } set { _selectedDept = value; OnPropertyChanged("SelectedDept"); } }
         public MView SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
+        public Dept SelectedDept { get { return _selectedDept; } set { _selectedDept = value; OnPropertyChanged("SelectedDept"); } }        
         public TypeModel SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
         public String Search
         {
@@ -86,23 +86,19 @@ namespace EService.VVM.ViewModels
         {
             InitializeFilters();
             Models = new ObservableCollection<MView>();
-            SelectedDepts = new ObservableCollection<Dept>();
             SelectedTypesModel = new ObservableCollection<TypeModel>();
+            SelectedDepts = new ObservableCollection<Dept>();            
             _dbContext = SingletonDBContext.GetInstance(new SQLiteContext()).DBContext;
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
-                context.Dept.Load();
-                Depts = context.Dept.Local.ToBindingList();
                 context.TypeModel.Load();
-                TypesModel = context.TypeModel.Local.ToBindingList();                
+                TypesModel = context.TypeModel.Local.ToBindingList();
+                context.Dept.Load();
+                Depts = context.Dept.Local.ToBindingList();                               
                 context.Model.Load();
                 var modelsList = context.Model.Local.ToBindingList();
                 ModelsListCreator(modelsList, null);
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Devices.Where(d => d.Dept.Rowid == 1).Count() > 0).Count() > 0).Count();
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Rowid == 1).Count() > 0).ToList();
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Devices.Where(d => d.Dept.Rowid == 1).Count() > 0).Count() > 0).ToList();
-                //TypesModel.Where(tm => tm.Models.Where(m => m.Rowid == 1).Count() > 0).Count();
             }
 
         }
@@ -112,7 +108,6 @@ namespace EService.VVM.ViewModels
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Model), "s");
-            _parameterTypeModel = System.Linq.Expressions.Expression.Parameter(typeof(Model), "s");
             _parameterDept = System.Linq.Expressions.Expression.Parameter(typeof(Device), "s");
             _filterSearch = new FilterSearch(_parameter);
             _filterDept = new FilterId(_parameterDept);
@@ -121,7 +116,6 @@ namespace EService.VVM.ViewModels
             _filters = new List<IFilter>();
 
             _filters.Add(_filterSearch);
-            //_filters.Add(_filterDept);
             _filters.Add(_filterTypeModel);
 
             _filterSearch.FilterCreated += OnFilterChanged;
@@ -142,7 +136,6 @@ namespace EService.VVM.ViewModels
         private void ModelsListCreator(IList<Model> list, Delegate lambdaDept)
         {
             Models.Clear();
-            IList<TypeModel> typesModel = new ObservableCollection<TypeModel>();
             foreach (var item in list)
             {
                 int devicesCount = item.Devices.Count();
@@ -150,7 +143,7 @@ namespace EService.VVM.ViewModels
                 {
                     devicesCount = item.Devices.Where((Func<Device, bool>)lambdaDept).Count();
                 }
-                Models.Add(new MView(item, devicesCount));
+                Models.Add(new MView(item, devicesCount, Models.Count() + 1));
             }
         }
 
@@ -160,11 +153,13 @@ namespace EService.VVM.ViewModels
             {
                 System.Collections.IList temp = null;
 
+                temp = ItemsBuilder.SelectItem(value, SelectedTypesModel, typeof(TypeModel), SelectedTypeModel);
+                if (temp != null) SelectedTypesModel = (ObservableCollection<TypeModel>)temp;
+
                 temp = ItemsBuilder.SelectItem(value, SelectedDepts, typeof(Dept), SelectedDept);
                 if (temp != null) SelectedDepts = (ObservableCollection<Dept>)temp;
 
-                temp = ItemsBuilder.SelectItem(value, SelectedTypesModel, typeof(TypeModel), SelectedTypeModel);
-                if (temp != null) SelectedTypesModel = (ObservableCollection<TypeModel>)temp;
+                
 
                 OnFilterChanged();
             }
@@ -192,8 +187,6 @@ namespace EService.VVM.ViewModels
             }
             if (_filterDept.GetFilter() != null)
                 lambdaD = System.Linq.Expressions.Expression.Lambda<Func<Device, bool>>(_filterDept.GetFilter(), _parameterDept).Compile();
-            //if (_filterTypeModel.GetFilter() != null)
-            //    lambdaM = System.Linq.Expressions.Expression.Lambda<Func<Model, bool>>(_filterTypeModel.GetFilter(), _parameterTypeModel).Compile();
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
@@ -204,7 +197,7 @@ namespace EService.VVM.ViewModels
                     tempModels = tempModels.Where(m => m.Devices.Where((Func<Device, bool>)lambdaD).Count() > 0).ToList();
                 ModelsListCreator(tempModels, lambdaD);
             }
-            SelectedTypeModel = null;
+            SelectedModel = null;
         }
         #endregion
 
@@ -218,11 +211,13 @@ namespace EService.VVM.ViewModels
         {
             public Model Model { get; private set; }
             public int DevicesCount { get; private set; }
+            public int Index { get; set; }
 
-            public MView(Model model, int devicesCount)
+            public MView(Model model, int devicesCount, int index)
             {
                 Model = model;
                 DevicesCount = devicesCount;
+                Index = index;
             }
         }
     }

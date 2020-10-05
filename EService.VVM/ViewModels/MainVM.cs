@@ -214,6 +214,8 @@ namespace EService.VVM.ViewModels
             _statusVM = _resolver.GetViewModelInstance(StatusVMAlias);
 
             InitializeCommands();
+
+            GoToServiceLogCommand.Execute(ServiceLogVM);
         }
         #endregion
         private void InitializeCommands()
