@@ -55,8 +55,9 @@ namespace EService.VVM.ViewModels
                     if (SelectedParameter != null)
                     {
                         context.ParameterForModel.Load();
-                        ParameterForModels = context.ParameterForModel.Local.Where(s => s.Parameter.Rowid == SelectedParameter.Parameter.Rowid).ToList();
-                        Models = context.ParameterForModel.Local.Where(s => s.Parameter.Rowid != SelectedParameter.Parameter.Rowid).ToList().Select(s => s.Model).ToList();
+                        ParameterForModels = context.ParameterForModel.Where(s => s.Parameter.Rowid == SelectedParameter.Parameter.Rowid).ToList();
+                        context.Model.Load();
+                        Models = context.Model.Local.Where(s => ParameterForModels.All(pfm => pfm.Model.Rowid != s.Rowid)).ToList();
                     }
                 }                
                 OnPropertyChanged("SelectedParameter"); 

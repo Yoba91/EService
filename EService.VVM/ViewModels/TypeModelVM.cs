@@ -134,20 +134,6 @@ namespace EService.VVM.ViewModels
             filter.SetWhere(parameters);
             filter.CreateFilter();
         }
-        private void TypesModelListCreator(IList<TypeModel> list)
-        {
-            TypesModel.Clear();
-            foreach (var item in list)
-            {
-                var intList = item.Models.Select(m => m.Devices);
-                int devicesCount = 0;
-                foreach (var itemInt in intList)
-                {
-                    devicesCount += itemInt.Count();
-                }
-                TypesModel.Add(new TMView(item,item.Models.Count(),devicesCount));
-            }
-        }
 
         private void TypesModelListCreator(IList<TypeModel> list, Delegate lambdaDept, Delegate lambdaModel)
         {

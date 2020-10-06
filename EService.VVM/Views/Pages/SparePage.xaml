@@ -9,6 +9,121 @@
       Title="Запчасти" MinHeight="600" MinWidth="800">
 
     <Grid>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="50">Запчасти</TextBlock>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="65"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--    Основная таблица    -->
+        <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=Spares, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedSpare}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="30" Header="№" Binding="{Binding StringFormat={}{0}, Path=Index}" />
+                <DataGridTextColumn Width="0.5*" Header="Название" Binding="{Binding StringFormat={}{0}, Path=Spare.Name}" />
+                <DataGridTextColumn Width="0.8*" Header="Описание" Binding="{Binding Path=Spare.Description}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!--    Основная таблица END    -->
+
+        <!--    Модели привязки    -->
+
+        <Grid x:Name="SpareForModelGrid" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--    Модели    -->
+            <Grid Grid.Column="0" Grid.Row="0" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели <Bold>не</Bold> привязанные к запчасти</TextBlock>
+
+                <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}" Margin="5 0 5 5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Models}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=FullName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <!--    Модели END   -->
+
+            <!--    Модели привязанные к запчасти    -->
+            <Grid Grid.Column="2" Grid.Row="0" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели привязанные к запчасти</TextBlock>
+
+                <ListBox x:Name="ModelsForSpare" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding SpareForModels}" SelectedItem="{Binding SelectedSpareForModel}" Margin="5 0 5 5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=ModelsForSpare}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Model.FullName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <!--    Модели привязанные к запчасти END   -->
+
+            <Button Name="Bind" Grid.Column="1" Height="60" VerticalAlignment="Center">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="&#x2194;" FontSize="30"/>
+                </StackPanel>
+            </Button>
+
+        </Grid>
+
+        <!--    Модели привязки END    -->
+
+        <Grid x:Name="FilterGrid" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="65"/>
+            </Grid.RowDefinitions>
+
+
+            <!--    Поиск    -->
+            <StackPanel Grid.Row="0" x:Name="Search" Margin="5 0 5 5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshServiceLogCommand}">Обновить</Button>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Width="Auto" Height="25" Command="{Binding AddServiceLogCommand}">Добавить</Button>
+                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding EditServiceLogCommand}">Изменить</Button>
+                    <Button Grid.Column="2" Width="Auto" Height="25" Command="{Binding RemoveServiceLogCommand}">Удалить</Button>
+                </Grid>
+            </StackPanel>
+            <!--    Поиск END   -->
+
+        </Grid>
     </Grid>
 </Page>
