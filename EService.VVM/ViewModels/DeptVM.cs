@@ -55,7 +55,11 @@ namespace EService.VVM.ViewModels
             {
                 _search = value;
                 _filterSearch.SetWhat(_search); // Задание поисковой строки
-                _filterSearch.SetWhere("FullName"); // Задание пути для поиска
+                _filterSearch.SetWhere("Name"); // Задание пути для поиска
+                _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
+                _filterSearch.SetWhere("Code"); // Задание пути для поиска
+                _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
+                _filterSearch.SetWhere("Description"); // Задание пути для поиска
                 _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
                 _filterSearch.CreateFilter(); // Создание фильтра
                 OnPropertyChanged("Search");

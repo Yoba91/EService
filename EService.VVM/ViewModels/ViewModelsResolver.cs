@@ -23,6 +23,8 @@ namespace EService.VVM.ViewModels
             _vmResolvers.Add(MainVM.ServiceVMAlias, () => new ServiceVM());
             _vmResolvers.Add(MainVM.DeptVMAlias, () => new DeptVM());
             _vmResolvers.Add(MainVM.StatusVMAlias, () => new StatusVM());
+            _vmResolvers.Add(MainVM.CategoryVMAlias, () => new CategoryVM());
+            _vmResolvers.Add(MainVM.UserVMAlias, () => new UserVM());
             _vmResolvers.Add(MainVM.NotFoundPageVMAlias, () => new Page404VM());
         }
 

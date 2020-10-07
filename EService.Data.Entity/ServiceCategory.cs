@@ -19,10 +19,13 @@ namespace EService.Data.Entity
         long rowid;
         string name;
         string range;
+        int minValue, maxValue;
 
         public long Rowid { get { return rowid; } set { rowid = value; OnPropertyChanged("Rowid"); } }
         public string Name { get { return name; } set { name = value; OnPropertyChanged("Name"); } }
         public string Range { get { return range; } set { range = value; OnPropertyChanged("Range"); } }
+        public int MinValue { get { int.TryParse(range.Split('_')[0], out minValue); return minValue; } set { minValue = value; } }
+        public int MaxValue { get { int.TryParse(range.Split('_')[1], out maxValue); return maxValue; } set { maxValue = value; } }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

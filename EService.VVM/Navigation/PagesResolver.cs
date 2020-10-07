@@ -24,6 +24,8 @@ namespace EService.VVM.Navigation
             _pagesResolvers.Add(Navigation.ServiceAlias, () => new ServicePage());
             _pagesResolvers.Add(Navigation.DeptAlias, () => new DeptPage());
             _pagesResolvers.Add(Navigation.StatusAlias, () => new StatusPage());
+            _pagesResolvers.Add(Navigation.CategoryAlias, () => new CategoryPage());
+            _pagesResolvers.Add(Navigation.UserAlias, () => new UserPage());
             _pagesResolvers.Add(Navigation.NotFoundPageAlias, () => new Page404());
         }
 

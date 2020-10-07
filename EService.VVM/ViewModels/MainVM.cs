@@ -22,6 +22,8 @@ namespace EService.VVM.ViewModels
         public static readonly string ServiceVMAlias = "ServiceVM";
         public static readonly string DeptVMAlias = "DeptVM";
         public static readonly string StatusVMAlias = "StatusVM";
+        public static readonly string CategoryVMAlias = "CategoryVM";
+        public static readonly string UserVMAlias = "UserVM";
         public static readonly string NotFoundPageVMAlias = "Page404VM";
         #endregion
 
@@ -38,6 +40,8 @@ namespace EService.VVM.ViewModels
         private ICommand _goToServiceCommand;
         private ICommand _goToDeptCommand;
         private ICommand _goToStatusCommand;
+        private ICommand _goToCategoryCommand;
+        private ICommand _goToUserCommand;
 
         private readonly INotifyPropertyChanged _serviceLogVM;
         private readonly INotifyPropertyChanged _typeModelVM;
@@ -48,6 +52,8 @@ namespace EService.VVM.ViewModels
         private readonly INotifyPropertyChanged _serviceVM;
         private readonly INotifyPropertyChanged _deptVM;
         private readonly INotifyPropertyChanged _statusVM;
+        private readonly INotifyPropertyChanged _categoryVM;
+        private readonly INotifyPropertyChanged _userVM;
         #endregion
 
         #region Свойства
@@ -155,6 +161,26 @@ namespace EService.VVM.ViewModels
             }
         }
 
+        public ICommand GoToCategoryCommand
+        {
+            get { return _goToCategoryCommand; }
+            set
+            {
+                _goToCategoryCommand = value;
+                RaisePropertyChanged("GoToCategoryCommand");
+            }
+        }
+
+        public ICommand GoToUserCommand
+        {
+            get { return _goToUserCommand; }
+            set
+            {
+                _goToUserCommand = value;
+                RaisePropertyChanged("GoToUserCommand");
+            }
+        }
+
         public INotifyPropertyChanged ServiceLogVM
         {
             get { return _serviceLogVM; }
@@ -191,6 +217,14 @@ namespace EService.VVM.ViewModels
         {
             get { return _statusVM; }
         }
+        public INotifyPropertyChanged CategoryVM
+        {
+            get { return _categoryVM; }
+        }
+        public INotifyPropertyChanged UserVM
+        {
+            get { return _userVM; }
+        }
 
         #endregion
 
@@ -212,6 +246,8 @@ namespace EService.VVM.ViewModels
             _serviceVM = _resolver.GetViewModelInstance(ServiceVMAlias);
             _deptVM = _resolver.GetViewModelInstance(DeptVMAlias);
             _statusVM = _resolver.GetViewModelInstance(StatusVMAlias);
+            _categoryVM = _resolver.GetViewModelInstance(CategoryVMAlias);
+            _userVM = _resolver.GetViewModelInstance(UserVMAlias);
 
             InitializeCommands();
 
@@ -232,6 +268,8 @@ namespace EService.VVM.ViewModels
             GoToServiceCommand = new RelayCommand<INotifyPropertyChanged>(GoToServiceCommandExecute);
             GoToDeptCommand = new RelayCommand<INotifyPropertyChanged>(GoToDeptCommandExecute);
             GoToStatusCommand = new RelayCommand<INotifyPropertyChanged>(GoToStatusCommandExecute);
+            GoToCategoryCommand = new RelayCommand<INotifyPropertyChanged>(GoToCategoryCommandExecute);
+            GoToUserCommand = new RelayCommand<INotifyPropertyChanged>(GoToUserCommandExecute);
         }
 
         private void GoToPathCommandExecute(string alias)
@@ -287,6 +325,16 @@ namespace EService.VVM.ViewModels
         private void GoToStatusCommandExecute(INotifyPropertyChanged viewModel)
         {
             Navigation.Navigation.Navigate(Navigation.Navigation.StatusAlias, StatusVM);
+        }
+
+        private void GoToCategoryCommandExecute(INotifyPropertyChanged viewModel)
+        {
+            Navigation.Navigation.Navigate(Navigation.Navigation.CategoryAlias, CategoryVM);
+        }
+
+        private void GoToUserCommandExecute(INotifyPropertyChanged viewModel)
+        {
+            Navigation.Navigation.Navigate(Navigation.Navigation.UserAlias, UserVM);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

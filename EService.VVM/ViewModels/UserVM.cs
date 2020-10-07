@@ -13,25 +13,26 @@ using System.Threading.Tasks;
 
 namespace EService.VVM.ViewModels
 {
-    class ServiceVM : INotifyPropertyChanged
+    class UserVM : INotifyPropertyChanged
     {
         #region Поля
         private DbContext _dbContext;
         private string _search = String.Empty; //Поисковая строка
 
         private FilterSearch _filterSearch; //Фильтр поиска
+        private FilterId _filterServiceLog; //Фильтры по ID
         private List<IFilter> _filters; //Список всех фильтров
-        private ParameterExpression _parameter; //Параметр для формирования лямбды фильтрации     
+        private ParameterExpression _parameter, _parameterServiceLog; //Параметр для формирования лямбды фильтрации     
 
-        private SView _selectedService; //Выбранный сервис
+        private UView _selectedUser; //Выбранный пользователь
         private Model _selectedModel; //Выбранная модель
-        private ServiceForModel _selectedServiceForModel; //Выбранный сервис привязанный к модели
+        private TypeModel _selectedTypeModel; //Выбранный тип модели
 
         private IList<Model> _selectedModels; //Список выбранных моделей устройств
-        private IList<ServiceForModel> _selectedServiceForModels; //Список выбранных сервисов привязанных к модели
+        private IList<TypeModel> _selectedTypesModel; //Список выбранных моделей устройств
 
         private IList<Model> _models; //Список моделей устройств
-        private IList<ServiceForModel> _serviceForModels; //Список сервисов привязанных к модели
+        private IList<TypeModel> _typesModel; //Список типов моделей устройств
 
         private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
         private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
@@ -40,31 +41,9 @@ namespace EService.VVM.ViewModels
         #endregion
 
         #region Свойства
-        public SView SelectedService
-        {
-            get
-            {
-                return _selectedService;
-            }
-            set
-            {
-                _selectedService = value;
-                if (_dbContext is SQLiteContext)
-                {
-                    SQLiteContext context = _dbContext as SQLiteContext;
-                    if (SelectedService != null)
-                    {
-                        context.ServiceForModel.Load();
-                        ServiceForModels = context.ServiceForModel.Where(s => s.Service.Rowid == SelectedService.Service.Rowid).ToList();
-                        context.Model.Load();
-                        Models = context.Model.Local.Where(s => ServiceForModels.All(sfm => sfm.Model.Rowid != s.Rowid)).ToList();
-                    }
-                }
-                OnPropertyChanged("SelectedService");
-            }
-        }
+        public UView SelectedUser { get { return _selectedUser; } set { _selectedUser = value; OnPropertyChanged("SelectedUser"); } }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
-        public ServiceForModel SelectedServiceForModel { get { return _selectedServiceForModel; } set { _selectedServiceForModel = value; OnPropertyChanged("SelectedServiceForModel"); } }
+        public TypeModel SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
         public String Search
         {
             get { return _search; }
@@ -72,51 +51,61 @@ namespace EService.VVM.ViewModels
             {
                 _search = value;
                 _filterSearch.SetWhat(_search); // Задание поисковой строки
-                _filterSearch.SetWhere("FullName"); // Задание пути для поиска
+                _filterSearch.SetWhere("Name"); // Задание пути для поиска
                 _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
-                _filterSearch.SetWhere("ShortName"); // Задание пути для поиска
+                _filterSearch.SetWhere("Surname"); // Задание пути для поиска
+                _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
+                _filterSearch.SetWhere("Midname"); // Задание пути для поиска
+                _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
+                _filterSearch.SetWhere("FullName"); // Задание пути для поиска
                 _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
                 _filterSearch.CreateFilter(); // Создание фильтра
                 OnPropertyChanged("Search");
             }
         }
-        public IList<SView> Services { get; set; }
+        public IList<UView> Users { get; set; }
         public IList<Model> Models { get { return _models; } set { _models = value; OnPropertyChanged("Models"); } }
-        public IList<ServiceForModel> ServiceForModels { get { return _serviceForModels; } set { _serviceForModels = value; OnPropertyChanged("ServiceForModels"); } }
+        public IList<TypeModel> TypesModel { get { return _typesModel; } set { _typesModel = value; OnPropertyChanged("TypesModel"); } }
         public ObservableCollection<Model> SelectedModels
         {
             get { return (ObservableCollection<Model>)_selectedModels; }
             set
             {
                 _selectedModels = value;
+                SetFilter(SelectedModels, _filterServiceLog,"Device", "Model", "Rowid");
                 OnPropertyChanged("SelectedModels");
             }
         }
-        public ObservableCollection<ServiceForModel> SelectedServiceForModels
+        public ObservableCollection<TypeModel> SelectedTypesModel
         {
-            get { return (ObservableCollection<ServiceForModel>)_selectedServiceForModels; }
+            get { return (ObservableCollection<TypeModel>)_selectedTypesModel; }
             set
             {
-                _selectedServiceForModels = value;
-                OnPropertyChanged("SelectedServiceForModels");
+                _selectedTypesModel = value;
+                SetFilter(SelectedTypesModel, _filterServiceLog, "Device", "Model", "TypeModel", "Rowid");
+                OnPropertyChanged("SelectedTypesModel");
             }
         }
         #endregion
 
         #region Конструктор
-        public ServiceVM()
+        public UserVM()
         {
             InitializeFilters();
-            Services = new ObservableCollection<SView>();
+            Users = new ObservableCollection<UView>();
             SelectedModels = new ObservableCollection<Model>();
-            SelectedServiceForModels = new ObservableCollection<ServiceForModel>();
+            SelectedTypesModel = new ObservableCollection<TypeModel>();
             _dbContext = SingletonDBContext.GetInstance(new SQLiteContext()).DBContext;
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
-                context.Service.Load();
-                var servicesList = context.Service.Local.ToBindingList();
-                ServicesListCreator(servicesList);
+                context.Model.Load();
+                Models = context.Model.Local.ToBindingList();
+                context.TypeModel.Load();
+                TypesModel = context.TypeModel.Local.ToBindingList();
+                context.Repairer.Load();
+                var usersList = context.Repairer.Local.ToBindingList();
+                UsersListCreator(usersList, null);
             }
 
         }
@@ -125,8 +114,10 @@ namespace EService.VVM.ViewModels
         #region Методы
         private void InitializeFilters()
         {
-            _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Service), "s");
+            _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Repairer), "s");
+            _parameterServiceLog = System.Linq.Expressions.Expression.Parameter(typeof(ServiceLog), "s");
             _filterSearch = new FilterSearch(_parameter);
+            _filterServiceLog = new FilterId(_parameterServiceLog);
 
             _filters = new List<IFilter>();
 
@@ -146,12 +137,15 @@ namespace EService.VVM.ViewModels
             filter.SetWhere(parameters);
             filter.CreateFilter();
         }
-        private void ServicesListCreator(IList<Service> list)
+        private void UsersListCreator(IList<Repairer> list, Delegate lambdaServiceLog)
         {
-            Services.Clear();
+            Users.Clear();
             foreach (var item in list)
             {
-                Services.Add(new SView(item, Services.Count() + 1));
+                var serviceLogsCount = item.ServiceLogs.Count();
+                if (lambdaServiceLog != null)
+                    serviceLogsCount = item.ServiceLogs.Where((Func<ServiceLog, bool>)lambdaServiceLog).Count();
+                Users.Add(new UView(item, serviceLogsCount, Users.Count() + 1));
             }
         }
 
@@ -161,11 +155,11 @@ namespace EService.VVM.ViewModels
             {
                 System.Collections.IList temp = null;
 
-                temp = ItemsBuilder.SelectItem(value, SelectedServiceForModels, typeof(ServiceForModel), SelectedServiceForModel);
-                if (temp != null) SelectedServiceForModels = (ObservableCollection<ServiceForModel>)temp;
-
                 temp = ItemsBuilder.SelectItem(value, SelectedModels, typeof(Model), SelectedModel);
                 if (temp != null) SelectedModels = (ObservableCollection<Model>)temp;
+
+                temp = ItemsBuilder.SelectItem(value, SelectedTypesModel, typeof(TypeModel), SelectedTypeModel);
+                if (temp != null) SelectedTypesModel = (ObservableCollection<TypeModel>)temp;
 
                 OnFilterChanged();
             }
@@ -173,9 +167,9 @@ namespace EService.VVM.ViewModels
 
         public void OnFilterChanged()
         {
-            IList<Service> tempServices = new ObservableCollection<Service>();
+            IList<Repairer> tempUsers = new ObservableCollection<Repairer>();
             System.Linq.Expressions.Expression result = null, temp;
-            Delegate lambda = null;
+            Delegate lambda = null, lambdaS = null;
             foreach (var item in _filters)
             {
                 if (result == null)
@@ -189,17 +183,21 @@ namespace EService.VVM.ViewModels
             }
             if (result != null)
             {
-                lambda = System.Linq.Expressions.Expression.Lambda<Func<Service, bool>>(result, _parameter).Compile();
+                lambda = System.Linq.Expressions.Expression.Lambda<Func<Repairer, bool>>(result, _parameter).Compile();
             }
+            if (_filterServiceLog.GetFilter() != null)
+                lambdaS = System.Linq.Expressions.Expression.Lambda<Func<ServiceLog, bool>>(_filterServiceLog.GetFilter(), _parameterServiceLog).Compile();
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
-                tempServices = context.Service.ToList();
+                tempUsers = context.Repairer.ToList();
                 if (lambda != null)
-                    tempServices = context.Service.Where((Func<Service, bool>)lambda).ToList();
-                ServicesListCreator(tempServices);
+                    tempUsers = context.Repairer.Where((Func<Repairer, bool>)lambda).ToList();
+                if (lambdaS != null)
+                    tempUsers = tempUsers.Where(r => r.ServiceLogs.Where((Func<ServiceLog, bool>)lambdaS).Count() > 0).ToList();
+                UsersListCreator(tempUsers, lambdaS);
             }
-            SelectedService = null;
+            SelectedUser = null;
         }
         #endregion
 
@@ -208,14 +206,16 @@ namespace EService.VVM.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public class SView
+        public class UView
         {
-            public Service Service { get; private set; }
+            public Repairer User { get; private set; }
+            public int ServiceLogsCount { get; set; }
             public int Index { get; set; }
 
-            public SView(Service service, int index)
+            public UView(Repairer user, int serviceLogsCount, int index)
             {
-                Service = service;
+                User = user;
+                ServiceLogsCount = serviceLogsCount;
                 Index = index;
             }
         }

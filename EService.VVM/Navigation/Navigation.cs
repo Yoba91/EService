@@ -20,6 +20,8 @@ namespace EService.VVM.Navigation
         public static readonly string ServiceAlias = "Service";
         public static readonly string DeptAlias = "Dept";
         public static readonly string StatusAlias = "Status";
+        public static readonly string CategoryAlias = "Category";
+        public static readonly string UserAlias = "User";
         public static readonly string NotFoundPageAlias = "Page404";
         #endregion
 
