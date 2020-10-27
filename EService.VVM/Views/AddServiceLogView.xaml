@@ -13,6 +13,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBox x:Name="Search" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Grid.Row="0" Margin="3 3 3 3"/>
+        <TextBlock Text="Поиск" Tag="{Binding ElementName=Search}" Style="{StaticResource PlaceholderStyle}" Grid.Row="0"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.5*"/>

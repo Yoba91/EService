@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -37,14 +38,60 @@ namespace EService.VVM.ViewModels
         private IList<TypeModel> _typesModel; //Список типов моделей устройств
         private IList<Status> _statuses; //Список статусов устройств
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddDeptWindow; //Команда открытия окна добавления отдела
+        private IDelegateCommand _openEditDeptWindow; //Команда открытия окна изменения отдела
+        private IDelegateCommand _refreshDeptWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
-        public DView SelectedDept { get { return _selectedDept; } set { _selectedDept = value; OnPropertyChanged("SelectedService"); } }
+        //Команды для кнопок
+        public IDelegateCommand AddDeptCommand
+        {
+            get
+            {
+                if (_openAddDeptWindow == null)
+                {
+                    _openAddDeptWindow = new OpenWindowCommand(ExecuteAddDept, this);
+                }
+                return _openAddDeptWindow;
+            }
+        }
+        public IDelegateCommand EditDeptCommand
+        {
+            get
+            {
+                if (_openEditDeptWindow == null)
+                {
+                    _openEditDeptWindow = new OpenWindowCommand(ExecuteEditDept, CanExecuteEditDept, this);
+                }
+                return _openEditDeptWindow;
+            }
+        }
+        public IDelegateCommand RemoveDeptCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEditDept, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshDeptCommand
+        {
+            get
+            {
+                if (_refreshDeptWindow == null)
+                {
+                    _refreshDeptWindow = new DelegateCommand(ExecuteRefreshDept);
+                }
+                return _refreshDeptWindow;
+            }
+        }
+        //Свойства модели
+        public DView SelectedDept { get { return _selectedDept; } set { _selectedDept = value; OnPropertyChanged("SelectedService"); _openEditDeptWindow?.RaiseCanExecuteChanged(); _openDialogWindow?.RaiseCanExecuteChanged(); } }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
         public TypeModel SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
         public Status SelectedStatus { get { return _selectedStatus; } set { _selectedStatus = value; OnPropertyChanged("SelectedStatus"); } }
@@ -128,6 +175,49 @@ namespace EService.VVM.ViewModels
         #endregion
 
         #region Методы
+        //Обработчики для команд
+        private void ExecuteAddDept(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addDeptVM = new AddDeptVM();
+            displayRootRegistry.ShowPresentation(addDeptVM);
+        }
+        private async void ExecuteEditDept(object parameter)
+        {
+            //var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            //var editDeptVM = new EditDeptVM(_selectedDept.Dept.Rowid);
+            //await displayRootRegistry.ShowModalPresentation(editDeptVM);
+        }
+        private void ExecuteRemoveDept(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Dept.Remove(_selectedDept.Dept);
+                context.SaveChanges();
+                SelectedDept = null;
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefreshDept(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить отдел {0}({1}), и все связанные с ним устройства и записи?", _selectedDept.Dept.Name, _selectedDept.Dept.Code);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление отела", message, ExecuteRemoveDept);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEditDept(object parameter)
+        {
+            if (_selectedDept != null)
+                return true;
+            return false;
+        }
+
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Dept), "s");
@@ -226,6 +316,28 @@ namespace EService.VVM.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
+
+        public class OpenWindowCommand : DelegateCommand
+        {
+            public OpenWindowCommand(Action<object> execute, DeptVM main) : base(execute)
+            {
+            }
+
+            public OpenWindowCommand(Action<object> execute, Func<object, bool> canExecute, DeptVM main) : base(execute, canExecute)
+            {
+            }
+
+            public override void Execute(object parameter)
+            {
+                base.Execute(parameter);
+            }
+
+            public override bool CanExecute(object parameter)
+            {
+                return base.CanExecute(parameter);
+            }
+        }
+
         public class DView
         {
             public Dept Dept { get; private set; }

@@ -26,6 +26,7 @@ namespace EService.VVM
             displayRootRegistry.RegisterWindowType<MainVM, MainWindow>();
             displayRootRegistry.RegisterWindowType<AddServiceLogVM, AddServiceLogView>();
             displayRootRegistry.RegisterWindowType<EditServiceLogVM, EditServiceLogView>();
+            displayRootRegistry.RegisterWindowType<AddDeptVM, AddDeptView>();
             displayRootRegistry.RegisterWindowType<DialogVM, DialogView>();
         }
 

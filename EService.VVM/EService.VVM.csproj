@@ -89,6 +89,7 @@
     <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\PagesResolver.cs" />
     <Compile Include="Navigation\RelayCommand.cs" />
+    <Compile Include="ViewModels\AddDeptVM.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
     <Compile Include="ViewModels\CategoryVM.cs" />
     <Compile Include="ViewModels\DeptVM.cs" />
@@ -106,6 +107,9 @@
     <Compile Include="ViewModels\TypeModelVM.cs" />
     <Compile Include="ViewModels\UserVM.cs" />
     <Compile Include="ViewModels\ViewModelsResolver.cs" />
+    <Compile Include="Views\AddDeptView.xaml.cs">
+      <DependentUpon>AddDeptView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
     </Compile>
@@ -162,6 +166,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DisplayRootRegistry.cs" />
+    <Page Include="Placeholder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddDeptView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddServiceLogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

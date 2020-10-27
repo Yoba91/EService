@@ -89,7 +89,8 @@
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBox x:Name="SearchText" Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBlock Grid.Column="0" Text="Поиск" Tag="{Binding ElementName=SearchText}" Style="{StaticResource PlaceholderStyle}" Margin="5 8 5 5"/>
                     <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshServiceLogCommand}">Обновить</Button>
                 </Grid>
                 <Grid>
