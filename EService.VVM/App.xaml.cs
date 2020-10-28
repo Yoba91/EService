@@ -32,6 +32,8 @@ namespace EService.VVM
             displayRootRegistry.RegisterWindowType<EditStatusVM, EditStatusView>();
             displayRootRegistry.RegisterWindowType<AddTypeModelVM, AddTypeModelView>();
             displayRootRegistry.RegisterWindowType<EditTypeModelVM, EditTypeModelView>();
+            displayRootRegistry.RegisterWindowType<AddModelVM, AddModelView>();
+            displayRootRegistry.RegisterWindowType<EditModelVM, EditModelView>();
             displayRootRegistry.RegisterWindowType<DialogVM, DialogView>();
         }
 

@@ -90,6 +90,7 @@
     <Compile Include="Navigation\PagesResolver.cs" />
     <Compile Include="Navigation\RelayCommand.cs" />
     <Compile Include="ViewModels\AddDeptVM.cs" />
+    <Compile Include="ViewModels\AddModelVM.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
     <Compile Include="ViewModels\AddStatusVM.cs" />
     <Compile Include="ViewModels\AddTypeModelVM.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="ViewModels\DeviceVM.cs" />
     <Compile Include="ViewModels\DialogVM.cs" />
     <Compile Include="ViewModels\EditDeptVM.cs" />
+    <Compile Include="ViewModels\EditModelVM.cs" />
     <Compile Include="ViewModels\EditServiceLogVM.cs" />
     <Compile Include="ViewModels\EditStatusVM.cs" />
     <Compile Include="ViewModels\EditTypeModelVM.cs" />
@@ -116,6 +118,9 @@
     <Compile Include="Views\AddDeptView.xaml.cs">
       <DependentUpon>AddDeptView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddModelView.xaml.cs">
+      <DependentUpon>AddModelView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
     </Compile>
@@ -130,6 +135,9 @@
     </Compile>
     <Compile Include="Views\EditDeptView.xaml.cs">
       <DependentUpon>EditDeptView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditModelView.xaml.cs">
+      <DependentUpon>EditModelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditServiceLogView.xaml.cs">
       <DependentUpon>EditServiceLogView.xaml</DependentUpon>
@@ -195,6 +203,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddModelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddServiceLogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -212,6 +224,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditDeptView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditModelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

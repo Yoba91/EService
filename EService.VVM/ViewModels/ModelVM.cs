@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -38,7 +39,53 @@ namespace EService.VVM.ViewModels
         #endregion
 
         #region Свойства
-        public MView SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
+        //Команды для кнопок
+        public IDelegateCommand AddModelCommand
+        {
+            get
+            {
+                if (_openAddModelWindow == null)
+                {
+                    _openAddModelWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddModelWindow;
+            }
+        }
+        public IDelegateCommand EditModelCommand
+        {
+            get
+            {
+                if (_openEditModelWindow == null)
+                {
+                    _openEditModelWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditModelWindow;
+            }
+        }
+        public IDelegateCommand RemoveModelCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshModelCommand
+        {
+            get
+            {
+                if (_refreshModelWindow == null)
+                {
+                    _refreshModelWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshModelWindow;
+            }
+        }
+        //Свойства модели
+        public MView SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); _openEditModelWindow?.RaiseCanExecuteChanged(); _openDialogWindow?.RaiseCanExecuteChanged(); } }
         public Dept SelectedDept { get { return _selectedDept; } set { _selectedDept = value; OnPropertyChanged("SelectedDept"); } }        
         public TypeModel SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
         public String Search
@@ -198,6 +245,48 @@ namespace EService.VVM.ViewModels
                 ModelsListCreator(tempModels, lambdaD);
             }
             SelectedModel = null;
+        }
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addModelVM = new AddModelVM();
+            displayRootRegistry.ShowPresentation(addModelVM);
+        }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editModelVM = new EditModelVM(_selectedModel.Model.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editModelVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Model.Remove(_selectedModel.Model);
+                context.SaveChanges();
+                SelectedModel = null;
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить модель устройства {0}({1}), и все связанные с ним устройства и записи?", _selectedModel.Model.FullName, _selectedModel.Model.ShortName);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление модели", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedModel != null)
+                return true;
+            return false;
         }
         #endregion
 
