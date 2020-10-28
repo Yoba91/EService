@@ -17,7 +17,7 @@ using System.Security.Principal;
 
 namespace EService.VVM.ViewModels
 {
-    public class ServiceLogVM : INotifyPropertyChanged
+    public class ServiceLogVM : BaseVM
     {
         #region Поля
         //Поля модели представления
@@ -526,35 +526,7 @@ namespace EService.VVM.ViewModels
             OnFilterChanged();
         }
 
-        #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-       
-    }
-
-    public class OpenWindowCommand : DelegateCommand
-    {
-        public OpenWindowCommand(Action<object> execute, ServiceLogVM main) : base(execute)
-        {
-        }
-
-        public OpenWindowCommand(Action<object> execute, Func<object, bool> canExecute, ServiceLogVM main) : base(execute, canExecute)
-        {
-        }
-
-        public override void Execute(object parameter)
-        {
-            base.Execute(parameter);
-        }
-
-        public override bool CanExecute(object parameter)
-        {
-            return base.CanExecute(parameter);
-        }
+        #endregion        
     }
 
 }

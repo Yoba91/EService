@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    public class EditServiceLogVM : INotifyPropertyChanged
+    public class EditServiceLogVM : BaseVM
     {
         private DbContext dbContext;
         private ServiceLog serviceLog;
@@ -199,12 +199,6 @@ namespace EService.VVM.ViewModels
             }
             Date = serviceLog.DateTime;
             Title = String.Format("Изменить {0} I/N - \"{1}\" | S/N - \"{2}\"", serviceLog.Device.Model.TypeModel.ShortName, serviceLog.Device.InventoryNumber, serviceLog.Device.SerialNumber);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

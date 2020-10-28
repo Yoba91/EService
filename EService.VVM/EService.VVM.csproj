@@ -91,11 +91,17 @@
     <Compile Include="Navigation\RelayCommand.cs" />
     <Compile Include="ViewModels\AddDeptVM.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
+    <Compile Include="ViewModels\AddStatusVM.cs" />
+    <Compile Include="ViewModels\AddTypeModelVM.cs" />
+    <Compile Include="ViewModels\BaseVM.cs" />
     <Compile Include="ViewModels\CategoryVM.cs" />
     <Compile Include="ViewModels\DeptVM.cs" />
     <Compile Include="ViewModels\DeviceVM.cs" />
     <Compile Include="ViewModels\DialogVM.cs" />
+    <Compile Include="ViewModels\EditDeptVM.cs" />
     <Compile Include="ViewModels\EditServiceLogVM.cs" />
+    <Compile Include="ViewModels\EditStatusVM.cs" />
+    <Compile Include="ViewModels\EditTypeModelVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
     <Compile Include="ViewModels\ModelVM.cs" />
     <Compile Include="ViewModels\Page404VM.cs" />
@@ -113,11 +119,26 @@
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddStatusView.xaml.cs">
+      <DependentUpon>AddStatusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddTypeModelView.xaml.cs">
+      <DependentUpon>AddTypeModelView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditDeptView.xaml.cs">
+      <DependentUpon>EditDeptView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditServiceLogView.xaml.cs">
       <DependentUpon>EditServiceLogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditStatusView.xaml.cs">
+      <DependentUpon>EditStatusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditTypeModelView.xaml.cs">
+      <DependentUpon>EditTypeModelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -178,11 +199,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddStatusView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddTypeModelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EditDeptView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditServiceLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditStatusView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditTypeModelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

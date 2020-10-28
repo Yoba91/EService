@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EService.VVM.ViewModels
 {
-    class SpareVM : INotifyPropertyChanged
+    class SpareVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -200,12 +200,6 @@ namespace EService.VVM.ViewModels
             SelectedSpare = null;
         }
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
         public class SView
         {
             public Spare Spare { get; private set; }

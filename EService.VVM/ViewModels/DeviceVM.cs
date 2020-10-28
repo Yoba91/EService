@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EService.VVM.ViewModels
 {
-    class DeviceVM : INotifyPropertyChanged
+    class DeviceVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -234,12 +234,6 @@ namespace EService.VVM.ViewModels
             SelectedDevice = null;
         }
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
 
         public class DView
         {

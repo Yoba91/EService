@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EService.VVM.ViewModels
 {
-    class ParameterVM : INotifyPropertyChanged
+    class ParameterVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -200,12 +200,7 @@ namespace EService.VVM.ViewModels
             SelectedParameter = null;
         }
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+                
         public class PView
         {
             public Parameter Parameter { get; private set; }

@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    public class DialogVM : INotifyPropertyChanged
+    public class DialogVM : BaseVM
     {
         string title;
         string message;
@@ -44,11 +44,6 @@ namespace EService.VVM.ViewModels
             win.Close();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
         private DialogVM()
         {
 

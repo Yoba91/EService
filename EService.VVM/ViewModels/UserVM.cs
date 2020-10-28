@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EService.VVM.ViewModels
 {
-    class UserVM : INotifyPropertyChanged
+    class UserVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -200,12 +200,6 @@ namespace EService.VVM.ViewModels
             SelectedUser = null;
         }
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
         public class UView
         {
             public Repairer User { get; private set; }

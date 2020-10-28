@@ -10,10 +10,11 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    public class TypeModelVM : INotifyPropertyChanged
+    public class TypeModelVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -38,8 +39,54 @@ namespace EService.VVM.ViewModels
         #endregion
 
         #region Свойства
+        //Команды для кнопок
+        public IDelegateCommand AddTypeModelCommand
+        {
+            get
+            {
+                if (_openAddTypeModelWindow == null)
+                {
+                    _openAddTypeModelWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddTypeModelWindow;
+            }
+        }
+        public IDelegateCommand EditTypeModelCommand
+        {
+            get
+            {
+                if (_openEditTypeModelWindow == null)
+                {
+                    _openEditTypeModelWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditTypeModelWindow;
+            }
+        }
+        public IDelegateCommand RemoveTypeModelCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshTypeModelCommand
+        {
+            get
+            {
+                if (_refreshTypeModelWindow == null)
+                {
+                    _refreshTypeModelWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshTypeModelWindow;
+            }
+        }
+        //Свойства модели
         public Dept SelectedDept { get { return _selectedDept; } set { _selectedDept = value; OnPropertyChanged("SelectedDept"); } }
-        public TMView SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
+        public TMView SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); _openEditTypeModelWindow?.RaiseCanExecuteChanged(); _openDialogWindow?.RaiseCanExecuteChanged(); } }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
         public String Search
         {
@@ -220,13 +267,49 @@ namespace EService.VVM.ViewModels
             }
             SelectedTypeModel = null;
         }
-        #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addTypeModelVM = new AddTypeModelVM();
+            displayRootRegistry.ShowPresentation(addTypeModelVM);
         }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editTypeModelVM = new EditTypeModelVM(_selectedTypeModel.TypeModel.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editTypeModelVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.TypeModel.Remove(_selectedTypeModel.TypeModel);
+                context.SaveChanges();
+                SelectedTypeModel = null;
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить тип {0}, и все связанные с ним устройства и записи?", _selectedTypeModel.TypeModel.FullName);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление типа", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedTypeModel != null)
+                return true;
+            return false;
+        }
+        #endregion
 
         public class TMView
         {

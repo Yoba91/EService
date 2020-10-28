@@ -10,10 +10,11 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    class StatusVM : INotifyPropertyChanged
+    class StatusVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -34,14 +35,60 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<TypeModel> _typesModel; //Список типов моделей устройств
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddStatusWindow; //Команда открытия окна добавления статуса
+        private IDelegateCommand _openEditStatusWindow; //Команда открытия окна изменения статуса
+        private IDelegateCommand _refreshStatusWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
-        public SView SelectedStatus { get { return _selectedStatus; } set { _selectedStatus = value; OnPropertyChanged("SelectedStatus"); } }
+        //Команды для кнопок
+        public IDelegateCommand AddStatusCommand
+        {
+            get
+            {
+                if (_openAddStatusWindow == null)
+                {
+                    _openAddStatusWindow = new OpenWindowCommand(ExecuteAddStatus, this);
+                }
+                return _openAddStatusWindow;
+            }
+        }
+        public IDelegateCommand EditStatusCommand
+        {
+            get
+            {
+                if (_openEditStatusWindow == null)
+                {
+                    _openEditStatusWindow = new OpenWindowCommand(ExecuteEditStatus, CanExecuteEditStatus, this);
+                }
+                return _openEditStatusWindow;
+            }
+        }
+        public IDelegateCommand RemoveStatusCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEditStatus, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshStatusCommand
+        {
+            get
+            {
+                if (_refreshStatusWindow == null)
+                {
+                    _refreshStatusWindow = new DelegateCommand(ExecuteRefreshStatus);
+                }
+                return _refreshStatusWindow;
+            }
+        }
+        //Свойства модели
+        public SView SelectedStatus { get { return _selectedStatus; } set { _selectedStatus = value; OnPropertyChanged("SelectedStatus"); _openEditStatusWindow?.RaiseCanExecuteChanged(); _openDialogWindow?.RaiseCanExecuteChanged(); } }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
         public TypeModel SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
         public String Search
@@ -194,13 +241,50 @@ namespace EService.VVM.ViewModels
             }
             SelectedStatus = null;
         }
+        //Обработчики для команд
+        private void ExecuteAddStatus(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addStatusVM = new AddStatusVM();
+            displayRootRegistry.ShowPresentation(addStatusVM);
+        }
+        private async void ExecuteEditStatus(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editStatusVM = new EditStatusVM(_selectedStatus.Status.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editStatusVM);
+        }
+        private void ExecuteRemoveStatus(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Status.Remove(_selectedStatus.Status);
+                context.SaveChanges();
+                SelectedStatus = null;
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefreshStatus(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить статус {0}, и все связанные с ним устройства и записи?", _selectedStatus.Status.Name);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление статуса", message, ExecuteRemoveStatus);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEditStatus(object parameter)
+        {
+            if (_selectedStatus != null)
+                return true;
+            return false;
+        }
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
         public class SView
         {
             public Status Status { get; private set; }

@@ -2,48 +2,41 @@
 using EService.Data.Entity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    public class AddDeptVM : BaseVM
+    public class AddStatusVM : BaseVM
     {
         #region Поля
-        private String _name, _code, _description;
+        private String _name;
         private DbContext _dbContext;
 
-        private IDelegateCommand _addDept;
+        private IDelegateCommand _addStatus;
         #endregion
         #region Свойства
-        public String Name { get { return _name; } set { _name = value; this.AddDept.RaiseCanExecuteChanged(); } }
-        public String Code { get { return _code; } set { _code = value; this.AddDept.RaiseCanExecuteChanged(); } }
-        public String Description { get { return _description; } set { _description = value; this.AddDept.RaiseCanExecuteChanged(); } }
-
-        public IDelegateCommand AddDept
+        public String Name { get { return _name; } set { _name = value; this.AddStatus.RaiseCanExecuteChanged(); } }
+        public IDelegateCommand AddStatus
         {
             get
             {
-                if (_addDept == null)
+                if (_addStatus == null)
                 {
-                    _addDept = new DelegateCommand(OpenDialog, CanExecuteAdd);
+                    _addStatus = new DelegateCommand(OpenDialog, CanExecuteAdd);
                 }
-                return _addDept;
+                return _addStatus;
             }
         }
 
         #endregion
         #region Конструкторы
-        public AddDeptVM()
+        public AddStatusVM()
         {
-            Name = String.Empty;
-            Code = String.Empty;
-            Description = String.Empty;
+            Name = String.Empty;            
             var sdbContext = SingletonDBContext.GetInstance(new SQLiteContext());
             _dbContext = sdbContext.DBContext;
         }
@@ -51,24 +44,22 @@ namespace EService.VVM.ViewModels
         #region Методы
         private void ExecuteAdd(object parameter)
         {
-            Dept dept = new Dept()
+            Status status = new Status()
             {
-                Name = this.Name,
-                Code = this.Code,
-                Description = this.Description
+                Name = this.Name
             };
 
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
-                context.Dept.Add(dept);
+                context.Status.Add(status);
                 context.SaveChanges();
             }
         }
 
         private bool CanExecuteAdd(object parameter)
         {
-            if ((Name != String.Empty) && (Code != String.Empty) && (Description != String.Empty))
+            if (Name != String.Empty)
                 return true;
             return false;
         }
@@ -76,7 +67,7 @@ namespace EService.VVM.ViewModels
         private async void OpenDialog(object parameter)
         {
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
-            var openDialog = new DialogVM("Новый отдел", "Вы действительно хотите добавить новый отдел?", ExecuteAdd);
+            var openDialog = new DialogVM("Новый статус", "Вы действительно хотите добавить новый статус?", ExecuteAdd);
             await displayRootRegistry.ShowModalPresentation(openDialog);
         }
         #endregion

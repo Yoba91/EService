@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    class DeptVM : INotifyPropertyChanged
+    class DeptVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -23,7 +23,7 @@ namespace EService.VVM.ViewModels
         private FilterSearch _filterSearch; //Фильтр поиска
         private FilterId _filterDevice; //Фильтры по ID
         private List<IFilter> _filters; //Список всех фильтров
-        private ParameterExpression _parameter, _parameterModel, _parameterDevice; //Параметр для формирования лямбды фильтрации     
+        private ParameterExpression _parameter, _parameterDevice; //Параметр для формирования лямбды фильтрации     
 
         private DView _selectedDept; //Выбранный отдел
         private Model _selectedModel; //Выбранная модель
@@ -52,7 +52,7 @@ namespace EService.VVM.ViewModels
             {
                 if (_openAddDeptWindow == null)
                 {
-                    _openAddDeptWindow = new OpenWindowCommand(ExecuteAddDept, this);
+                    _openAddDeptWindow = new OpenWindowCommand(ExecuteAdd, this);
                 }
                 return _openAddDeptWindow;
             }
@@ -63,7 +63,7 @@ namespace EService.VVM.ViewModels
             {
                 if (_openEditDeptWindow == null)
                 {
-                    _openEditDeptWindow = new OpenWindowCommand(ExecuteEditDept, CanExecuteEditDept, this);
+                    _openEditDeptWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
                 }
                 return _openEditDeptWindow;
             }
@@ -74,7 +74,7 @@ namespace EService.VVM.ViewModels
             {
                 if (_openDialogWindow == null)
                 {
-                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEditDept, this);
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
                 }
                 return _openDialogWindow;
             }
@@ -85,7 +85,7 @@ namespace EService.VVM.ViewModels
             {
                 if (_refreshDeptWindow == null)
                 {
-                    _refreshDeptWindow = new DelegateCommand(ExecuteRefreshDept);
+                    _refreshDeptWindow = new DelegateCommand(ExecuteRefresh);
                 }
                 return _refreshDeptWindow;
             }
@@ -175,49 +175,6 @@ namespace EService.VVM.ViewModels
         #endregion
 
         #region Методы
-        //Обработчики для команд
-        private void ExecuteAddDept(object parameter)
-        {
-            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
-            var addDeptVM = new AddDeptVM();
-            displayRootRegistry.ShowPresentation(addDeptVM);
-        }
-        private async void ExecuteEditDept(object parameter)
-        {
-            //var displayRootRegistry = (Application.Current as App).displayRootRegistry;
-            //var editDeptVM = new EditDeptVM(_selectedDept.Dept.Rowid);
-            //await displayRootRegistry.ShowModalPresentation(editDeptVM);
-        }
-        private void ExecuteRemoveDept(object parameter)
-        {
-            if (_dbContext is SQLiteContext)
-            {
-                SQLiteContext context = _dbContext as SQLiteContext;
-                context.Configuration.LazyLoadingEnabled = false;
-                context.Dept.Remove(_selectedDept.Dept);
-                context.SaveChanges();
-                SelectedDept = null;
-                OnFilterChanged();
-            }
-        }
-        private void ExecuteRefreshDept(object parameter)
-        {
-            OnFilterChanged();
-        }
-        private async void OpenDialog(object parameter)
-        {
-            var message = String.Format("Вы действительно хотите удалить отдел {0}({1}), и все связанные с ним устройства и записи?", _selectedDept.Dept.Name, _selectedDept.Dept.Code);
-            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
-            var openDialog = new DialogVM("Удаление отела", message, ExecuteRemoveDept);
-            await displayRootRegistry.ShowModalPresentation(openDialog);
-        }
-        private bool CanExecuteEditDept(object parameter)
-        {
-            if (_selectedDept != null)
-                return true;
-            return false;
-        }
-
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Dept), "s");
@@ -309,34 +266,49 @@ namespace EService.VVM.ViewModels
             }
             SelectedDept = null;
         }
-        #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addDeptVM = new AddDeptVM();
+            displayRootRegistry.ShowPresentation(addDeptVM);
         }
-
-        public class OpenWindowCommand : DelegateCommand
+        private async void ExecuteEdit(object parameter)
         {
-            public OpenWindowCommand(Action<object> execute, DeptVM main) : base(execute)
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editDeptVM = new EditDeptVM(_selectedDept.Dept.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editDeptVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
             {
-            }
-
-            public OpenWindowCommand(Action<object> execute, Func<object, bool> canExecute, DeptVM main) : base(execute, canExecute)
-            {
-            }
-
-            public override void Execute(object parameter)
-            {
-                base.Execute(parameter);
-            }
-
-            public override bool CanExecute(object parameter)
-            {
-                return base.CanExecute(parameter);
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Dept.Remove(_selectedDept.Dept);
+                context.SaveChanges();
+                SelectedDept = null;
+                OnFilterChanged();
             }
         }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить отдел {0}({1}), и все связанные с ним устройства и записи?", _selectedDept.Dept.Name, _selectedDept.Dept.Code);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление отела", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedDept != null)
+                return true;
+            return false;
+        }
+        #endregion        
 
         public class DView
         {

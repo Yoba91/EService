@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EService.VVM.ViewModels
 {
-    public class CategoryVM : INotifyPropertyChanged
+    public class CategoryVM : BaseVM
     {
         #region Поля
         private DbContext _dbContext;
@@ -131,11 +131,6 @@ namespace EService.VVM.ViewModels
         }
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
         public class SCView
         {
             public ServiceCategory ServiceCategory { get; private set; }

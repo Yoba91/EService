@@ -27,6 +27,11 @@ namespace EService.VVM
             displayRootRegistry.RegisterWindowType<AddServiceLogVM, AddServiceLogView>();
             displayRootRegistry.RegisterWindowType<EditServiceLogVM, EditServiceLogView>();
             displayRootRegistry.RegisterWindowType<AddDeptVM, AddDeptView>();
+            displayRootRegistry.RegisterWindowType<EditDeptVM, EditDeptView>();
+            displayRootRegistry.RegisterWindowType<AddStatusVM, AddStatusView>();
+            displayRootRegistry.RegisterWindowType<EditStatusVM, EditStatusView>();
+            displayRootRegistry.RegisterWindowType<AddTypeModelVM, AddTypeModelView>();
+            displayRootRegistry.RegisterWindowType<EditTypeModelVM, EditTypeModelView>();
             displayRootRegistry.RegisterWindowType<DialogVM, DialogView>();
         }
 

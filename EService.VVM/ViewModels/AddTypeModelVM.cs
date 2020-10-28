@@ -2,48 +2,44 @@
 using EService.Data.Entity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    public class AddDeptVM : BaseVM
+    public class AddTypeModelVM : BaseVM
     {
         #region Поля
-        private String _name, _code, _description;
+        private String _fullName, _shortName;
         private DbContext _dbContext;
 
-        private IDelegateCommand _addDept;
+        private IDelegateCommand _addTypeModel;
         #endregion
         #region Свойства
-        public String Name { get { return _name; } set { _name = value; this.AddDept.RaiseCanExecuteChanged(); } }
-        public String Code { get { return _code; } set { _code = value; this.AddDept.RaiseCanExecuteChanged(); } }
-        public String Description { get { return _description; } set { _description = value; this.AddDept.RaiseCanExecuteChanged(); } }
+        public String FullName { get { return _fullName; } set { _fullName = value; this.AddTypeModel.RaiseCanExecuteChanged(); } }
+        public String ShortName { get { return _shortName; } set { _shortName = value; this.AddTypeModel.RaiseCanExecuteChanged(); } }
 
-        public IDelegateCommand AddDept
+        public IDelegateCommand AddTypeModel
         {
             get
             {
-                if (_addDept == null)
+                if (_addTypeModel == null)
                 {
-                    _addDept = new DelegateCommand(OpenDialog, CanExecuteAdd);
+                    _addTypeModel = new DelegateCommand(OpenDialog, CanExecuteAdd);
                 }
-                return _addDept;
+                return _addTypeModel;
             }
         }
 
         #endregion
         #region Конструкторы
-        public AddDeptVM()
+        public AddTypeModelVM()
         {
-            Name = String.Empty;
-            Code = String.Empty;
-            Description = String.Empty;
+            FullName = String.Empty;
+            ShortName = String.Empty;
             var sdbContext = SingletonDBContext.GetInstance(new SQLiteContext());
             _dbContext = sdbContext.DBContext;
         }
@@ -51,24 +47,23 @@ namespace EService.VVM.ViewModels
         #region Методы
         private void ExecuteAdd(object parameter)
         {
-            Dept dept = new Dept()
+            TypeModel typeModel = new TypeModel()
             {
-                Name = this.Name,
-                Code = this.Code,
-                Description = this.Description
+                FullName = this.FullName,
+                ShortName = this.ShortName
             };
 
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
-                context.Dept.Add(dept);
+                context.TypeModel.Add(typeModel);
                 context.SaveChanges();
             }
         }
 
         private bool CanExecuteAdd(object parameter)
         {
-            if ((Name != String.Empty) && (Code != String.Empty) && (Description != String.Empty))
+            if ((FullName != String.Empty) && (ShortName != String.Empty))
                 return true;
             return false;
         }
@@ -76,7 +71,7 @@ namespace EService.VVM.ViewModels
         private async void OpenDialog(object parameter)
         {
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
-            var openDialog = new DialogVM("Новый отдел", "Вы действительно хотите добавить новый отдел?", ExecuteAdd);
+            var openDialog = new DialogVM("Новый тип", "Вы действительно хотите добавить новый тип?", ExecuteAdd);
             await displayRootRegistry.ShowModalPresentation(openDialog);
         }
         #endregion

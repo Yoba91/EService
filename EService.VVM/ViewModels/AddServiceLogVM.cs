@@ -15,7 +15,7 @@ using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
-    public class AddServiceLogVM : INotifyPropertyChanged
+    public class AddServiceLogVM : BaseVM
     {
         private DbContext dbContext;
         private string search;
@@ -235,13 +235,6 @@ namespace EService.VVM.ViewModels
                 context.Device.Load();
                 Devices = context.Device.Local.ToBindingList();
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         public void OnFilterChanged()
