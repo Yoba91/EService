@@ -90,8 +90,12 @@
     <Compile Include="Navigation\PagesResolver.cs" />
     <Compile Include="Navigation\RelayCommand.cs" />
     <Compile Include="ViewModels\AddDeptVM.cs" />
+    <Compile Include="ViewModels\AddDeviceVM.cs" />
     <Compile Include="ViewModels\AddModelVM.cs" />
+    <Compile Include="ViewModels\AddParameterVM.cs" />
     <Compile Include="ViewModels\AddServiceLogVM.cs" />
+    <Compile Include="ViewModels\AddServiceVM.cs" />
+    <Compile Include="ViewModels\AddSpareVM.cs" />
     <Compile Include="ViewModels\AddStatusVM.cs" />
     <Compile Include="ViewModels\AddTypeModelVM.cs" />
     <Compile Include="ViewModels\BaseVM.cs" />
@@ -100,8 +104,12 @@
     <Compile Include="ViewModels\DeviceVM.cs" />
     <Compile Include="ViewModels\DialogVM.cs" />
     <Compile Include="ViewModels\EditDeptVM.cs" />
+    <Compile Include="ViewModels\EditDeviceVM.cs" />
     <Compile Include="ViewModels\EditModelVM.cs" />
+    <Compile Include="ViewModels\EditParameterVM.cs" />
     <Compile Include="ViewModels\EditServiceLogVM.cs" />
+    <Compile Include="ViewModels\EditServiceVM.cs" />
+    <Compile Include="ViewModels\EditSpareVM.cs" />
     <Compile Include="ViewModels\EditStatusVM.cs" />
     <Compile Include="ViewModels\EditTypeModelVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
@@ -118,11 +126,23 @@
     <Compile Include="Views\AddDeptView.xaml.cs">
       <DependentUpon>AddDeptView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddDeviceView.xaml.cs">
+      <DependentUpon>AddDeviceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddModelView.xaml.cs">
       <DependentUpon>AddModelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddParameterView.xaml.cs">
+      <DependentUpon>AddParameterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddServiceLogView.xaml.cs">
       <DependentUpon>AddServiceLogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddServiceView.xaml.cs">
+      <DependentUpon>AddServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddSpareView.xaml.cs">
+      <DependentUpon>AddSpareView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddStatusView.xaml.cs">
       <DependentUpon>AddStatusView.xaml</DependentUpon>
@@ -136,11 +156,23 @@
     <Compile Include="Views\EditDeptView.xaml.cs">
       <DependentUpon>EditDeptView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditDeviceView.xaml.cs">
+      <DependentUpon>EditDeviceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditModelView.xaml.cs">
       <DependentUpon>EditModelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditParameterView.xaml.cs">
+      <DependentUpon>EditParameterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditServiceLogView.xaml.cs">
       <DependentUpon>EditServiceLogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditServiceView.xaml.cs">
+      <DependentUpon>EditServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditSpareView.xaml.cs">
+      <DependentUpon>EditSpareView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditStatusView.xaml.cs">
       <DependentUpon>EditStatusView.xaml</DependentUpon>
@@ -203,11 +235,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddModelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddParameterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddServiceLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddServiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddSpareView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -227,11 +275,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EditDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditModelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EditParameterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditServiceLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditServiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditSpareView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -33,13 +34,59 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<SpareForModel> _spareForModels; //Список запчастей привязанных к модели
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddSpareWindow; //Команда открытия окна добавления записи в журнал
+        private IDelegateCommand _openEditSpareWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _refreshSpareWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
+        //Команды для кнопок
+        public IDelegateCommand AddSpareCommand
+        {
+            get
+            {
+                if (_openAddSpareWindow == null)
+                {
+                    _openAddSpareWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddSpareWindow;
+            }
+        }
+        public IDelegateCommand EditSpareCommand
+        {
+            get
+            {
+                if (_openEditSpareWindow == null)
+                {
+                    _openEditSpareWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditSpareWindow;
+            }
+        }
+        public IDelegateCommand RemoveSpareCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshSpareCommand
+        {
+            get
+            {
+                if (_refreshSpareWindow == null)
+                {
+                    _refreshSpareWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshSpareWindow;
+            }
+        }
+        //Свойства модели
         public SView SelectedSpare
         {
             get
@@ -61,6 +108,8 @@ namespace EService.VVM.ViewModels
                     }
                 }
                 OnPropertyChanged("SelectedSpare");
+                _openEditSpareWindow?.RaiseCanExecuteChanged();
+                _openDialogWindow?.RaiseCanExecuteChanged();
             }
         }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
@@ -198,6 +247,50 @@ namespace EService.VVM.ViewModels
                 SparesListCreator(tempSpares);
             }
             SelectedSpare = null;
+        }
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addSpareVM = new AddSpareVM();
+            displayRootRegistry.ShowPresentation(addSpareVM);
+        }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editSpareVM = new EditSpareVM(_selectedSpare.Spare.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editSpareVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Spare.Remove(_selectedSpare.Spare);
+                context.SaveChanges();
+                SelectedSpare = null;
+                Models.Clear();
+                SpareForModels.Clear();
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить запчасть \"{0}\", и все её значения из записей?", _selectedSpare.Spare.Name);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление запчасти", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedSpare != null)
+                return true;
+            return false;
         }
         #endregion
         public class SView

@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -33,13 +34,59 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<ParameterForModel> _parameterForModels; //Список моделей устройств
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddParameterWindow; //Команда открытия окна добавления записи в журнал
+        private IDelegateCommand _openEditParameterWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _refreshParameterWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
+        //Команды для кнопок
+        public IDelegateCommand AddParameterCommand
+        {
+            get
+            {
+                if (_openAddParameterWindow == null)
+                {
+                    _openAddParameterWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddParameterWindow;
+            }
+        }
+        public IDelegateCommand EditParameterCommand
+        {
+            get
+            {
+                if (_openEditParameterWindow == null)
+                {
+                    _openEditParameterWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditParameterWindow;
+            }
+        }
+        public IDelegateCommand RemoveParameterCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshParameterCommand
+        {
+            get
+            {
+                if (_refreshParameterWindow == null)
+                {
+                    _refreshParameterWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshParameterWindow;
+            }
+        }
+        //Свойства модели
         public PView SelectedParameter 
         { 
             get 
@@ -60,7 +107,9 @@ namespace EService.VVM.ViewModels
                         Models = context.Model.Local.Where(s => ParameterForModels.All(pfm => pfm.Model.Rowid != s.Rowid)).ToList();
                     }
                 }                
-                OnPropertyChanged("SelectedParameter"); 
+                OnPropertyChanged("SelectedParameter");
+                _openEditParameterWindow?.RaiseCanExecuteChanged();
+                _openDialogWindow?.RaiseCanExecuteChanged();
             } 
         }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
@@ -199,8 +248,52 @@ namespace EService.VVM.ViewModels
             }
             SelectedParameter = null;
         }
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addParameterVM = new AddParameterVM();
+            displayRootRegistry.ShowPresentation(addParameterVM);
+        }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editParameterVM = new EditParameterVM(_selectedParameter.Parameter.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editParameterVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Parameter.Remove(_selectedParameter.Parameter);
+                context.SaveChanges();
+                SelectedParameter = null;
+                Models.Clear();
+                ParameterForModels.Clear();
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить параметр {0}, и все его значения из записей?", _selectedParameter.Parameter.Name);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление параметра", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedParameter != null)
+                return true;
+            return false;
+        }
         #endregion
-                
+
         public class PView
         {
             public Parameter Parameter { get; private set; }

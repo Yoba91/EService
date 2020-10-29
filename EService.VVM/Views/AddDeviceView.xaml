@@ -1,0 +1,51 @@
+﻿<Window x:Class="EService.VVM.Views.AddDeviceView"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EService.VVM.Views"
+        mc:Ignorable="d"
+        Title="AddWindowDevice" Height="600" Width="300" MinHeight="600" MinWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="InventoryNumber" Text="{Binding Mode=TwoWay, Path=InventoryNumber, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Width="Auto" Grid.Row="0" Margin="3 3 3 3"/>
+            <TextBlock Text="Инвентарный номер" Tag="{Binding ElementName=InventoryNumber}" Style="{StaticResource PlaceholderStyle}" Grid.Row="0"/>
+            <Button x:Name="Add" Command="{Binding Path=AddDevice}" Grid.Row="1" Grid.Column="1" Content="Добавить" Margin="3 3 3 3"/>
+        </Grid>
+        <TextBox x:Name="SerialNumber" Text="{Binding Mode=TwoWay, Path=SerialNumber, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Grid.Row="1" Margin="3 3 3 3"/>
+        <TextBlock Text="Серийный номер" Tag="{Binding ElementName=SerialNumber}" Style="{StaticResource PlaceholderStyle}" Grid.Row="1"/>
+        <ListBox x:Name="Models" SelectionMode="Single" Grid.Row="2" ItemsSource="{Binding Models}" SelectedItem="{Binding Model}"  Margin="3 3 3 3">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=FullName}"></TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox x:Name="Depts" SelectionMode="Single" Grid.Row="3" ItemsSource="{Binding Depts}" SelectedItem="{Binding Dept}"  Margin="3 3 3 3">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox x:Name="Statuses" SelectionMode="Single" Grid.Row="4" ItemsSource="{Binding Statuses}" SelectedItem="{Binding Status}"  Margin="3 3 3 3">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>

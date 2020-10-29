@@ -51,7 +51,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="SearchText" Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <TextBlock Grid.Column="0" Text="Поиск" Tag="{Binding ElementName=SearchText}" Style="{StaticResource PlaceholderStyle}" Margin="5 8 5 5"/>
-                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshServiceLogCommand}">Обновить</Button>
+                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshDeviceCommand}">Обновить</Button>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -59,9 +59,9 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Width="Auto" Height="25" Command="{Binding AddServiceLogCommand}">Добавить</Button>
-                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding EditServiceLogCommand}">Изменить</Button>
-                    <Button Grid.Column="2" Width="Auto" Height="25" Command="{Binding RemoveServiceLogCommand}">Удалить</Button>
+                    <Button Grid.Column="0" Width="Auto" Height="25" Command="{Binding AddDeviceCommand}">Добавить</Button>
+                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding EditDeviceCommand}">Изменить</Button>
+                    <Button Grid.Column="2" Width="Auto" Height="25" Command="{Binding RemoveDeviceCommand}">Удалить</Button>
                 </Grid>
             </StackPanel>
             <!--    Поиск END   -->

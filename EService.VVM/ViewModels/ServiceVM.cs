@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -33,13 +34,59 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<ServiceForModel> _serviceForModels; //Список сервисов привязанных к модели
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddServiceWindow; //Команда открытия окна добавления записи в журнал
+        private IDelegateCommand _openEditServiceWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _refreshServiceWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
+        //Команды для кнопок
+        public IDelegateCommand AddServiceCommand
+        {
+            get
+            {
+                if (_openAddServiceWindow == null)
+                {
+                    _openAddServiceWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddServiceWindow;
+            }
+        }
+        public IDelegateCommand EditServiceCommand
+        {
+            get
+            {
+                if (_openEditServiceWindow == null)
+                {
+                    _openEditServiceWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditServiceWindow;
+            }
+        }
+        public IDelegateCommand RemoveServiceCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshServiceCommand
+        {
+            get
+            {
+                if (_refreshServiceWindow == null)
+                {
+                    _refreshServiceWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshServiceWindow;
+            }
+        }
+        //Свойства модели
         public SView SelectedService
         {
             get
@@ -61,6 +108,8 @@ namespace EService.VVM.ViewModels
                     }
                 }
                 OnPropertyChanged("SelectedService");
+                _openEditServiceWindow?.RaiseCanExecuteChanged();
+                _openDialogWindow?.RaiseCanExecuteChanged();
             }
         }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
@@ -200,6 +249,50 @@ namespace EService.VVM.ViewModels
                 ServicesListCreator(tempServices);
             }
             SelectedService = null;
+        }
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addServiceVM = new AddServiceVM();
+            displayRootRegistry.ShowPresentation(addServiceVM);
+        }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editServiceVM = new EditServiceVM(_selectedService.Service.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editServiceVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Service.Remove(_selectedService.Service);
+                context.SaveChanges();
+                SelectedService = null;
+                Models.Clear();
+                ServiceForModels.Clear();
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить сервис \"{0}\", и все его значения из записей?", _selectedService.Service.FullName);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление сервиса", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedService != null)
+                return true;
+            return false;
         }
         #endregion
 

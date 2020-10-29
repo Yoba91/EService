@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -35,14 +36,60 @@ namespace EService.VVM.ViewModels
         private IList<TypeModel> _selectedTypesModel; //Список выбранных типов модели
         private IList<Status> _selectedStatuses; //Список выбранных статусов
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddDeviceWindow; //Команда открытия окна добавления записи в журнал
+        private IDelegateCommand _openEditDeviceWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _refreshDeviceWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
-        public DView SelectedDevice { get { return _selectedDevice; } set { _selectedDevice = value; OnPropertyChanged("SelectedDevice"); } }
+        //Команды для кнопок
+        public IDelegateCommand AddDeviceCommand
+        {
+            get
+            {
+                if (_openAddDeviceWindow == null)
+                {
+                    _openAddDeviceWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddDeviceWindow;
+            }
+        }
+        public IDelegateCommand EditDeviceCommand
+        {
+            get
+            {
+                if (_openEditDeviceWindow == null)
+                {
+                    _openEditDeviceWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditDeviceWindow;
+            }
+        }
+        public IDelegateCommand RemoveDeviceCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshDeviceCommand
+        {
+            get
+            {
+                if (_refreshDeviceWindow == null)
+                {
+                    _refreshDeviceWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshDeviceWindow;
+            }
+        }
+        //Свойства модели
+        public DView SelectedDevice { get { return _selectedDevice; } set { _selectedDevice = value; OnPropertyChanged("SelectedDevice"); _openEditDeviceWindow?.RaiseCanExecuteChanged(); _openDialogWindow?.RaiseCanExecuteChanged(); } }
         public Dept SelectedDept { get { return _selectedDept; } set { _selectedDept = value; OnPropertyChanged("SelectedDept"); } }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
         public TypeModel SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
@@ -232,6 +279,48 @@ namespace EService.VVM.ViewModels
                 DevicesListCreator(tempDevices);
             }
             SelectedDevice = null;
+        }
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addDeviceVM = new AddDeviceVM();
+            displayRootRegistry.ShowPresentation(addDeviceVM);
+        }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editDeviceVM = new EditDeviceVM(_selectedDevice.Device.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editDeviceVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Device.Remove(_selectedDevice.Device);
+                context.SaveChanges();
+                SelectedDevice = null;
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить устройство с номером {0}({1}), и все связанные с ним записи?", _selectedDevice.Device.InventoryNumber, _selectedDevice.Device.SerialNumber);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление устройства", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedDevice != null)
+                return true;
+            return false;
         }
         #endregion
 

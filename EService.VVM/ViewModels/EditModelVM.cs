@@ -61,13 +61,6 @@ namespace EService.VVM.ViewModels
         #region Методы
         private void ExecuteEdit(object parameter)
         {
-            Model model = new Model()
-            {
-                FullName = this._fullName,
-                ShortName = this._shortName,
-                TypeModel = this._selectedTypeModel
-            };
-
             if (_dbContext is SQLiteContext)
             {
                 SQLiteContext context = _dbContext as SQLiteContext;
