@@ -24,7 +24,7 @@ namespace EService.VVM.ViewModels
         private List<IFilter> _filters; //Список всех фильтров
         private ParameterExpression _parameter; //Параметр для формирования лямбды фильтрации     
 
-        private SView _selectedSpare; //Выбранная запчасть
+        private SView _selectedSpare, _lastSelectedSpare; //Выбранная запчасть
         private Model _selectedModel; //Выбранная модель
         private SpareForModel _selectedSpareForModel; //Выбранная запчасть
 
@@ -34,14 +34,26 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<SpareForModel> _spareForModels; //Список запчастей привязанных к модели
 
-        private IDelegateCommand _openAddSpareWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditSpareWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _openAddSpareWindow; //Команда открытия окна добавления
+        private IDelegateCommand _openEditSpareWindow; //Команда открытия окна изменения
         private IDelegateCommand _refreshSpareWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
+        private IDelegateCommand _bindSpare; //Команда привязки запчасти к модели
         #endregion
 
         #region Свойства
         //Команды для кнопок
+        public IDelegateCommand BindSpareCommand
+        {
+            get
+            {
+                if (_bindSpare == null)
+                {
+                    _bindSpare = new OpenWindowCommand(ExecuteBindDialog, CanExecuteBind, this);
+                }
+                return _bindSpare;
+            }
+        }
         public IDelegateCommand AddSpareCommand
         {
             get
@@ -96,6 +108,8 @@ namespace EService.VVM.ViewModels
             set
             {
                 _selectedSpare = value;
+                if (_selectedSpare != null)
+                    _lastSelectedSpare = _selectedSpare;
                 if (_dbContext is SQLiteContext)
                 {
                     SQLiteContext context = _dbContext as SQLiteContext;
@@ -105,6 +119,16 @@ namespace EService.VVM.ViewModels
                         SpareForModels = context.SpareForModel.Where(s => s.Spare.Rowid == SelectedSpare.Spare.Rowid).ToList();
                         context.Model.Load();
                         Models = context.Model.Local.Where(s => SpareForModels.All(sfm => sfm.Model.Rowid != s.Rowid)).ToList();
+                    }
+                    else
+                    {
+                        if(_lastSelectedSpare != null)
+                        {
+                            context.SpareForModel.Load();
+                            SpareForModels = context.SpareForModel.Where(s => s.Spare.Rowid == _lastSelectedSpare.Spare.Rowid).ToList();
+                            context.Model.Load();
+                            Models = context.Model.Local.Where(s => SpareForModels.All(sfm => sfm.Model.Rowid != s.Rowid)).ToList();
+                        }
                     }
                 }
                 OnPropertyChanged("SelectedSpare");
@@ -154,9 +178,20 @@ namespace EService.VVM.ViewModels
         public SpareVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public void InitializeData()
+        {
             Spares = new ObservableCollection<SView>();
             SelectedModels = new ObservableCollection<Model>();
             SelectedSpareForModels = new ObservableCollection<SpareForModel>();
+            Models = null;
+            SpareForModels = null;
+            SelectedModel = null;
+            SelectedSpareForModel = null;
             _dbContext = SingletonDBContext.GetInstance(new SQLiteContext()).DBContext;
             if (_dbContext is SQLiteContext)
             {
@@ -165,11 +200,7 @@ namespace EService.VVM.ViewModels
                 var sparesList = context.Spare.Local.ToBindingList();
                 SparesListCreator(sparesList);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Spare), "s");
@@ -213,6 +244,8 @@ namespace EService.VVM.ViewModels
 
                 temp = ItemsBuilder.SelectItem(value, SelectedModels, typeof(Model), SelectedModel);
                 if (temp != null) SelectedModels = (ObservableCollection<Model>)temp;
+
+                _bindSpare.RaiseCanExecuteChanged();
 
                 OnFilterChanged();
             }
@@ -277,6 +310,8 @@ namespace EService.VVM.ViewModels
         }
         private void ExecuteRefresh(object parameter)
         {
+            InitializeFilters();
+            InitializeData();
             OnFilterChanged();
         }
         private async void OpenDialog(object parameter)
@@ -285,6 +320,43 @@ namespace EService.VVM.ViewModels
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
             var openDialog = new DialogVM("Удаление запчасти", message, ExecuteRemove);
             await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private async void ExecuteBindDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите привязать/отвязать выбранные модели к запчасти?");
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Привязка запчасти", message, ExecuteBind);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private void ExecuteBind(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                foreach (var item in _selectedSpareForModels)
+                {
+                    context.SpareForModel.Remove(item);
+                }
+                foreach (var item in _selectedModels)
+                {
+                    SpareForModel temp = new SpareForModel()
+                    {
+                        Model = item,
+                        Spare = this._lastSelectedSpare.Spare
+                    };
+                    context.SpareForModel.Add(temp);
+                }
+                context.SaveChanges();
+                SelectedSpare = _lastSelectedSpare;
+                OnFilterChanged();
+            }
+        }
+        private bool CanExecuteBind(object parameter)
+        {
+            if ((_selectedModels.Count > 0) || (_selectedSpareForModels.Count > 0))
+                return true;
+            return false;
         }
         private bool CanExecuteEdit(object parameter)
         {

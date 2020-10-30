@@ -86,7 +86,7 @@
             </Grid>
             <!--    Модели привязанные к сервису END   -->
 
-            <Button Name="Bind" Grid.Column="1" Height="60" VerticalAlignment="Center">
+            <Button Name="Bind" Grid.Column="1" Height="60" VerticalAlignment="Center" Command="{Binding BindServiceCommand}">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="&#x2194;" FontSize="30"/>
                 </StackPanel>

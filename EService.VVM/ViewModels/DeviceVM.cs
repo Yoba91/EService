@@ -36,8 +36,8 @@ namespace EService.VVM.ViewModels
         private IList<TypeModel> _selectedTypesModel; //Список выбранных типов модели
         private IList<Status> _selectedStatuses; //Список выбранных статусов
 
-        private IDelegateCommand _openAddDeviceWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditDeviceWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _openAddDeviceWindow; //Команда открытия окна добавления
+        private IDelegateCommand _openEditDeviceWindow; //Команда открытия окна изменения
         private IDelegateCommand _refreshDeviceWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion

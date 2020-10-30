@@ -89,6 +89,7 @@
     <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\PagesResolver.cs" />
     <Compile Include="Navigation\RelayCommand.cs" />
+    <Compile Include="ViewModels\AddCategoryVM.cs" />
     <Compile Include="ViewModels\AddDeptVM.cs" />
     <Compile Include="ViewModels\AddDeviceVM.cs" />
     <Compile Include="ViewModels\AddModelVM.cs" />
@@ -98,11 +99,13 @@
     <Compile Include="ViewModels\AddSpareVM.cs" />
     <Compile Include="ViewModels\AddStatusVM.cs" />
     <Compile Include="ViewModels\AddTypeModelVM.cs" />
+    <Compile Include="ViewModels\AddUserVM.cs" />
     <Compile Include="ViewModels\BaseVM.cs" />
     <Compile Include="ViewModels\CategoryVM.cs" />
     <Compile Include="ViewModels\DeptVM.cs" />
     <Compile Include="ViewModels\DeviceVM.cs" />
     <Compile Include="ViewModels\DialogVM.cs" />
+    <Compile Include="ViewModels\EditCategoryVM.cs" />
     <Compile Include="ViewModels\EditDeptVM.cs" />
     <Compile Include="ViewModels\EditDeviceVM.cs" />
     <Compile Include="ViewModels\EditModelVM.cs" />
@@ -112,6 +115,7 @@
     <Compile Include="ViewModels\EditSpareVM.cs" />
     <Compile Include="ViewModels\EditStatusVM.cs" />
     <Compile Include="ViewModels\EditTypeModelVM.cs" />
+    <Compile Include="ViewModels\EditUserVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
     <Compile Include="ViewModels\ModelVM.cs" />
     <Compile Include="ViewModels\Page404VM.cs" />
@@ -123,6 +127,9 @@
     <Compile Include="ViewModels\TypeModelVM.cs" />
     <Compile Include="ViewModels\UserVM.cs" />
     <Compile Include="ViewModels\ViewModelsResolver.cs" />
+    <Compile Include="Views\AddCategoryView.xaml.cs">
+      <DependentUpon>AddCategoryView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddDeptView.xaml.cs">
       <DependentUpon>AddDeptView.xaml</DependentUpon>
     </Compile>
@@ -150,8 +157,14 @@
     <Compile Include="Views\AddTypeModelView.xaml.cs">
       <DependentUpon>AddTypeModelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddUserView.xaml.cs">
+      <DependentUpon>AddUserView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditCategoryView.xaml.cs">
+      <DependentUpon>EditCategoryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditDeptView.xaml.cs">
       <DependentUpon>EditDeptView.xaml</DependentUpon>
@@ -179,6 +192,9 @@
     </Compile>
     <Compile Include="Views\EditTypeModelView.xaml.cs">
       <DependentUpon>EditTypeModelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditUserView.xaml.cs">
+      <DependentUpon>EditUserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -231,6 +247,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddCategoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddDeptView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -267,7 +287,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddUserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditCategoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -304,6 +332,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditTypeModelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditUserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

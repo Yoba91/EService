@@ -73,7 +73,7 @@ namespace EService.VVM.ViewModels
         private async void OpenDialog(object parameter)
         {
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
-            var openDialog = new DialogVM(String.Format("Изменить запчать {0}", _spare.Name), "Вы действительно хотите изменить выбранную запчасть?", ExecuteEdit);
+            var openDialog = new DialogVM(String.Format("Изменить запчасть {0}", _spare.Name), "Вы действительно хотите изменить выбранную запчасть?", ExecuteEdit);
             await displayRootRegistry.ShowModalPresentation(openDialog);
         }
         #endregion

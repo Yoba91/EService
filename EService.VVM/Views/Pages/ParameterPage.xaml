@@ -20,7 +20,7 @@
 
         <!--    Основная таблица    -->
         <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=Parameters, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedParameter}">
+    RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedParameter, Mode=TwoWay}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="0.1*" Header="№" Binding="{Binding StringFormat={}{0}, Path=Index}" />
                 <DataGridTextColumn Width="0.5*" Header="Название" Binding="{Binding StringFormat={}{0}, Path=Parameter.Name}" />
@@ -48,7 +48,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели <Bold>не</Bold> привязанные к параметру</TextBlock>
 
-                <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}" Margin="5 0 5 5">
+                <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models, Mode=TwoWay}" SelectedItem="{Binding SelectedModel}" Margin="5 0 5 5">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Models}"/>
@@ -71,7 +71,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели привязанные к параметру</TextBlock>
 
-                <ListBox x:Name="ModelsForParameter" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding ParameterForModels}" SelectedItem="{Binding SelectedParameterForModel}" Margin="5 0 5 5">
+                <ListBox x:Name="ModelsForParameter" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding ParameterForModels, Mode=TwoWay}" SelectedItem="{Binding SelectedParameterForModel}" Margin="5 0 5 5">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=ModelsForParameter}"/>
@@ -86,7 +86,7 @@
             </Grid>
             <!--    Модели привязанные к параметру END   -->
 
-            <Button Name="Bind" Grid.Column="1" Height="60" VerticalAlignment="Center">
+            <Button Name="Bind" Grid.Column="1" Height="60" VerticalAlignment="Center" Command="{Binding BindParameterCommand}">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="&#x2194;" FontSize="30"/>
                 </StackPanel>

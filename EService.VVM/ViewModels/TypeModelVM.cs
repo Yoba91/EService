@@ -32,8 +32,8 @@ namespace EService.VVM.ViewModels
         private IList<Dept> _selectedDepts; //Список выбранных отделов
         private IList<Model> _selectedModels; //Список выбранных моделей устройств
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления
+        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения
         private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion

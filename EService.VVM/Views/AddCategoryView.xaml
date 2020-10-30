@@ -1,0 +1,35 @@
+﻿<Window x:Class="EService.VVM.Views.AddCategoryView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EService.VVM.Views"
+        mc:Ignorable="d"
+        Title="AddWindowServiceCategory" Height="100" Width="300" MinHeight="100" MinWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="Name" Text="{Binding Mode=TwoWay, Path=Name, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Width="Auto" Grid.Row="0" Margin="3 3 3 3"/>
+            <TextBlock Text="Название категории" Tag="{Binding ElementName=Name}" Style="{StaticResource PlaceholderStyle}" Grid.Row="0"/>
+            <Button x:Name="Add" Command="{Binding Path=AddCategory}" Grid.Row="1" Grid.Column="1" Content="Добавить" Margin="3 3 3 3"/>
+        </Grid>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2"> 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="MinValue" Text="{Binding Mode=TwoWay, Path=MinValue, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Grid.Column="0" Margin="3 3 3 3"/>
+            <TextBlock Text="Минимум" Tag="{Binding ElementName=MinValue}" Style="{StaticResource PlaceholderStyle}" Grid.Column="0"/>
+            <TextBox x:Name="MaxValue" Text="{Binding Mode=TwoWay, Path=MaxValue, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Grid.Column="1" Margin="3 3 3 3"/>
+            <TextBlock Text="Максимум" Tag="{Binding ElementName=MaxValue}" Style="{StaticResource PlaceholderStyle}" Grid.Column="1"/>
+        </Grid>        
+    </Grid>
+</Window>

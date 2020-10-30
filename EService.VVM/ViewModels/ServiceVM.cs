@@ -24,7 +24,7 @@ namespace EService.VVM.ViewModels
         private List<IFilter> _filters; //Список всех фильтров
         private ParameterExpression _parameter; //Параметр для формирования лямбды фильтрации     
 
-        private SView _selectedService; //Выбранный сервис
+        private SView _selectedService, _lastSelectedService; //Выбранный сервис
         private Model _selectedModel; //Выбранная модель
         private ServiceForModel _selectedServiceForModel; //Выбранный сервис привязанный к модели
 
@@ -34,14 +34,26 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<ServiceForModel> _serviceForModels; //Список сервисов привязанных к модели
 
-        private IDelegateCommand _openAddServiceWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditServiceWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _openAddServiceWindow; //Команда открытия окна добавления
+        private IDelegateCommand _openEditServiceWindow; //Команда открытия окна изменения
         private IDelegateCommand _refreshServiceWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
+        private IDelegateCommand _bindService; //Команда привязки сервиса к модели
         #endregion
 
         #region Свойства
         //Команды для кнопок
+        public IDelegateCommand BindServiceCommand
+        {
+            get
+            {
+                if (_bindService == null)
+                {
+                    _bindService = new OpenWindowCommand(ExecuteBindDialog, CanExecuteBind, this);
+                }
+                return _bindService;
+            }
+        }
         public IDelegateCommand AddServiceCommand
         {
             get
@@ -96,6 +108,8 @@ namespace EService.VVM.ViewModels
             set
             {
                 _selectedService = value;
+                if (_selectedService != null)
+                    _lastSelectedService = _selectedService;
                 if (_dbContext is SQLiteContext)
                 {
                     SQLiteContext context = _dbContext as SQLiteContext;
@@ -105,6 +119,16 @@ namespace EService.VVM.ViewModels
                         ServiceForModels = context.ServiceForModel.Where(s => s.Service.Rowid == SelectedService.Service.Rowid).ToList();
                         context.Model.Load();
                         Models = context.Model.Local.Where(s => ServiceForModels.All(sfm => sfm.Model.Rowid != s.Rowid)).ToList();
+                    }
+                    else
+                    {
+                        if(_lastSelectedService != null)
+                        {
+                            context.ServiceForModel.Load();
+                            ServiceForModels = context.ServiceForModel.Where(s => s.Service.Rowid == _lastSelectedService.Service.Rowid).ToList();
+                            context.Model.Load();
+                            Models = context.Model.Local.Where(s => ServiceForModels.All(sfm => sfm.Model.Rowid != s.Rowid)).ToList();
+                        }
                     }
                 }
                 OnPropertyChanged("SelectedService");
@@ -216,6 +240,8 @@ namespace EService.VVM.ViewModels
                 temp = ItemsBuilder.SelectItem(value, SelectedModels, typeof(Model), SelectedModel);
                 if (temp != null) SelectedModels = (ObservableCollection<Model>)temp;
 
+                _bindService.RaiseCanExecuteChanged();
+
                 OnFilterChanged();
             }
         }
@@ -287,6 +313,43 @@ namespace EService.VVM.ViewModels
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
             var openDialog = new DialogVM("Удаление сервиса", message, ExecuteRemove);
             await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private async void ExecuteBindDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите привязать/отвязать выбранные модели к сервису?");
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Привязка сервиса", message, ExecuteBind);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private void ExecuteBind(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                foreach (var item in _selectedServiceForModels)
+                {
+                    context.ServiceForModel.Remove(item);
+                }
+                foreach (var item in _selectedModels)
+                {
+                    ServiceForModel temp = new ServiceForModel()
+                    {
+                        Model = item,
+                        Service = this._lastSelectedService.Service
+                    };
+                    context.ServiceForModel.Add(temp);
+                }
+                context.SaveChanges();
+                SelectedService = _lastSelectedService;
+                OnFilterChanged();
+            }
+        }
+        private bool CanExecuteBind(object parameter)
+        {
+            if ((_selectedModels.Count > 0) || (_selectedServiceForModels.Count > 0))
+                return true;
+            return false;
         }
         private bool CanExecuteEdit(object parameter)
         {

@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -34,14 +35,60 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<TypeModel> _typesModel; //Список типов моделей устройств
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddUserWindow; //Команда открытия окна добавления
+        private IDelegateCommand _openEditUserWindow; //Команда открытия окна изменения
+        private IDelegateCommand _refreshUserWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
-        public UView SelectedUser { get { return _selectedUser; } set { _selectedUser = value; OnPropertyChanged("SelectedUser"); } }
+        //Команды для кнопок
+        public IDelegateCommand AddUserCommand
+        {
+            get
+            {
+                if (_openAddUserWindow == null)
+                {
+                    _openAddUserWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddUserWindow;
+            }
+        }
+        public IDelegateCommand EditUserCommand
+        {
+            get
+            {
+                if (_openEditUserWindow == null)
+                {
+                    _openEditUserWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditUserWindow;
+            }
+        }
+        public IDelegateCommand RemoveUserCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshUserCommand
+        {
+            get
+            {
+                if (_refreshUserWindow == null)
+                {
+                    _refreshUserWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshUserWindow;
+            }
+        }
+        //Свойства модели
+        public UView SelectedUser { get { return _selectedUser; } set { _selectedUser = value; OnPropertyChanged("SelectedUser"); _openEditUserWindow?.RaiseCanExecuteChanged(); _openDialogWindow?.RaiseCanExecuteChanged(); } }
         public Model SelectedModel { get { return _selectedModel; } set { _selectedModel = value; OnPropertyChanged("SelectedModel"); } }
         public TypeModel SelectedTypeModel { get { return _selectedTypeModel; } set { _selectedTypeModel = value; OnPropertyChanged("SelectedTypeModel"); } }
         public String Search
@@ -198,6 +245,48 @@ namespace EService.VVM.ViewModels
                 UsersListCreator(tempUsers, lambdaS);
             }
             SelectedUser = null;
+        }
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addUserVM = new AddUserVM();
+            displayRootRegistry.ShowPresentation(addUserVM);
+        }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editUserVM = new EditUserVM(_selectedUser.User.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editUserVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.Repairer.Remove(_selectedUser.User);
+                context.SaveChanges();
+                SelectedUser = null;
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить пользователя \"{0}\", и все связанные с ним записи?", _selectedUser.User.FullName);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление пользователя", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedUser != null)
+                return true;
+            return false;
         }
         #endregion
         public class UView

@@ -40,6 +40,10 @@ namespace EService.VVM
             displayRootRegistry.RegisterWindowType<EditServiceVM, EditServiceView>();
             displayRootRegistry.RegisterWindowType<AddSpareVM, AddSpareView>();
             displayRootRegistry.RegisterWindowType<EditSpareVM, EditSpareView>();
+            displayRootRegistry.RegisterWindowType<AddCategoryVM, AddCategoryView>();
+            displayRootRegistry.RegisterWindowType<EditCategoryVM, EditCategoryView>();
+            displayRootRegistry.RegisterWindowType<AddUserVM, AddUserView>();
+            displayRootRegistry.RegisterWindowType<EditUserVM, EditUserView>();
             displayRootRegistry.RegisterWindowType<DialogVM, DialogView>();
         }
 

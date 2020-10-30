@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EService.VVM.ViewModels
 {
@@ -25,14 +26,60 @@ namespace EService.VVM.ViewModels
 
         private SCView _selectedServiceCategory; //Выбранная категория сложности
 
-        private IDelegateCommand _openAddTypeModelWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditTypeModelWindow; //Команда открытия окна изменения записи в журнале
-        private IDelegateCommand _refreshTypeModelWindow; //Команда обновления данных в окне
+        private IDelegateCommand _openAddCategoryWindow; //Команда открытия окна добавления
+        private IDelegateCommand _openEditCategoryWindow; //Команда открытия окна изменения
+        private IDelegateCommand _refreshCategoryWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
         #endregion
 
         #region Свойства
-        public SCView SelectedServiceCategory { get { return _selectedServiceCategory; } set { _selectedServiceCategory = value; OnPropertyChanged("SelectedServiceCategory"); } }
+        //Команды для кнопок
+        public IDelegateCommand AddCategoryCommand
+        {
+            get
+            {
+                if (_openAddCategoryWindow == null)
+                {
+                    _openAddCategoryWindow = new OpenWindowCommand(ExecuteAdd, this);
+                }
+                return _openAddCategoryWindow;
+            }
+        }
+        public IDelegateCommand EditCategoryCommand
+        {
+            get
+            {
+                if (_openEditCategoryWindow == null)
+                {
+                    _openEditCategoryWindow = new OpenWindowCommand(ExecuteEdit, CanExecuteEdit, this);
+                }
+                return _openEditCategoryWindow;
+            }
+        }
+        public IDelegateCommand RemoveCategoryCommand
+        {
+            get
+            {
+                if (_openDialogWindow == null)
+                {
+                    _openDialogWindow = new OpenWindowCommand(OpenDialog, CanExecuteEdit, this);
+                }
+                return _openDialogWindow;
+            }
+        }
+        public IDelegateCommand RefreshCategoryCommand
+        {
+            get
+            {
+                if (_refreshCategoryWindow == null)
+                {
+                    _refreshCategoryWindow = new DelegateCommand(ExecuteRefresh);
+                }
+                return _refreshCategoryWindow;
+            }
+        }
+        //Свойства модели
+        public SCView SelectedServiceCategory { get { return _selectedServiceCategory; } set { _selectedServiceCategory = value; OnPropertyChanged("SelectedServiceCategory"); _openEditCategoryWindow?.RaiseCanExecuteChanged(); _openDialogWindow?.RaiseCanExecuteChanged(); } }
         public String Search
         {
             get { return _search; }
@@ -128,6 +175,48 @@ namespace EService.VVM.ViewModels
                 ServiceCategoriesListCreator(tempServiceCategories);
             }
             SelectedServiceCategory = null;
+        }
+        //Обработчики для команд
+        private void ExecuteAdd(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var addCategoryVM = new AddCategoryVM();
+            displayRootRegistry.ShowPresentation(addCategoryVM);
+        }
+        private async void ExecuteEdit(object parameter)
+        {
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var editCategoryVM = new EditCategoryVM(_selectedServiceCategory.ServiceCategory.Rowid);
+            await displayRootRegistry.ShowModalPresentation(editCategoryVM);
+        }
+        private void ExecuteRemove(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                context.ServiceCategory.Remove(_selectedServiceCategory.ServiceCategory);
+                context.SaveChanges();
+                SelectedServiceCategory = null;
+                OnFilterChanged();
+            }
+        }
+        private void ExecuteRefresh(object parameter)
+        {
+            OnFilterChanged();
+        }
+        private async void OpenDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите удалить категорию сложности {0}, и все связанные с ней записи?", _selectedServiceCategory.ServiceCategory.Name);
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Удаление устройства", message, ExecuteRemove);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private bool CanExecuteEdit(object parameter)
+        {
+            if (_selectedServiceCategory != null)
+                return true;
+            return false;
         }
         #endregion
 

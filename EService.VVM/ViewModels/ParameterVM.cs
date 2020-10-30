@@ -24,7 +24,7 @@ namespace EService.VVM.ViewModels
         private List<IFilter> _filters; //Список всех фильтров
         private ParameterExpression _parameter; //Параметр для формирования лямбды фильтрации     
 
-        private PView _selectedParameter; //Выбранный параметр
+        private PView _selectedParameter, _lastSelectedParameter; //Выбранный параметр
         private Model _selectedModel; //Выбранная модель
         private ParameterForModel _selectedParameterForModel; //Выбранный параметр модели
 
@@ -34,14 +34,26 @@ namespace EService.VVM.ViewModels
         private IList<Model> _models; //Список моделей устройств
         private IList<ParameterForModel> _parameterForModels; //Список моделей устройств
 
-        private IDelegateCommand _openAddParameterWindow; //Команда открытия окна добавления записи в журнал
-        private IDelegateCommand _openEditParameterWindow; //Команда открытия окна изменения записи в журнале
+        private IDelegateCommand _openAddParameterWindow; //Команда открытия окна добавления
+        private IDelegateCommand _openEditParameterWindow; //Команда открытия окна изменения
         private IDelegateCommand _refreshParameterWindow; //Команда обновления данных в окне
         private IDelegateCommand _openDialogWindow; //Команда открытия диалогового окна
+        private IDelegateCommand _bindParameret; //Команда привязки параметра к модели
         #endregion
 
         #region Свойства
         //Команды для кнопок
+        public IDelegateCommand BindParameterCommand
+        {
+            get
+            {
+                if (_bindParameret == null)
+                {
+                    _bindParameret = new OpenWindowCommand(ExecuteBindDialog, CanExecuteBind, this);
+                }
+                return _bindParameret;
+            }
+        }
         public IDelegateCommand AddParameterCommand
         {
             get
@@ -96,15 +108,27 @@ namespace EService.VVM.ViewModels
             set 
             { 
                 _selectedParameter = value;
+                if(_selectedParameter != null)
+                    _lastSelectedParameter = _selectedParameter;
                 if (_dbContext is SQLiteContext)
                 {
                     SQLiteContext context = _dbContext as SQLiteContext;
                     if (SelectedParameter != null)
                     {
                         context.ParameterForModel.Load();
-                        ParameterForModels = context.ParameterForModel.Where(s => s.Parameter.Rowid == SelectedParameter.Parameter.Rowid).ToList();
+                        ParameterForModels = context.ParameterForModel.Where(s => s.Parameter.Rowid == _selectedParameter.Parameter.Rowid).ToList();
                         context.Model.Load();
-                        Models = context.Model.Local.Where(s => ParameterForModels.All(pfm => pfm.Model.Rowid != s.Rowid)).ToList();
+                        Models = context.Model.Local.Where(s => _parameterForModels.All(pfm => pfm.Model.Rowid != s.Rowid)).ToList();
+                    }
+                    else
+                    {
+                        if(_lastSelectedParameter != null)
+                        {
+                            context.ParameterForModel.Load();
+                            ParameterForModels = context.ParameterForModel.Where(s => s.Parameter.Rowid == _lastSelectedParameter.Parameter.Rowid).ToList();
+                            context.Model.Load();
+                            Models = context.Model.Local.Where(s => _parameterForModels.All(pfm => pfm.Model.Rowid != s.Rowid)).ToList();
+                        }
                     }
                 }                
                 OnPropertyChanged("SelectedParameter");
@@ -214,6 +238,8 @@ namespace EService.VVM.ViewModels
                 temp = ItemsBuilder.SelectItem(value, SelectedModels, typeof(Model), SelectedModel);
                 if (temp != null) SelectedModels = (ObservableCollection<Model>)temp;
 
+                _bindParameret?.RaiseCanExecuteChanged();
+
                 OnFilterChanged();
             }
         }
@@ -270,8 +296,8 @@ namespace EService.VVM.ViewModels
                 context.Parameter.Remove(_selectedParameter.Parameter);
                 context.SaveChanges();
                 SelectedParameter = null;
-                Models.Clear();
-                ParameterForModels.Clear();
+                Models = null;
+                ParameterForModels = null;
                 OnFilterChanged();
             }
         }
@@ -285,6 +311,43 @@ namespace EService.VVM.ViewModels
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
             var openDialog = new DialogVM("Удаление параметра", message, ExecuteRemove);
             await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private async void ExecuteBindDialog(object parameter)
+        {
+            var message = String.Format("Вы действительно хотите привязать/отвязать выбранные модели к параметру?");
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            var openDialog = new DialogVM("Привязка параметра", message, ExecuteBind);
+            await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private void ExecuteBind(object parameter)
+        {
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Configuration.LazyLoadingEnabled = false;
+                foreach (var item in _selectedParameterForModels)
+                {
+                    context.ParameterForModel.Remove(item);
+                }
+                foreach (var item in _selectedModels)
+                {
+                    ParameterForModel temp = new ParameterForModel()
+                    {
+                        Model = item,
+                        Parameter = this._lastSelectedParameter.Parameter
+                    };
+                    context.ParameterForModel.Add(temp);
+                }
+                context.SaveChanges();
+                SelectedParameter = _lastSelectedParameter;
+                OnFilterChanged();
+            }            
+        }
+        private bool CanExecuteBind(object parameter)
+        {
+            if ((_selectedModels.Count > 0) || (_selectedParameterForModels.Count > 0))
+                return true;
+            return false;
         }
         private bool CanExecuteEdit(object parameter)
         {
