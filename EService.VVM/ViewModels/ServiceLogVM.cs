@@ -289,21 +289,9 @@ namespace EService.VVM.ViewModels
                     if (dbContext is SQLiteContext)
                     {
                         SQLiteContext context = dbContext as SQLiteContext;
-                        var parametersValues = context.ParameterValue.Where(pv => pv.RowidServiceLog == selectedServiceLog.Rowid).ToList();
-                        var servicesDone = context.ServiceDone.Where(sd => sd.RowidServiceLog == selectedServiceLog.Rowid).ToList();
-                        var sparesUsed = context.SpareUsed.Where(su => su.RowidServiceLog == selectedServiceLog.Rowid).ToList();
-                        foreach (var item in parametersValues)
-                        {
-                            ParametersValues.Add(item);
-                        }
-                        foreach (var item in servicesDone)
-                        {
-                            ServicesDone.Add(item);
-                        }
-                        foreach (var item in sparesUsed)
-                        {
-                            SparesUsed.Add(item);
-                        }
+                        context.ParameterValue.Where(pv => pv.RowidServiceLog == selectedServiceLog.Rowid).ToList().ForEach(item => ParametersValues.Add(item));
+                        context.ServiceDone.Where(sd => sd.RowidServiceLog == selectedServiceLog.Rowid).ToList().ForEach(item => ServicesDone.Add(item));
+                        context.SpareUsed.Where(su => su.RowidServiceLog == selectedServiceLog.Rowid).ToList().ForEach(item => SparesUsed.Add(item));                        
                     }
                 }
                 openEditServiceLogWindow?.RaiseCanExecuteChanged();

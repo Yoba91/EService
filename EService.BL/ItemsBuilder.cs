@@ -14,7 +14,7 @@ namespace EService.BL
             if (value?.Count > 0)
             {
                 var thisType = value[0].GetType();
-                if (thisType.BaseType == type)
+                if ((thisType.BaseType == type) || (thisType == type))
                 {
                     outList.Clear();
                     result = outList;

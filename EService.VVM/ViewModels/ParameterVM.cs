@@ -123,11 +123,11 @@ namespace EService.VVM.ViewModels
                     else
                     {
                         if(_lastSelectedParameter != null)
-                        {
+                        {                            
                             context.ParameterForModel.Load();
                             ParameterForModels = context.ParameterForModel.Where(s => s.Parameter.Rowid == _lastSelectedParameter.Parameter.Rowid).ToList();
                             context.Model.Load();
-                            Models = context.Model.Local.Where(s => _parameterForModels.All(pfm => pfm.Model.Rowid != s.Rowid)).ToList();
+                            Models = context.Model.Local.Where(s => ParameterForModels.All(pfm => pfm.Model.Rowid != s.Rowid)).ToList();
                         }
                     }
                 }                
@@ -339,6 +339,12 @@ namespace EService.VVM.ViewModels
                     context.ParameterForModel.Add(temp);
                 }
                 context.SaveChanges();
+                ParameterForModels = null;
+                Models = null;
+                SelectedModels = new ObservableCollection<Model>();
+                SelectedParameterForModels = new ObservableCollection<ParameterForModel>();
+                SelectedModel = null;
+                SelectedParameterForModel = null;
                 SelectedParameter = _lastSelectedParameter;
                 OnFilterChanged();
             }            

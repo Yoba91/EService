@@ -17,62 +17,66 @@ namespace EService.VVM.ViewModels
 {
     public class AddServiceLogVM : BaseVM
     {
-        private DbContext dbContext;
-        private string search;
-        private FilterSearch filterSearch;
-        ParameterExpression parameter;
-        private IList<IFilter> filters;
+        #region Поля
+        private DbContext _dbContext;
+        private string _search;
+        private FilterSearch _filterSearch;
+        ParameterExpression _parameter;
+        private IList<IFilter> _filters;
 
-        private DateTime date;
+        private DateTime _date;
 
-        private IList<Device> devices;
+        private IList<Device> _devices;
 
-        private Device selectedDevice;
-        private ParameterValue selectedParameterValue;
-        private SpareForModel selectedSpare;
-        private ServiceForModel selectedService;
+        private Device _selectedDevice;
+        private ParameterValue _selectedParameterValue;
+        private SpareForModel _selectedSpare;
+        private ServiceForModel _selectedService;
+        private Repairer _selectedUser;
 
-        private IList<ServiceForModel> selectedServices;
-        private IList<SpareForModel> selectedSpares;
+        private IList<ServiceForModel> _selectedServices;
+        private IList<SpareForModel> _selectedSpares;
 
-        private IDelegateCommand addServiceLog;
-
+        private IDelegateCommand _addServiceLog;
+        #endregion
+        #region Свойства
         public ObservableCollection<ServiceForModel> SelectedServices
         {
-            get { return (ObservableCollection<ServiceForModel>)selectedServices; }
+            get { return (ObservableCollection<ServiceForModel>)_selectedServices; }
             set
             {
-                selectedServices = value;
+                _selectedServices = value;
                 this.AddServiceLog.RaiseCanExecuteChanged();
             }
         }
         public ObservableCollection<SpareForModel> SelectedSpares
         {
-            get { return (ObservableCollection<SpareForModel>)selectedSpares; }
+            get { return (ObservableCollection<SpareForModel>)_selectedSpares; }
             set
             {
-                selectedSpares = value;
+                _selectedSpares = value;
             }
         }
-        public IList<Device> Devices { get { return devices; } set { devices = value; OnPropertyChanged("Devices"); } }
+        public IList<Device> Devices { get { return _devices; } set { _devices = value; OnPropertyChanged("Devices"); } }
         public ObservableCollection<ParameterValue> ParametersValues { get; set; }
         public ObservableCollection<ServiceForModel> Services { get; set; }
         public ObservableCollection<SpareForModel> Spares { get; set; }
+        public IList<Repairer> Users { get; set; }
         public Device SelectedDevice
         {
-            get { return selectedDevice; }
+            get { return _selectedDevice; }
             set
             {
-                selectedDevice = value;
-                if (selectedDevice != null)
+                _selectedDevice = value;
+                if (_selectedDevice != null)
                 {
                     ParametersValues.Clear();
                     Services.Clear();
                     Spares.Clear();
-                    if (dbContext is SQLiteContext)
+                    if (_dbContext is SQLiteContext)
                     {
-                        SQLiteContext context = dbContext as SQLiteContext;
-                        var parameters = context.ParameterForModel.Where(pfm => pfm.RowidModel == selectedDevice.RowidModel).ToList();
+                        SQLiteContext context = _dbContext as SQLiteContext;
+                        var parameters = context.ParameterForModel.Where(pfm => pfm.RowidModel == _selectedDevice.RowidModel).ToList();
                         foreach (var item in parameters)
                         {
                             var sl = context.ServiceLog.Where(s => s.Device.Rowid == SelectedDevice.Rowid).ToList().LastOrDefault();
@@ -93,12 +97,12 @@ namespace EService.VVM.ViewModels
                                 ParametersValues.Add(new ParameterValue() { RowidParameterForModel = item.Rowid, ParameterForModel = item, Value = item.Parameter.Default });
                             }
                         }
-                        var tempServices = context.ServiceForModel.Where(s => s.RowidModel == selectedDevice.RowidModel).ToList();
+                        var tempServices = context.ServiceForModel.Where(s => s.RowidModel == _selectedDevice.RowidModel).ToList();
                         foreach (var item in tempServices)
                         {
                             Services.Add(item);
                         }
-                        var tempSpares = context.SpareForModel.Where(s => s.RowidModel == selectedDevice.RowidModel).ToList();
+                        var tempSpares = context.SpareForModel.Where(s => s.RowidModel == _selectedDevice.RowidModel).ToList();
                         foreach (var item in tempSpares)
                         {
                             Spares.Add(item);
@@ -107,7 +111,97 @@ namespace EService.VVM.ViewModels
                 }
             }
         }
+        public ParameterValue SelectedParameterValue { get { return _selectedParameterValue; } set { _selectedParameterValue = value; } }
+        public SpareForModel SelectedSpare { get { return _selectedSpare; } set { _selectedSpare = value; } }
+        public ServiceForModel SelectedService { get { return _selectedService; } set { _selectedService = value; } }
+        public Repairer SelectedUser { get { return _selectedUser; } set { _selectedUser = value; } }
+        public String Search
+        {
+            get { return _search; }
+            set
+            {
+                _search = value;
+                _filterSearch.SetWhat(_search); // Задание поисковой строки
+                _filterSearch.SetWhere("InventoryNumber"); // Задание пути для поиска
+                _filterSearch.AddWhere(_filterSearch.Member); // Добавление пути в список путей
+                _filterSearch.SetWhere("SerialNumber"); // Задание второго пути поиска
+                _filterSearch.AddWhere(_filterSearch.Member); // Добавление второго пути в список путей
+                _filterSearch.CreateFilter(); // Создание фильтра
+                OnPropertyChanged("Search");
+            }
+        }
+        public DateTime Date
+        {
+            get { return _date; }
+            set { _date = value; }
+        }
+        //Свойства команд
+        public IDelegateCommand AddServiceLog
+        {
+            get
+            {
+                if (_addServiceLog == null)
+                {
+                    _addServiceLog = new DelegateCommand(OpenDialog, CanExecuteAddServiceLog);
+                }
+                return _addServiceLog;
+            }
+        }
+        #endregion        
+        #region Конструкторы
+        public AddServiceLogVM()
+        {
+            _search = String.Empty;
+            _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Device), "d");
+            _filterSearch = new FilterSearch(_parameter);
+            _filters = new List<IFilter>();
+            _filters.Add(_filterSearch);
+            _filterSearch.FilterCreated += OnFilterChanged;
+            _date = DateTime.Now;
 
+            Devices = new ObservableCollection<Device>();
+            ParametersValues = new ObservableCollection<ParameterValue>();
+            Services = new ObservableCollection<ServiceForModel>();
+            Spares = new ObservableCollection<SpareForModel>();
+            Users = new ObservableCollection<Repairer>();
+
+            _selectedServices = new ObservableCollection<ServiceForModel>();
+            _selectedSpares = new ObservableCollection<SpareForModel>();
+
+            var sdbContext = SingletonDBContext.GetInstance(new SQLiteContext());
+            _dbContext = sdbContext.DBContext;
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                context.Device.Load();
+                Devices = context.Device.Local.ToBindingList();
+                context.Repairer.Load();
+                Users = context.Repairer.Local.ToBindingList();
+            }
+        }
+        #endregion
+        #region Методы
+        public void OnFilterChanged()
+        {
+            System.Linq.Expressions.Expression result = null, temp;
+            foreach (var item in _filters)
+            {
+                if (result == null)
+                    result = item.GetFilter();
+                else
+                {
+                    temp = item.GetFilter();
+                    if (temp != null)
+                        result = System.Linq.Expressions.Expression.And(result, temp);
+                }
+            }
+            var lambda = System.Linq.Expressions.Expression.Lambda<Func<Device, bool>>(result, _parameter);
+            if (_dbContext is SQLiteContext)
+            {
+                SQLiteContext context = _dbContext as SQLiteContext;
+                Devices = context.Device.Where((Func<Device, bool>)lambda.Compile()).ToList();
+            }
+        }
         public System.Collections.IList SelectedItems
         {
             set
@@ -122,57 +216,17 @@ namespace EService.VVM.ViewModels
 
             }
         }
-
-        public ParameterValue SelectedParameterValue
-        {
-            get { return selectedParameterValue; }
-            set { selectedParameterValue = value; }
-        }
-        public SpareForModel SelectedSpare { get { return selectedSpare; } set { selectedSpare = value; } }
-        public ServiceForModel SelectedService { get { return selectedService; } set { selectedService = value; } }
-        public String Search
-        {
-            get { return search; }
-            set
-            {
-                search = value;
-                filterSearch.SetWhat(search); // Задание поисковой строки
-                filterSearch.SetWhere("InventoryNumber"); // Задание пути для поиска
-                filterSearch.AddWhere(filterSearch.Member); // Добавление пути в список путей
-                filterSearch.SetWhere("SerialNumber"); // Задание второго пути поиска
-                filterSearch.AddWhere(filterSearch.Member); // Добавление второго пути в список путей
-                filterSearch.CreateFilter(); // Создание фильтра
-                OnPropertyChanged("Search");
-            }
-        }
-        public DateTime Date
-        {
-            get { return date; }
-            set { date = value; }
-        }
-
-        public IDelegateCommand AddServiceLog
-        {
-            get
-            {
-                if (addServiceLog == null)
-                {
-                    addServiceLog = new DelegateCommand(OpenDialog, CanExecuteAddServiceLog);
-                }
-                return addServiceLog;
-            }
-        }
-
+        //Обработчики команд
         private void ExecuteAddServiceLog(object parameter)
         {
             ServiceLog sl = new ServiceLog()
             {
                 Date = Date.ToShortDateString(),
-                RowidDevice = SelectedDevice.Rowid,
-                RowidRepairer = 1,              //ЗАГЛУШКА TODO Авторизация 
+                Device = SelectedDevice,
+                Repairer = SelectedUser
             };
 
-            sl.ParametersValues = new List<ParameterValue>();             
+            sl.ParametersValues = new List<ParameterValue>();
             foreach (var item in ParametersValues)
             {
                 sl.ParametersValues.Add(item);
@@ -185,78 +239,27 @@ namespace EService.VVM.ViewModels
             {
                 sl.SparesUsed.Add(new SpareUsed { RowidSpareForModel = item.Rowid });
             }
-            if (dbContext is SQLiteContext)
+            if (_dbContext is SQLiteContext)
             {
-                SQLiteContext context = dbContext as SQLiteContext;
+                SQLiteContext context = _dbContext as SQLiteContext;
                 context.ServiceLog.Add(sl);
                 context.SaveChanges();
             }
         }
-
         private bool CanExecuteAddServiceLog(object parameter)
         {
-            if (SelectedDevice != null)
+            if ((SelectedDevice != null) && (SelectedUser != null) && (SelectedServices.Count > 0))
                 if (SelectedServices?.Count > 0)
                     return true;
 
             return false;
         }
-
         private async void OpenDialog(object parameter)
         {
             var displayRootRegistry = (Application.Current as App).displayRootRegistry;
-            var openDialog = new DialogVM("Новая запись в журнал","Вы действительно хотите добавить новую запись в журнал ремонтов?",ExecuteAddServiceLog);
+            var openDialog = new DialogVM("Новая запись в журнал", "Вы действительно хотите добавить новую запись в журнал ремонтов?", ExecuteAddServiceLog);
             await displayRootRegistry.ShowModalPresentation(openDialog);
         }
-
-        public AddServiceLogVM()
-        {
-            search = String.Empty;
-            parameter = System.Linq.Expressions.Expression.Parameter(typeof(Device), "d");
-            filterSearch = new FilterSearch(parameter);
-            filters = new List<IFilter>();
-            filters.Add(filterSearch);
-            filterSearch.FilterCreated += OnFilterChanged;
-            date = DateTime.Now;
-
-            Devices = new ObservableCollection<Device>();
-            ParametersValues = new ObservableCollection<ParameterValue>();
-            Services = new ObservableCollection<ServiceForModel>();
-            Spares = new ObservableCollection<SpareForModel>();
-
-            selectedServices = new ObservableCollection<ServiceForModel>();
-            selectedSpares = new ObservableCollection<SpareForModel>();
-
-            var sdbContext = SingletonDBContext.GetInstance(new SQLiteContext());
-            dbContext = sdbContext.DBContext;
-            if (dbContext is SQLiteContext)
-            {
-                SQLiteContext context = dbContext as SQLiteContext;
-                context.Device.Load();
-                Devices = context.Device.Local.ToBindingList();
-            }
-        }
-
-        public void OnFilterChanged()
-        {
-            System.Linq.Expressions.Expression result = null, temp;
-            foreach (var item in filters)
-            {
-                if (result == null)
-                    result = item.GetFilter();
-                else
-                {
-                    temp = item.GetFilter();
-                    if (temp != null)
-                        result = System.Linq.Expressions.Expression.And(result, temp);
-                }
-            }
-            var lambda = System.Linq.Expressions.Expression.Lambda<Func<Device, bool>>(result, parameter);
-            if (dbContext is SQLiteContext)
-            {
-                SQLiteContext context = dbContext as SQLiteContext;
-                Devices = context.Device.Where((Func<Device, bool>)lambda.Compile()).ToList();
-            }
-        }
+        #endregion
     }
 }

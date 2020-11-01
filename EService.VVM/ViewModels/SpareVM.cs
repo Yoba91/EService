@@ -310,8 +310,6 @@ namespace EService.VVM.ViewModels
         }
         private void ExecuteRefresh(object parameter)
         {
-            InitializeFilters();
-            InitializeData();
             OnFilterChanged();
         }
         private async void OpenDialog(object parameter)
@@ -348,6 +346,12 @@ namespace EService.VVM.ViewModels
                     context.SpareForModel.Add(temp);
                 }
                 context.SaveChanges();
+                SpareForModels = null;
+                Models = null;
+                SelectedModels = new ObservableCollection<Model>();
+                SelectedSpareForModels = new ObservableCollection<SpareForModel>();
+                SelectedModel = null;
+                SelectedSpareForModel = null;
                 SelectedSpare = _lastSelectedSpare;
                 OnFilterChanged();
             }

@@ -341,6 +341,12 @@ namespace EService.VVM.ViewModels
                     context.ServiceForModel.Add(temp);
                 }
                 context.SaveChanges();
+                ServiceForModels = null;
+                Models = null;
+                SelectedModels = new ObservableCollection<Model>();
+                SelectedServiceForModels = new ObservableCollection<ServiceForModel>();
+                SelectedModel = null;
+                SelectedServiceForModel = null;
                 SelectedService = _lastSelectedService;
                 OnFilterChanged();
             }
