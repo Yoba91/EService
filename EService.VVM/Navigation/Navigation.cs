@@ -89,7 +89,6 @@ namespace EService.VVM.Navigation
             Navigate(uri, null);
             Navigation._instance.ClearHistory();
         }
-
         #endregion
 
 

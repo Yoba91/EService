@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EService.VVM.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,6 +10,7 @@ namespace EService.VVM
     {
         Dictionary<Type, Type> vmToWindowMapping = new Dictionary<Type, Type>();
 
+        public MainVM MainVM { get; set; }        
         public void RegisterWindowType<VM, Win>() where Win : Window, new() where VM : class
         {
             var vmType = typeof(VM);

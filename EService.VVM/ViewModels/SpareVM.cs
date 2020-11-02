@@ -183,6 +183,10 @@ namespace EService.VVM.ViewModels
         #endregion
 
         #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
         public void InitializeData()
         {
             Spares = new ObservableCollection<SView>();

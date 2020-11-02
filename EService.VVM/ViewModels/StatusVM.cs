@@ -133,6 +133,18 @@ namespace EService.VVM.ViewModels
         public StatusVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             Statuses = new ObservableCollection<SView>();
             SelectedModels = new ObservableCollection<Model>();
             SelectedTypesModel = new ObservableCollection<TypeModel>();
@@ -148,11 +160,7 @@ namespace EService.VVM.ViewModels
                 var statusesList = context.Status.Local.ToBindingList();
                 StatusesListCreator(statusesList, null);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Status), "s");

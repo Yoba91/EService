@@ -65,6 +65,8 @@ namespace EService.VVM.ViewModels
                 serviceCategory.Name = Name;
                 serviceCategory.Range = String.Format(this.MinValue.ToString() + "_" + this.MaxValue.ToString());
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

@@ -63,8 +63,10 @@ namespace EService.VVM.ViewModels
                 user.Name = Name;
                 user.Surname = Surname;
                 user.Midname = Midname;
-                user.Password = "0000";
+                user.Password = "1111";
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

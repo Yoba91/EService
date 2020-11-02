@@ -60,6 +60,8 @@ namespace EService.VVM.ViewModels
                 spare.Name = Name;
                 spare.Description = Description;
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

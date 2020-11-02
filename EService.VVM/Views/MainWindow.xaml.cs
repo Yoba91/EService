@@ -30,7 +30,9 @@ namespace EService.VVM.Views
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Navigation.Navigation.Service = MainFrame.NavigationService;
-            DataContext = new MainVM(new ViewModelsResolver());
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            DataContext = displayRootRegistry.MainVM;
+            displayRootRegistry.MainVM.GoToServiceLogCommand.Execute(displayRootRegistry.MainVM.ServiceLogVM);
         }
     }
 }

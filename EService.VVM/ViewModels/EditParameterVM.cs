@@ -64,6 +64,8 @@ namespace EService.VVM.ViewModels
                 param.Default = Default;
                 param.Unit = Unit;
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

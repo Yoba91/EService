@@ -36,6 +36,8 @@ namespace EService.VVM.ViewModels
         private void ExecuteCommand(object parameter)
         {
             action.Execute(new object());
+            var displayRootRegistry = (Application.Current as App).displayRootRegistry;
+            displayRootRegistry.MainVM.Refresh();
             Exit.Execute(parameter);
         }
         private void ExecuteExit(object parameter)

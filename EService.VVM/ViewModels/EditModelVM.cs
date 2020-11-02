@@ -69,6 +69,8 @@ namespace EService.VVM.ViewModels
                 editModel.ShortName = ShortName;
                 editModel.TypeModel = TypeModel;
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

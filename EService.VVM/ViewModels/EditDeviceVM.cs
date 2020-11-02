@@ -84,6 +84,8 @@ namespace EService.VVM.ViewModels
                 device.Dept = Dept;
                 device.Status = Status;
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

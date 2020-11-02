@@ -132,9 +132,21 @@ namespace EService.VVM.ViewModels
         public TypeModelVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {            
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             TypesModel = new ObservableCollection<TMView>();
             SelectedDepts = new ObservableCollection<Dept>();
-            SelectedModels = new ObservableCollection<Model>();            
+            SelectedModels = new ObservableCollection<Model>();
             _dbContext = SingletonDBContext.GetInstance(new SQLiteContext()).DBContext;
             if (_dbContext is SQLiteContext)
             {
@@ -147,11 +159,7 @@ namespace EService.VVM.ViewModels
                 context.Model.Load();
                 Models = context.Model.Local.ToBindingList();
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(TypeModel), "s");

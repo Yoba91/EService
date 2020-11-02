@@ -10,6 +10,8 @@ namespace EService.VVM.ViewModels
 {
     public class BaseVM : INotifyPropertyChanged
     {
+        public virtual void Refresh()
+        { }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string property = "")

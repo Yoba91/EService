@@ -52,6 +52,7 @@ namespace EService.VVM
             base.OnStartup(e);
 
             mainWindowViewModel = new MainVM(new ViewModelsResolver());
+            displayRootRegistry.MainVM = mainWindowViewModel;
 
             await displayRootRegistry.ShowModalPresentation(mainWindowViewModel);
 

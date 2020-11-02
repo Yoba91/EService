@@ -37,6 +37,6 @@ namespace EService.VVM.Navigation
             }
 
             return _pagesResolvers[Navigation.NotFoundPageAlias]();
-        }
+        }        
     }
 }

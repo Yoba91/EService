@@ -178,22 +178,30 @@ namespace EService.VVM.ViewModels
         public ParameterVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             Parameters = new ObservableCollection<PView>();
             SelectedModels = new ObservableCollection<Model>();
             SelectedParameterForModels = new ObservableCollection<ParameterForModel>();
             _dbContext = SingletonDBContext.GetInstance(new SQLiteContext()).DBContext;
             if (_dbContext is SQLiteContext)
             {
-                SQLiteContext context = _dbContext as SQLiteContext;                
+                SQLiteContext context = _dbContext as SQLiteContext;
                 context.Parameter.Load();
                 var parametersList = context.Parameter.Local.ToBindingList();
                 ParametersListCreator(parametersList);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Parameter), "s");

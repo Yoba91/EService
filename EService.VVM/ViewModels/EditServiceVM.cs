@@ -68,6 +68,8 @@ namespace EService.VVM.ViewModels
                 service.Description = Description;
                 service.Price = Price;
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

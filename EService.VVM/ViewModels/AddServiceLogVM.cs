@@ -114,7 +114,7 @@ namespace EService.VVM.ViewModels
         public ParameterValue SelectedParameterValue { get { return _selectedParameterValue; } set { _selectedParameterValue = value; } }
         public SpareForModel SelectedSpare { get { return _selectedSpare; } set { _selectedSpare = value; } }
         public ServiceForModel SelectedService { get { return _selectedService; } set { _selectedService = value; } }
-        public Repairer SelectedUser { get { return _selectedUser; } set { _selectedUser = value; } }
+        public Repairer SelectedUser { get { return _selectedUser; } set { _selectedUser = value; _addServiceLog?.RaiseCanExecuteChanged(); } }
         public String Search
         {
             get { return _search; }
@@ -214,6 +214,7 @@ namespace EService.VVM.ViewModels
                 temp = ItemsBuilder.SelectItem(value, SelectedSpares, typeof(SpareForModel), SelectedSpare);
                 if (temp != null) SelectedSpares = (ObservableCollection<SpareForModel>)temp;
 
+                _addServiceLog?.RaiseCanExecuteChanged();
             }
         }
         //Обработчики команд
@@ -244,6 +245,8 @@ namespace EService.VVM.ViewModels
                 SQLiteContext context = _dbContext as SQLiteContext;
                 context.ServiceLog.Add(sl);
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
         private bool CanExecuteAddServiceLog(object parameter)

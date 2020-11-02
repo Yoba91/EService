@@ -66,6 +66,8 @@ namespace EService.VVM.ViewModels
                 editDept.Code = Code;
                 editDept.Description = Description;
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

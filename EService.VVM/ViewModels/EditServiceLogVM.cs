@@ -135,14 +135,6 @@ namespace EService.VVM.ViewModels
             context.ServiceLog.Where(s => s.Rowid == _serviceLog.Rowid).SingleOrDefault().Date = Date.ToShortDateString();
             context.ServiceLog.Where(s => s.Rowid == _serviceLog.Rowid).SingleOrDefault().Repairer = SelectedUser;
             var pv = context.ParameterValue.Where(p => p.RowidServiceLog == _serviceLog.Rowid).ToList();
-            //foreach (var item in pv)
-            //{
-            //    context.ParameterValue.Remove(item);
-            //}
-            //foreach (var item in ParametersValues)
-            //{
-            //    context.ServiceLog.Where(s => s.Rowid == _serviceLog.Rowid).SingleOrDefault().ParametersValues.Add(item);
-            //}
             foreach (var item in ParametersValues)
             {
                 var parametersValues = context.ParameterValue.Where(p => p.Rowid == item.Rowid).ToList();

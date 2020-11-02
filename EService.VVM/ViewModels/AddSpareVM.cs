@@ -57,6 +57,8 @@ namespace EService.VVM.ViewModels
                 SQLiteContext context = _dbContext as SQLiteContext;
                 context.Spare.Add(spare);
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

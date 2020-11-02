@@ -63,6 +63,8 @@ namespace EService.VVM.ViewModels
                 Status editStatus = context.Status.Where(s => s.Rowid == _status.Rowid).SingleOrDefault();
                 editStatus.Name = Name;
                 context.SaveChanges();
+                context.Configuration.LazyLoadingEnabled = true;
+                context.Database.Initialize(true);
             }
         }
 

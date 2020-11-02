@@ -100,6 +100,18 @@ namespace EService.VVM.ViewModels
         public CategoryVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             ServiceCategories = new ObservableCollection<SCView>();
             _dbContext = SingletonDBContext.GetInstance(new SQLiteContext()).DBContext;
             if (_dbContext is SQLiteContext)
@@ -109,11 +121,7 @@ namespace EService.VVM.ViewModels
                 var serviceCategoriesList = context.ServiceCategory.Local.ToBindingList();
                 ServiceCategoriesListCreator(serviceCategoriesList);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(ServiceCategory), "s");

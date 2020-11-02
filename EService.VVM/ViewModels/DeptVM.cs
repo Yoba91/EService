@@ -152,6 +152,18 @@ namespace EService.VVM.ViewModels
         public DeptVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             Depts = new ObservableCollection<DView>();
             SelectedModels = new ObservableCollection<Model>();
             SelectedTypesModel = new ObservableCollection<TypeModel>();
@@ -170,11 +182,7 @@ namespace EService.VVM.ViewModels
                 var deptsList = context.Dept.Local.ToBindingList();
                 DeptsListCreator(deptsList, null);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Dept), "s");

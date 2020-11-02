@@ -22,14 +22,16 @@
         <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=Device.InventoryNumber}" />
-                <DataGridTextColumn Width="0.5*" Header="S/N" Binding="{Binding Path=Device.SerialNumber}" />
-                <DataGridTextColumn Width="0.5*" Header="Тип" Binding="{Binding Path=Device.Model.TypeModel.ShortName}" />
-                <DataGridTextColumn Width="0.5*" Header="Модель" Binding="{Binding Path=Device.Model.ShortName}" />
-                <DataGridTextColumn Width="0.35*" Header="Отдел" Binding="{Binding Path=Device.Dept.Code}" />
-                <DataGridTextColumn Width="0.5*" Header="Статус" Binding="{Binding Path=Device.Status.Name}" />
-                <DataGridTextColumn Width="0.35*" Header="Дата" Binding="{Binding Path=Date}" />
-                <DataGridTextColumn Width="*" Header="Исполнитель" Binding="{Binding Path=Repairer.FullName}" />
+                <DataGridTextColumn Width="0.25*" Header="№" Binding="{Binding Path=Index}" />
+                <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=ServiceLog.Device.InventoryNumber}" />
+                <DataGridTextColumn Width="0.5*" Header="S/N" Binding="{Binding Path=ServiceLog.Device.SerialNumber}" />
+                <DataGridTextColumn Width="0.5*" Header="Тип" Binding="{Binding Path=ServiceLog.Device.Model.TypeModel.ShortName}" />
+                <DataGridTextColumn Width="0.5*" Header="Модель" Binding="{Binding Path=ServiceLog.Device.Model.ShortName}" />
+                <DataGridTextColumn Width="0.35*" Header="Отдел" Binding="{Binding Path=ServiceLog.Device.Dept.Code}" />
+                <DataGridTextColumn Width="0.5*" Header="Статус" Binding="{Binding Path=ServiceLog.Device.Status.Name}" />
+                <DataGridTextColumn Width="0.35*" Header="Дата" Binding="{Binding Path=ServiceLog.Date}" />
+                <DataGridTextColumn Width="*" Header="Исполнитель" Binding="{Binding Path=ServiceLog.Repairer.FullName}" />
+                <DataGridTextColumn Width="*" Header="Категории" Binding="{Binding Path=Categories}" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -43,21 +45,21 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <DataGrid Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White" IsReadOnly="True">
+            <DataGrid IsReadOnly="true" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Название" Binding="{Binding Path=ParameterForModel.Parameter.Name}" />
                     <DataGridTextColumn Width="*" Header="Значение" Binding="{Binding Path=Value}" />
                     <DataGridTextColumn Width="*" Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Grid.Row="1" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+            <DataGrid IsReadOnly="true" Grid.Row="1" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Работа" Binding="{Binding Path=ServiceForModel.Service.ShortName}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Grid.Row="2" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+            <DataGrid IsReadOnly="true" Grid.Row="2" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
     RowBackground="LightGray" AlternatingRowBackground="White">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Запчасть" Binding="{Binding Path=SpareForModel.Spare.Name}" />
@@ -86,12 +88,14 @@
             <StackPanel Grid.Row="0" Grid.Column="0" x:Name="Search" Margin="5 0 5 5">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="SearchText" Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <TextBlock Grid.Column="0" Text="Поиск" Tag="{Binding ElementName=SearchText}" Style="{StaticResource PlaceholderStyle}" Margin="5 8 5 5"/>
-                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshServiceLogCommand}">Обновить</Button>
+                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshServiceLogCommand}">Обн</Button>
+                    <Button Grid.Column="2" Width="Auto" Height="25" Command="{Binding CreateReportCommand}">Отч</Button>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>

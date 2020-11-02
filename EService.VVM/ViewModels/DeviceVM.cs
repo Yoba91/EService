@@ -160,6 +160,18 @@ namespace EService.VVM.ViewModels
         public DeviceVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             Devices = new ObservableCollection<DView>();
             SelectedDepts = new ObservableCollection<Dept>();
             SelectedModels = new ObservableCollection<Model>();
@@ -181,11 +193,7 @@ namespace EService.VVM.ViewModels
                 var devicesList = context.Device.Local.ToBindingList();
                 DevicesListCreator(devicesList);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Device), "s");

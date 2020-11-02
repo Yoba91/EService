@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace EService.VVM.ViewModels
 {
-    class MainVM : INotifyPropertyChanged
+    public class MainVM : INotifyPropertyChanged
     {
         #region Константы
         public static readonly string ServiceLogVMAlias = "ServiceLogVM";
@@ -29,6 +29,8 @@ namespace EService.VVM.ViewModels
 
         #region Поля
         private readonly IViewModelsResolver _resolver;
+
+        private IList<BaseVM> VMs;
 
         private ICommand _goToPathCommand;
         private ICommand _goToServiceLogCommand;
@@ -249,11 +251,32 @@ namespace EService.VVM.ViewModels
             _categoryVM = _resolver.GetViewModelInstance(CategoryVMAlias);
             _userVM = _resolver.GetViewModelInstance(UserVMAlias);
 
+            VMs = new List<BaseVM>();
+
+            VMs.Add((BaseVM)_serviceLogVM);
+            VMs.Add((BaseVM)_typeModelVM);
+            VMs.Add((BaseVM)_modelVM);
+            VMs.Add((BaseVM)_deviceVM);
+            VMs.Add((BaseVM)_parameterVM);
+            VMs.Add((BaseVM)_spareVM);
+            VMs.Add((BaseVM)_serviceVM);
+            VMs.Add((BaseVM)_deptVM);
+            VMs.Add((BaseVM)_statusVM);
+            VMs.Add((BaseVM)_categoryVM);
+            VMs.Add((BaseVM)_userVM);
+
             InitializeCommands();
 
             GoToServiceLogCommand.Execute(ServiceLogVM);
         }
         #endregion
+        public void Refresh()
+        {
+            foreach (var item in VMs)
+            {
+                item.Refresh();
+            }
+        }
         private void InitializeCommands()
         {
 

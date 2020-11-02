@@ -139,6 +139,18 @@ namespace EService.VVM.ViewModels
         public UserVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             Users = new ObservableCollection<UView>();
             SelectedModels = new ObservableCollection<Model>();
             SelectedTypesModel = new ObservableCollection<TypeModel>();
@@ -154,11 +166,7 @@ namespace EService.VVM.ViewModels
                 var usersList = context.Repairer.Local.ToBindingList();
                 UsersListCreator(usersList, null);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Repairer), "s");

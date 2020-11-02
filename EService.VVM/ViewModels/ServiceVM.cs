@@ -180,6 +180,18 @@ namespace EService.VVM.ViewModels
         public ServiceVM()
         {
             InitializeFilters();
+            InitializeData();
+        }
+        #endregion
+
+        #region Методы
+        public override void Refresh()
+        {
+            OnFilterChanged();
+        }
+
+        private void InitializeData()
+        {
             Services = new ObservableCollection<SView>();
             SelectedModels = new ObservableCollection<Model>();
             SelectedServiceForModels = new ObservableCollection<ServiceForModel>();
@@ -191,11 +203,7 @@ namespace EService.VVM.ViewModels
                 var servicesList = context.Service.Local.ToBindingList();
                 ServicesListCreator(servicesList);
             }
-
         }
-        #endregion
-
-        #region Методы
         private void InitializeFilters()
         {
             _parameter = System.Linq.Expressions.Expression.Parameter(typeof(Service), "s");

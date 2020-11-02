@@ -1,0 +1,24 @@
+﻿<Window x:Class="EService.VVM.Views.ReportView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EService.VVM.Views"
+        mc:Ignorable="d"
+        Title="ReportView" Height="450" Width="800">
+    <Grid>
+        <DataGrid CanUserReorderColumns="True" ItemsSource="{Binding ServiceLogs}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="0.25*" Header="№" Binding="{Binding Path=Index}" />
+                <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=ServiceLog.Device.InventoryNumber}" />
+                <DataGridTextColumn Width="0.5*" Header="S/N" Binding="{Binding Path=ServiceLog.Device.SerialNumber}" />
+                <DataGridTextColumn Width="0.5*" Header="Тип" Binding="{Binding Path=ServiceLog.Device.Model.TypeModel.ShortName}" />
+                <DataGridTextColumn Width="0.5*" Header="Модель" Binding="{Binding Path=ServiceLog.Device.Model.ShortName}" />
+                <DataGridTextColumn Width="0.35*" Header="Отдел" Binding="{Binding Path=ServiceLog.Device.Dept.Code}" />
+                <DataGridTextColumn Width="0.35*" Header="Дата" Binding="{Binding Path=ServiceLog.Date}" />
+                <DataGridTextColumn Width="*" Header="Категории" Binding="{Binding Path=Categories}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        
+    </Grid>
+</Window>
