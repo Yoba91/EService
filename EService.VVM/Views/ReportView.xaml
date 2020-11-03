@@ -5,20 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EService.VVM.Views"
         mc:Ignorable="d"
-        Title="ReportView" Height="450" Width="800">
+        Title="ReportView" Height="250" Width="300">
     <Grid>
-        <DataGrid CanUserReorderColumns="True" ItemsSource="{Binding ServiceLogs}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Width="0.25*" Header="№" Binding="{Binding Path=Index}" />
-                <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=ServiceLog.Device.InventoryNumber}" />
-                <DataGridTextColumn Width="0.5*" Header="S/N" Binding="{Binding Path=ServiceLog.Device.SerialNumber}" />
-                <DataGridTextColumn Width="0.5*" Header="Тип" Binding="{Binding Path=ServiceLog.Device.Model.TypeModel.ShortName}" />
-                <DataGridTextColumn Width="0.5*" Header="Модель" Binding="{Binding Path=ServiceLog.Device.Model.ShortName}" />
-                <DataGridTextColumn Width="0.35*" Header="Отдел" Binding="{Binding Path=ServiceLog.Device.Dept.Code}" />
-                <DataGridTextColumn Width="0.35*" Header="Дата" Binding="{Binding Path=ServiceLog.Date}" />
-                <DataGridTextColumn Width="*" Header="Категории" Binding="{Binding Path=Categories}" />
-            </DataGrid.Columns>
-        </DataGrid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.25*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Row="0" Grid.Column="0" x:Name="FullReport" Content="Список ремонтов" IsChecked="{Binding Path=FullReport, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="1" Grid.Column="0" x:Name="CountReport" Content="Общее количество" IsChecked="{Binding Path=CountReport, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" x:Name="Report" Content="Отчет" Command="{Binding CreateReportCommand}"/>
+        </Grid>
+        <Grid Grid.Row="1" IsEnabled="{Binding ElementName=FullReport, Path=IsChecked}">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <CheckBox Grid.Row="0" x:Name="IN" Content="Инвентарный номер" IsChecked="{Binding Path=IN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="1" x:Name="SN" Content="Серийный номер" IsChecked="{Binding Path=SN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="2" x:Name="Type" Content="Тип модели" IsChecked="{Binding Path=Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="3" x:Name="Model" Content="Модель" IsChecked="{Binding Path=Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="4" x:Name="Dept" Content="Отдел" IsChecked="{Binding Path=Dept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="5" x:Name="Date" Content="Дата" IsChecked="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="6" x:Name="Category" Content="Категории сложности" IsChecked="{Binding Path=Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="7" x:Name="Parameter" Content="Параметры" IsChecked="{Binding Path=Parameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="8" x:Name="Spare" Content="Запчасти" IsChecked="{Binding Path=Spare, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="9" x:Name="Service" Content="Ремонты" IsChecked="{Binding Path=Service, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
     </Grid>
 </Window>

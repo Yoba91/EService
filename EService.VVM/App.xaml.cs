@@ -45,6 +45,7 @@ namespace EService.VVM
             displayRootRegistry.RegisterWindowType<AddUserVM, AddUserView>();
             displayRootRegistry.RegisterWindowType<EditUserVM, EditUserView>();
             displayRootRegistry.RegisterWindowType<DialogVM, DialogView>();
+            displayRootRegistry.RegisterWindowType<ReportVM, ReportView>();
         }
 
         protected override async void OnStartup(StartupEventArgs e)

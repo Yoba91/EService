@@ -419,16 +419,18 @@ namespace EService.VVM.ViewModels
         {
             OnFilterChanged();
         }
-        private void ExecuteCreateReport(object parameter)
-        {
-            CreateReport();
-        }
         private async void OpenDialog(object parameter)
         {
             var message = String.Format("Вы действительно хотите удалить запись ремонта {0} I/N - \"{1}\" | S/N - \"{2}\"?", _selectedServiceLog.ServiceLog.Device.Model.TypeModel.ShortName, _selectedServiceLog.ServiceLog.Device.InventoryNumber, _selectedServiceLog.ServiceLog.Device.SerialNumber);
             var displayRootRegistry = (System.Windows.Application.Current as App).displayRootRegistry;
             var openDialog = new DialogVM("Удаление записи", message, ExecuteRemoveServiceLog);
             await displayRootRegistry.ShowModalPresentation(openDialog);
+        }
+        private async void ExecuteCreateReport(object parameter)
+        {
+            var displayRootRegistry = (System.Windows.Application.Current as App).displayRootRegistry;
+            var createReport = new ReportVM(_serviceLogs);
+            await displayRootRegistry.ShowModalPresentation(createReport);
         }
         private bool CanExecuteEditServiceLog(object parameter)
         {
@@ -549,107 +551,6 @@ namespace EService.VVM.ViewModels
 
             _filterDate.FilterCreated += OnFilterChanged;
             _filterSearch.FilterCreated += OnFilterChanged;
-        }
-
-        private void CreateReport()
-        {
-            Excel.Application application = new Excel.Application();
-            Excel.Workbook workbook = application.Workbooks.Add(Missing.Value);
-            Worksheet worksheet = workbook.ActiveSheet;
-            worksheet.Cells[1, 1] = "№";
-            worksheet.Cells[1, 2] = "I/N";
-            worksheet.Cells[1, 3] = "S/N";
-            worksheet.Cells[1, 4] = "Тип";
-            worksheet.Cells[1, 5] = "Модель";
-            worksheet.Cells[1, 6] = "Отдел";
-            worksheet.Cells[1, 7] = "Дата";
-            worksheet.Cells[1, 8] = "Категория";
-            worksheet.Cells[1, 9] = "Параметры";
-            worksheet.Cells[1, 10] = "Запчасти";
-            worksheet.Cells[1, 11] = "Работы";
-            int rowIndex = 1;
-            foreach (var item in ServiceLogs)
-            {
-                int colIndex = 1;
-                rowIndex++;
-                StringBuilder sb = new StringBuilder();
-                worksheet.Cells[rowIndex, colIndex] = item.Index; colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = item.ServiceLog.Device.InventoryNumber; colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = item.ServiceLog.Device.SerialNumber; colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = item.ServiceLog.Device.Model.TypeModel.ShortName; colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = item.ServiceLog.Device.Model.ShortName; colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = String.Format("{0}({1})",item.ServiceLog.Device.Dept.Name,item.ServiceLog.Device.Dept.Code); colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = item.ServiceLog.Date; colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = item.Categories; colIndex++;
-                sb.Clear();
-                foreach (var i in item.ServiceLog.ParametersValues)
-                {
-                    sb.AppendFormat("{0}: {1} {2}\n", i.ParameterForModel.Parameter.Name, i.Value, i.ParameterForModel.Parameter.Unit);
-                }
-                worksheet.Cells[rowIndex, colIndex] = sb.ToString().TrimEnd('\n'); colIndex++;
-                sb.Clear();
-                foreach (var i in item.ServiceLog.SparesUsed)
-                {
-                    sb.AppendFormat(" {0},", i.SpareForModel.Spare.Name);
-                }
-                worksheet.Cells[rowIndex, colIndex] = sb.ToString().TrimEnd(',').TrimStart(' ') + "."; colIndex++;
-                sb.Clear();
-                foreach (var i in item.ServiceLog.ServicesDone)
-                {
-                    sb.AppendFormat(" {0},", i.ServiceForModel.Service.ShortName);
-                }
-                worksheet.Cells[rowIndex, colIndex] = sb.ToString().TrimEnd(',').TrimStart(' ') + ".";                
-            }
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[1, 11]].Font.Bold = true;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[1, 11]].Interior.Color = ColorTranslator.ToOle(System.Drawing.Color.FromArgb(198, 224, 180));
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].Borders[XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlContinuous;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].Borders[XlBordersIndex.xlEdgeTop].LineStyle = Excel.XlLineStyle.xlContinuous;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].Borders[XlBordersIndex.xlEdgeLeft].LineStyle = Excel.XlLineStyle.xlContinuous;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].Borders[XlBordersIndex.xlEdgeRight].LineStyle = Excel.XlLineStyle.xlContinuous;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].Borders[XlBordersIndex.xlInsideHorizontal].LineStyle = Excel.XlLineStyle.xlContinuous;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].Borders[XlBordersIndex.xlInsideVertical].LineStyle = Excel.XlLineStyle.xlContinuous;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[1, 11]].HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
-            worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowIndex, 11]].VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-            worksheet.Columns.EntireColumn.AutoFit();
-            worksheet.Rows.EntireColumn.AutoFit();
-
-            var tempTypes = ServiceLogs.Select(s => s.ServiceLog.Device.Model.TypeModel).ToHashSet().ToList();
-            var tempModels = ServiceLogs.Select(s => s.ServiceLog.Device.Model).ToHashSet().ToList();
-            var tempDepts = ServiceLogs.Select(s => s.ServiceLog.Device.Dept).ToHashSet().ToList();
-
-            rowIndex += 4;
-
-            foreach (var item in tempTypes)
-            {                
-                int colIndex = 1, slIndex = 1;
-                worksheet.Cells[rowIndex, colIndex] = item.ShortName;
-                rowIndex++;
-                worksheet.Cells[rowIndex, colIndex] = "№"; colIndex++;
-                worksheet.Cells[rowIndex, colIndex] = "Модель"; colIndex++;
-                foreach (var i in tempDepts)
-                {
-                    worksheet.Cells[rowIndex, colIndex] = String.Format("{0} [{1}]", i.Name, i.Code); colIndex++;
-                }
-                rowIndex++;
-                colIndex = 1;
-                foreach (var i in tempModels)
-                {                    
-                    if(i.TypeModel.Rowid == item.Rowid)
-                    {
-                        worksheet.Cells[rowIndex, colIndex] = slIndex; slIndex++; colIndex++;
-                        worksheet.Cells[rowIndex, colIndex] = i.FullName; colIndex++;
-                        foreach (var j in tempDepts)
-                        {
-                            worksheet.Cells[rowIndex, colIndex] = ServiceLogs.Where(s => s.ServiceLog.Device.Model.Rowid == i.Rowid && s.ServiceLog.Device.Dept.Rowid == j.Rowid).ToList().Count(); colIndex++;
-                        }
-                        rowIndex++;
-                        colIndex = 1;
-                    }                    
-                }
-                rowIndex += 4;
-            }
-            application.Visible = true;
         }
         #endregion        
     }
