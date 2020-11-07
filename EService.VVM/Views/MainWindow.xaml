@@ -5,29 +5,127 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EService.VVM.Views"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="660" MinWidth="815" Height="665" Width="810">
+        Title="MainWindow" MinHeight="685" MinWidth="815" Height="685" Width="810">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Style.Setters>
+                <Setter Property="Background" Value="#fffbf4"/>
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Name="ButtonBorder" CornerRadius="20" BorderThickness="0" BorderBrush="#50962f" Background="#50962f">
+                                <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Width" Duration="0:0:1" To="150" AutoReverse="false" SpeedRatio="2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Width" Duration="0:0:1" To="40" AutoReverse="false" SpeedRatio="2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+        
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="47"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                <Button Content="Журнал ремонтов" Command="{Binding GoToServiceLogCommand}" CommandParameter="{Binding ServiceLogVM}"/>
-                <Button Content="Отделы" Command="{Binding GoToDeptCommand}" CommandParameter="{Binding DeptVM}"/>
-                <Button Content="Статусы" Command="{Binding GoToStatusCommand}" CommandParameter="{Binding StatusVM}"/>
-                <Button Content="Типы" Command="{Binding GoToTypeModelCommand}" CommandParameter="{Binding TypeModelVM}"/>
-                <Button Content="Модели" Command="{Binding GoToModelCommand}" CommandParameter="{Binding ModelVM}"/>
-                <Button Content="Устройства" Command="{Binding GoToDeviceCommand}" CommandParameter="{Binding DeviceVM}"/>
-                <Button Content="Параметры" Command="{Binding GoToParameterCommand}" CommandParameter="{Binding ParameterVM}"/>
-                <Button Content="Запчасти" Command="{Binding GoToSpareCommand}" CommandParameter="{Binding SpareVM}"/>
-                <Button Content="Ремонты" Command="{Binding GoToServiceCommand}" CommandParameter="{Binding ServiceVM}"/>
-                <Button Content="Сложность" Command="{Binding GoToCategoryCommand}" CommandParameter="{Binding CategoryVM}"/>
-                <Button Content="Пользователи" Command="{Binding GoToUserCommand}" CommandParameter="{Binding UserVM}"/>
+                <Button Command="{Binding GoToServiceLogCommand}" CommandParameter="{Binding ServiceLogVM}" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="slImg" Source="/Images/ServiceLog.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="slText" Text="Журнал" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="25 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToDeptCommand}" CommandParameter="{Binding DeptVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="sepImg" Source="/Images/Dept.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="sepText" Text="Отделы" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="25 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToStatusCommand}" CommandParameter="{Binding StatusVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="stImg" Source="/Images/Status.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="stText" Text="Статусы" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="25 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToTypeModelCommand}" CommandParameter="{Binding TypeModelVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="tyImg" Source="/Images/TypeModel.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="tyText" Text="Типы" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="30 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToModelCommand}" CommandParameter="{Binding ModelVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="modImg" Source="/Images/Model.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="modText" Text="Модели" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="25 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToDeviceCommand}" CommandParameter="{Binding DeviceVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="devImg" Source="/Images/Device.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="devText" Text="Устройства" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="15 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToParameterCommand}" CommandParameter="{Binding ParameterVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="parImg" Source="/Images/Parameter.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="parText" Text="Параметры" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="15 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToSpareCommand}" CommandParameter="{Binding SpareVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="spImg" Source="/Images/Spare.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="spText" Text="Запчасти" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToServiceCommand}" CommandParameter="{Binding ServiceVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="serImg" Source="/Images/Service.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="serText" Text="Ремонты" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToCategoryCommand}" CommandParameter="{Binding CategoryVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="catImg" Source="/Images/Category.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="catText" Text="Сложность" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="15 0 0 0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GoToUserCommand}" CommandParameter="{Binding UserVM}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="usImg" Source="/Images/User.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="usText" Text="Пользователи" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5 0 0 0"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </ScrollViewer>
         <Frame x:Name="MainFrame" Grid.Row="1" Grid.Column="0" Margin="0 0 0 0" NavigationUIVisibility="Hidden"/>

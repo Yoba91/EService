@@ -15,10 +15,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Security.Principal;
 using System.Diagnostics;
-using Excel = Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Interop.Excel;
-using System.Windows.Media;
-using System.Drawing;
 
 namespace EService.VVM.ViewModels
 {
