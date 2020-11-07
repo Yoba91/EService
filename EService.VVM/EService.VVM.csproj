@@ -90,6 +90,9 @@
     <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\PagesResolver.cs" />
     <Compile Include="Navigation\RelayCommand.cs" />
+    <Compile Include="SplashScreen.xaml.cs">
+      <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SView.cs" />
     <Compile Include="ViewModels\AddCategoryVM.cs" />
     <Compile Include="ViewModels\AddDeptVM.cs" />
@@ -250,6 +253,10 @@
     </Compile>
     <Compile Include="DisplayRootRegistry.cs" />
     <Page Include="Placeholder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -494,7 +501,11 @@
     <Resource Include="Images\User.png" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="Images\LoadingScreen.gif" />
+    <Resource Include="Images\LoadingScreen.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gear.png" />
+    <Resource Include="Images\Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -50,15 +51,24 @@ namespace EService.VVM
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
+            var thread = new Thread(() =>
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => new SplashScreen().Show()));
+                System.Windows.Threading.Dispatcher.Run();
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.IsBackground = true;
+            thread.Start();
 
             mainWindowViewModel = new MainVM(new ViewModelsResolver());
             displayRootRegistry.MainVM = mainWindowViewModel;
+
+            thread.Abort();
+            base.OnStartup(e);
 
             await displayRootRegistry.ShowModalPresentation(mainWindowViewModel);
 
             Shutdown();
         }
-
     }
 }
