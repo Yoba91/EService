@@ -18,9 +18,9 @@
         </Grid.RowDefinitions>
 
         <!--    Основная таблица    -->
-
-        <DataGrid IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}">
+ 
+        <DataGrid HeadersVisibility="Column" Style="{StaticResource MainDG}" IsReadOnly="True" Grid.Column="0" Grid.Row="0" CanUserSortColumns="False" CanUserReorderColumns="False" x:Name="ServiceLogGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServiceLogs, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="#fffbf4" AlternatingRowBackground="White" SelectedItem="{Binding Path=SelectedServiceLog}"> 
             <DataGrid.Columns>
                 <DataGridTextColumn Width="0.25*" Header="№" Binding="{Binding Path=Index}" />
                 <DataGridTextColumn Width="0.25*" Header="I/N" Binding="{Binding Path=ServiceLog.Device.InventoryNumber}" />
@@ -45,22 +45,22 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <DataGrid IsReadOnly="true" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White">
+            <DataGrid HeadersVisibility="Column" Style="{StaticResource RightTopDG}" IsReadOnly="True" Grid.Row="0" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ParametersGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ParametersValues, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="White" AlternatingRowBackground="#fffbf4" CanUserResizeRows="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="Название" Binding="{Binding Path=ParameterForModel.Parameter.Name}" />
-                    <DataGridTextColumn Width="*" Header="Значение" Binding="{Binding Path=Value}" />
-                    <DataGridTextColumn Width="*" Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" />
+                    <DataGridTextColumn Width="*" Header="Название" Binding="{Binding Path=ParameterForModel.Parameter.Name}"/>
+                    <DataGridTextColumn Width="2*" Header="Значение" Binding="{Binding Path=Value}" />
+                    <DataGridTextColumn Width=".5*" Header="Ед.изм." Binding="{Binding Path=ParameterForModel.Parameter.Unit}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid IsReadOnly="true" Grid.Row="1" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White">
+            <DataGrid HeadersVisibility="Column" Style="{StaticResource RightCenterDG}" IsReadOnly="True" Grid.Row="1" CanUserSortColumns="False" CanUserAddRows="False" x:Name="ServicesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=ServicesDone, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="White" AlternatingRowBackground="#fffbf4">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Работа" Binding="{Binding Path=ServiceForModel.Service.ShortName}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid IsReadOnly="true" Grid.Row="2" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
-    RowBackground="LightGray" AlternatingRowBackground="White">
+            <DataGrid HeadersVisibility="Column" Style="{StaticResource RightBottomDG}" IsReadOnly="True" Grid.Row="2" CanUserSortColumns="False" CanUserAddRows="False" x:Name="SparesGrid" Width="Auto" Height="Auto" AutoGenerateColumns="False" ItemsSource="{Binding Path=SparesUsed, Mode=TwoWay}" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="White" AlternatingRowBackground="#fffbf4">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Запчасть" Binding="{Binding Path=SpareForModel.Spare.Name}" />
                 </DataGrid.Columns>
@@ -68,234 +68,244 @@
         </Grid>
 
         <!--    Таблицы Запчасти, Работы, Параметры END    -->
-
-        <Grid x:Name="FilterGrid" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <!--    Поиск    -->
-            <StackPanel Grid.Row="0" Grid.Column="0" x:Name="Search" Margin="5 0 5 5">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="SearchText" Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                    <TextBlock Grid.Column="0" Text="Поиск" Tag="{Binding ElementName=SearchText}" Style="{StaticResource PlaceholderStyle}" Margin="5 8 5 5"/>
-                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding RefreshServiceLogCommand}">Обн</Button>
-                    <Button Grid.Column="2" Width="Auto" Height="25" Command="{Binding CreateReportCommand}">Отч</Button>
-                </Grid>
+            <Grid x:Name="FilterGrid" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+            <Border Background="#fffbf4" CornerRadius="5 5 5 5" Margin="2 0 2 2" BorderThickness="2" BorderBrush="#50962f">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Width="Auto" Height="25" Command="{Binding AddServiceLogCommand}">Добавить</Button>
-                    <Button Grid.Column="1" Width="Auto" Height="25" Command="{Binding EditServiceLogCommand}">Изменить</Button>
-                    <Button Grid.Column="2" Width="Auto" Height="25" Command="{Binding RemoveServiceLogCommand}">Удалить</Button>
-                </Grid>
-            </StackPanel>
-            <!--    Поиск END   -->
-
-            <!--    Исполнители    -->
-            <Grid Grid.Row="1" Grid.Column="0" Height="Auto" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Исполнители</TextBlock>
-
-                <ListBox x:Name="Repairers" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Repairers}" SelectedItem="{Binding SelectedRepairer}" Margin="5 0 5 5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Repairers}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=FullName}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <!--    Исполнители END   -->
-
-            <!--    Даты    -->
-            <StackPanel Grid.Row="0" Grid.Column="1" x:Name="Date" Margin="2 2 2 2">
-                <Grid Margin="0 4 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.25*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="22"/>
-                        <RowDefinition Height="22"/>
-                        <RowDefinition Height="23"/>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
+                    <!--    Поиск    -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Search" Margin="5 0 5 5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="30"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="SearchText" Grid.Column="0" Width="Auto" Height="25" Margin="0 5 0 5" Text="{Binding Mode=TwoWay, Path=Search, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <TextBlock Grid.Column="0" Text="Поиск" Tag="{Binding ElementName=SearchText}" Style="{StaticResource PlaceholderStyle}" Margin="5 8 5 5"/>
+                            <Button Style="{StaticResource Refresh}" Grid.Column="5" Width="25" Height="25" Command="{Binding RefreshServiceLogCommand}"/>
+                            <Button Style="{StaticResource Report}" Grid.Column="4" Width="25" Height="25" Command="{Binding CreateReportCommand}"/>
+                            <Button Style="{StaticResource Insert}" Grid.Column="1" Width="25" Height="25" Command="{Binding AddServiceLogCommand}"/>
+                            <Button Style="{StaticResource Update}" Grid.Column="3" Width="25" Height="25" Command="{Binding EditServiceLogCommand}"/>
+                            <Button Style="{StaticResource Delete}" Grid.Column="2" Width="25" Height="25" Command="{Binding RemoveServiceLogCommand}"/>                            
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="45"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Margin="2 2 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Text="От: "/>
+                                <DatePicker Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding FirstDate, Mode=TwoWay}" IsEnabled="{Binding Path=ReverseAllTime}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Grid.Row="1" Grid.Column="0" Margin="2 2 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Text="До: "/>
+                                <DatePicker Grid.Row="1" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding SecondDate, Mode=TwoWay}" IsEnabled="{Binding Path=ReverseAllTime}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                                <CheckBox x:Name="AllTime" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="2 2 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Все" IsChecked="{Binding Path=AllTime}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                    <!--    Поиск END   -->
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="2 2 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Text="От"/>
-                    <DatePicker Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2,2,2,2" SelectedDateFormat="Short" SelectedDate="{Binding FirstDate, Mode=TwoWay}" IsEnabled="{Binding Path=ReverseAllTime}"/>
+                    <!--    Исполнители    -->
+                    <Grid Grid.Row="1" Grid.Column="0" Height="Auto" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Исполнители</TextBlock>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="2 3 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Text="До"/>
-                    <DatePicker Grid.Row="1" Grid.Column="1" Height="25" VerticalAlignment="Center" Margin="2 2 2 2" SelectedDateFormat="Short" SelectedDate="{Binding SecondDate, Mode=TwoWay}" IsEnabled="{Binding Path=ReverseAllTime}"/>
+                        <ListBox x:Name="Repairers" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Repairers}" SelectedItem="{Binding SelectedRepairer}" Margin="5 0 5 5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Repairers}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FullName}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--    Исполнители END   -->
 
-                    <CheckBox x:Name="AllTime" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="2 3 2 2" VerticalAlignment="Center" HorizontalAlignment="Left" Content="За всё время" IsChecked="{Binding Path=AllTime}"/>
+                    <!--    Даты    -->
+                    <StackPanel Grid.Row="0" Grid.Column="1" x:Name="Date" Margin="2 2 2 2">
+                        <Grid Margin="0 4 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.25*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="23"/>
+                            </Grid.RowDefinitions>
+
+                            
+                            
+                            
+                        </Grid>
+                    </StackPanel>
+                    <!--    Даты END   -->
+
+                    <!--    Статусы    -->
+                    <Grid Grid.Row="1" Grid.Column="1" Height="Auto" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Статусы</TextBlock>
+                        <ListBox x:Name="Statuses" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}"  Margin="5 0 5 5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Statuses}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--    Статусы END   -->
+
+                    <!--    Отделы    -->
+                    <Grid Grid.Column="2" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Отделы</TextBlock>
+
+                        <ListBox x:Name="Depts" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Depts}" SelectedItem="{Binding SelectedDept}" Margin="5 0 5 5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Depts}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Code}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--    Отделы END   -->
+
+                    <!--    Типы    -->
+                    <Grid Grid.Column="3" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Типы</TextBlock>
+
+                        <ListBox x:Name="TypesModel" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding TypesModel}" SelectedItem="{Binding SelectedTypeModel}"  Margin="5 0 5 5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=TypesModel}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--    Типы END   -->
+
+                    <!--    Модели    -->
+                    <Grid Grid.Column="4" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели</TextBlock>
+
+                        <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}"  Margin="5 0 5 5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Models}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--    Модели END   -->
+
+                    <!--    Запчасти    -->
+                    <Grid Grid.Column="5" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Запчасти</TextBlock>
+
+                        <ListBox x:Name="Spares" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Spares}" SelectedItem="{Binding SelectedSpare}"  Margin="5 0 5 5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Spares}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--    Запчасти END   -->
+
+                    <!--    Работы    -->
+                    <Grid Grid.Column="6" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Работы</TextBlock>
+
+                        <ListBox x:Name="Services" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}"  Margin="5 0 5 5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Services}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--    Работы END   -->
 
                 </Grid>
-            </StackPanel>
-            <!--    Даты END   -->
-
-            <!--    Статусы    -->
-            <Grid Grid.Row="1" Grid.Column="1" Height="Auto" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Статусы</TextBlock>
-                <ListBox x:Name="Statuses" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}"  Margin="5 0 5 5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Statuses}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <!--    Статусы END   -->
-
-            <!--    Отделы    -->
-            <Grid Grid.Column="2" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Отделы</TextBlock>
-
-                <ListBox x:Name="Depts" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Depts}" SelectedItem="{Binding SelectedDept}" Margin="5 0 5 5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Depts}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=Code}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <!--    Отделы END   -->
-
-            <!--    Типы    -->
-            <Grid Grid.Column="3" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Типы</TextBlock>
-
-                <ListBox x:Name="TypesModel" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding TypesModel}" SelectedItem="{Binding SelectedTypeModel}"  Margin="5 0 5 5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=TypesModel}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <!--    Типы END   -->
-
-            <!--    Модели    -->
-            <Grid Grid.Column="4" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Модели</TextBlock>
-
-                <ListBox x:Name="Models" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}"  Margin="5 0 5 5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Models}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <!--    Модели END   -->
-
-            <!--    Запчасти    -->
-            <Grid Grid.Column="5" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Запчасти</TextBlock>
-
-                <ListBox x:Name="Spares" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Spares}" SelectedItem="{Binding SelectedSpare}"  Margin="5 0 5 5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Spares}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <!--    Запчасти END   -->
-
-            <!--    Работы    -->
-            <Grid Grid.Column="6" Grid.RowSpan="2" Height="Auto" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0 0 0 5">Работы</TextBlock>
-
-                <ListBox x:Name="Services" SelectionMode="Multiple" Grid.Row="1" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}"  Margin="5 0 5 5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems, ElementName=Services}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <!--    Работы END   -->
-
-
+            </Border>
         </Grid>
     </Grid>
 </Page>

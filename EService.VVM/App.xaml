@@ -5,6 +5,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Placeholder.xaml"/>
+                <ResourceDictionary Source="DataGrides.xaml"/>
+                <ResourceDictionary Source="Buttons.xaml"/>
+                <ResourceDictionary Source="ListBoxes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>        

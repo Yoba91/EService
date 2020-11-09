@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:EService.VVM">
+    <DataTemplate x:Key="SelectedTemplate">
+        <TextBlock Text="{Binding}" Background="#5a9632" Foreground="White"/>
+    </DataTemplate>
+    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

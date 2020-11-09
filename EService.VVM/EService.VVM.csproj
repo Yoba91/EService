@@ -252,6 +252,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DisplayRootRegistry.cs" />
+    <Page Include="Buttons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataGrides.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListBoxes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Placeholder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -506,6 +518,24 @@
   <ItemGroup>
     <Resource Include="Images\Gear.png" />
     <Resource Include="Images\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Delete.png" />
+    <Resource Include="Images\Insert.png" />
+    <Resource Include="Images\Report.png" />
+    <Resource Include="Images\Search.png" />
+    <Resource Include="Images\Update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Delete_Disabled.png" />
+    <Resource Include="Images\Update_Disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Transfer.png" />
+    <Resource Include="Images\Transfer_Disabled.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
