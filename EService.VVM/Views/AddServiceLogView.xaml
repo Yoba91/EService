@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EService.VVM.Views"
         mc:Ignorable="d"
-        Title="AddWindowServiceLog" Height="600" Width="500" MinHeight="600" MinWidth="500">
+        Title="Добавить запись в журнал" Height="600" Width="500" MinHeight="600" MinWidth="500">
     <Grid>
         
         <Grid Grid.Row="1">
