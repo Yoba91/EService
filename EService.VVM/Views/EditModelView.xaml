@@ -8,28 +8,32 @@
         mc:Ignorable="d"
         Title="EditWindowModel" Height="400" Width="300" MinHeight="400" MinWidth="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="100"/>
-            </Grid.ColumnDefinitions>
-            <TextBox x:Name="ShortName" Text="{Binding Mode=TwoWay, Path=ShortName, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Width="Auto" Grid.Row="0" Margin="3 3 3 3"/>
-            <TextBlock Text="Короткое название модели" Tag="{Binding ElementName=ShortName}" Style="{StaticResource PlaceholderStyle}" Grid.Row="0"/>
-            <Button x:Name="Add" Command="{Binding Path=EditModel}" Grid.Row="2" Grid.Column="1" Content="Изменить" Margin="3 3 3 3"/>
-        </Grid>
-        <TextBox x:Name="FullName" Text="{Binding Mode=TwoWay, Path=FullName, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Grid.Row="1" Margin="3 3 3 3"/>
-        <TextBlock Text="Полное название модели" Tag="{Binding ElementName=FullName}" Style="{StaticResource PlaceholderStyle}" Grid.Row="1"/>
-        <ListBox x:Name="TypesModel" SelectionMode="Single" Grid.Row="3" ItemsSource="{Binding TypesModel}" SelectedItem="{Binding TypeModel, Mode=TwoWay}"  Margin="3 3 3 3">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=FullName}"></TextBlock>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Border Background="#fffbf4" CornerRadius="5 5 5 5" Margin="2 0 2 0" BorderThickness="2" BorderBrush="#50962f">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="ShortName" Text="{Binding Mode=TwoWay, Path=ShortName, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Width="Auto" Grid.Row="0" Margin="3 3 3 3"/>
+                    <TextBlock Text="Короткое название модели" Tag="{Binding ElementName=ShortName}" Style="{StaticResource PlaceholderStyle}" Grid.Row="0"/>
+                    <Button Style="{StaticResource Ok}" x:Name="Add" Command="{Binding Path=EditModel}" Grid.Row="2" Grid.Column="1" />
+                </Grid>
+                <TextBox x:Name="FullName" Text="{Binding Mode=TwoWay, Path=FullName, UpdateSourceTrigger=PropertyChanged}" Height="Auto" Grid.Row="1" Margin="3 3 3 3"/>
+                <TextBlock Text="Полное название модели" Tag="{Binding ElementName=FullName}" Style="{StaticResource PlaceholderStyle}" Grid.Row="1"/>
+                <ListBox x:Name="TypesModel" SelectionMode="Single" Grid.Row="3" ItemsSource="{Binding TypesModel}" SelectedItem="{Binding TypeModel, Mode=TwoWay}"  Margin="3 3 3 3">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=FullName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

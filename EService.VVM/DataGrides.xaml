@@ -175,6 +175,13 @@
                 <Setter Property="Background" Value="#5a9632"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="#5a9632"/>
+            </Trigger>            
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type DataGridRow}" x:Key="{x:Type DataGridRow}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="FontWeight" Value="Bold"/>
             </Trigger>
         </Style.Triggers>
     </Style>

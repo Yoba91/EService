@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Security.Principal;
 using System.Diagnostics;
+using System.Threading;
 
 namespace EService.VVM.ViewModels
 {
@@ -482,7 +483,7 @@ namespace EService.VVM.ViewModels
 
         //Обработчик фильтров
         public void OnFilterChanged()
-        {
+        {            
             System.Linq.Expressions.Expression result = null, temp;
             Delegate lambda = null, lambdaSU = null, lambdaSD = null;
             foreach (var item in _filters)
@@ -517,7 +518,7 @@ namespace EService.VVM.ViewModels
             SelectedServiceLog = null;
             ParametersValues?.Clear();
             ServicesDone?.Clear();
-            SparesUsed?.Clear();
+            SparesUsed?.Clear();            
         }
 
         private void InitializeFilters()

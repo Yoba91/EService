@@ -207,4 +207,84 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="Ok" TargetType="Button" BasedOn="{StaticResource Button}">
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <EventTrigger.Actions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" Duration="0:0:1" To="30" AutoReverse="False" SpeedRatio="3"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" Duration="0:0:1" To="30" AutoReverse="False" SpeedRatio="3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <EventTrigger.Actions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" Duration="0:0:1" To="25" AutoReverse="False" SpeedRatio="3"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" Duration="0:0:1" To="25" AutoReverse="False" SpeedRatio="3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger.Actions>
+            </EventTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Image Source="/Images/Ok_Disabled.png" Stretch="Fill" HorizontalAlignment="Center"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Image Source="/Images/Ok.png" Stretch="Fill" HorizontalAlignment="Center"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="AcceptCancelButton">
+        <Style.Setters>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="ButtonBorder" CornerRadius="10" BorderThickness="2" BorderBrush="#30332e"  Background="#b3e293">
+                            <ContentPresenter Content="{TemplateBinding Content}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#5a9632"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <EventTrigger.Actions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" Duration="0:0:1" To="105" AutoReverse="False" SpeedRatio="3"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" Duration="0:0:1" To="35" AutoReverse="False" SpeedRatio="3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <EventTrigger.Actions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" Duration="0:0:1" To="100" AutoReverse="False" SpeedRatio="3"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" Duration="0:0:1" To="30" AutoReverse="False" SpeedRatio="3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger.Actions>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

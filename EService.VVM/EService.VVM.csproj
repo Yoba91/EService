@@ -244,9 +244,6 @@
     <Compile Include="Views\ReportView.xaml.cs">
       <DependentUpon>ReportView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ServiceLogView.xaml.cs">
-      <DependentUpon>ServiceLogView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -420,10 +417,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ServiceLogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -536,6 +529,14 @@
   <ItemGroup>
     <Resource Include="Images\Transfer.png" />
     <Resource Include="Images\Transfer_Disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Ok.png" />
+    <Resource Include="Images\Ok_Disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Accept.png" />
+    <Resource Include="Images\Cancel.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
